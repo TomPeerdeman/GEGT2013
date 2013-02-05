@@ -69,6 +69,24 @@ void mla(SDL_Surface *s, int x0, int y0, int x1, int y1, Uint32 colour) {
     
     // if the y change is greater than zero, draw down
     if(y_check > 0){
+      
+      // draw red octant
+      if(total_check >= 0){
+        for(;x!=x1;x+=1){
+          PutPixel(s,x,y,colour);
+          if(((y0-y1) * x + (x1-x0) * y + x0 * y1 - x1 * y0) < 0)
+            y++;
+        }
+      }
+      
+      // draw green octant
+      else{
+        for(;y!=y1;y+=1){
+          PutPixel(s,x,y,colour);
+          if(((y0-y1) * x + (x1-x0) * y + x0 * y1 - x1 * y0) >= 0)
+            x++;
+        }
+      }
     }
     
     
@@ -101,6 +119,23 @@ void mla(SDL_Surface *s, int x0, int y0, int x1, int y1, Uint32 colour) {
     // if the y change is greater than zero, draw down
     if(y_check > 0){
       
+      // draw white octant
+      if(total_check > 0){
+        for(;x!=x1;x-=1){
+          PutPixel(s,x,y,colour);
+          if(((y0-y1) * x + (x1-x0) * y + x0 * y1 - x1 * y0) > 0)
+            y++;
+        }
+      }
+      
+      // draw blue octant
+      else{
+        for(;y!=y1;y+=1){
+          PutPixel(s,x,y,colour);
+          if(((y0-y1) * x + (x1-x0) * y + x0 * y1 - x1 * y0) <= 0)
+            x--;
+        }
+      }
     }
     
     
