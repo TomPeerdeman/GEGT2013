@@ -38,3 +38,7 @@ realclean: clean
 clean: realclean
 	rm -f *.o
 	rm -f main
+
+run: main 
+	./main
+
