@@ -69,7 +69,7 @@ void mla(SDL_Surface *s, int x0, int y0, int x1, int y1, Uint32 colour) {
     }
     
     
-    // if the y change is greater than zero, draw up
+    // if the y change is smaller than zero, draw up
     if(y_check < 0){
       for(x=x0, y=y0;x!=x1;x+=1){
         PutPixel(s,x,y,colour);
