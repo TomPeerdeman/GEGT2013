@@ -61,10 +61,10 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 	float alpha, beta, gamma;
 
 	// set boundaries
-	x_max = max(x0,x1,x2);
-	y_max = max(y0,y1,y2);
-	x_min = min(x0,x1,x2);
-	y_min = min(y0,y1,y2);
+	x_max = ceil(max(x0,x1,x2));
+	y_max = ceil(max(y0,y1,y2));
+	x_min = floor(min(x0,x1,x2));
+	y_min = floor(min(y0,y1,y2));
 
 	for(y=y_min; y < y_max; y++){
 		for(x=x_min; x < x_max; x++){
