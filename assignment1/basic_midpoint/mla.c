@@ -45,7 +45,7 @@ void mla(SDL_Surface *s, int x0, int y0, int x1, int y1, Uint32 colour) {
   
   x_check = x1 - x0;
   y_check = y1 - y0;
-  total_check = x_check - y_check;
+  total_check = abs(x_check) - abs(y_check);
   
   // if the y change is zero, draw a horizontal line
   if(y_check == 0){
@@ -71,11 +71,25 @@ void mla(SDL_Surface *s, int x0, int y0, int x1, int y1, Uint32 colour) {
     
     // if the y change is smaller than zero, draw up
     if(y_check < 0){
-      for(x=x0, y=y0;x!=x1;x+=1){
-        PutPixel(s,x,y,colour);
-        if(((y0-y1) * x + (x1-x0) * y + x0 * y1 - x1 * y0) >= 0)
-          y--;
+      x=x0;
+      y=y0;
+      printf("\ntotal: %d",total_check);
+      printf("\nx,y: %d;%d, x1,y1: %d;%d", x,y, x1,y1);
+      if(total_check >= 0){
+        for(;x!=x1;x+=1){
+          PutPixel(s,x,y,colour);
+          if(((y0-y1) * x + (x1-x0) * y + x0 * y1 - x1 * y0) >= 0)
+            y--;
+        }
       }
+      else{
+        for(;y!=y1;y-=1){
+          PutPixel(s,x,y,colour);
+          if(((y0-y1) * x + (x1-x0) * y + x0 * y1 - x1 * y0) < 0)
+            x++;
+        }      
+      }
+      printf("\nx,y: %d;%d, x1,y1: %d;%d\n", x,y, x1,y1);
     }
   }
   
