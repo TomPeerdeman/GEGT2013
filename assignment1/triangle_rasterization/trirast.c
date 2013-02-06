@@ -118,7 +118,7 @@ float min(float a, float b, float c) {
 	return m;
 }
 
-// helper function to calculate a part of the beta value
+// helper function to calculate a part of the alpha value
 float alphacalc(float x, float x1, float x2, float y, float y1, float y2) {
 	return((y1-y2)*x + (x2-x1)*y + x1*y2 - x2*y1);
 }
@@ -130,7 +130,7 @@ float betacalc(float x, float x0, float x2, float y, float y0, float y2) {
 
 // helper function to calculate a part of the gamma value
 float gammacalc(float x, float x0, float x1, float y, float y0, float y1) {
-	return((y0-y1)*x + (x1+x0)*y + x0*y1 - x1*y0);
+	return((y0-y1)*x + (x1-x0)*y + x0*y1 - x1*y0);
 }
 
 void
