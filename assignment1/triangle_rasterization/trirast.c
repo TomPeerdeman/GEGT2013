@@ -52,7 +52,9 @@
  */
 void
 draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
-    byte r, byte g, byte b){
+    byte r, byte g, byte b) {
+	
+	//printf("Draw triangle {(%f, %f), (%f, %f), (%f, %f)} color (%d, %d, %d)\n", x0, y0, x1, y1, x2, y2, r, g, b);
 	// variables
 	float x_max, y_max, x_min, y_min;
 	float x, y;
@@ -65,6 +67,8 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 	y_max = ceil(max(y0,y1,y2));
 	x_min = floor(min(x0,x1,x2));
 	y_min = floor(min(y0,y1,y2));
+	
+	//printf("Loop x:%f->%f y:%f->%f\n", x_min, x_max, y_min, y_max);
 	
 	f12 = alphacalc(x0, x1, x2, y0, y1, y2);
 	f20 = betacalc(x1, x0, x2, x1, y0, y2);
@@ -80,9 +84,9 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 			beta = betacalc(x,x0,x2,y,y0,y2) / f20;
 			gamma = gammacalc(x,x0,x1,y,y0,y1) / f01;
 			alpha = 1 - beta - gamma;
-			if(alpha >= 0 && beta >= 0 && gamma >= 0){
+			if(alpha >= 0 && beta >= 0 && gamma >= 0) {
 				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
-						&& (gamma > 0 || p2_off > 0)){
+						&& (gamma > 0 || p2_off > 0)) {
 					/*r = (int) 255.0f * alpha;
 					g = (int) 255.0f * beta;
 					b = (int) 255.0f * gamma;*/
@@ -95,7 +99,7 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 }
 
 // helper function to get the maximum value of three integers
-float max(float a, float b, float c){
+float max(float a, float b, float c) {
 	float m = a;
 	if(b > a)
 		m = b;
@@ -105,7 +109,7 @@ float max(float a, float b, float c){
 }
 
 // helper function to get the minimum value of three integers
-float min(float a, float b, float c){
+float min(float a, float b, float c) {
 	float m = a;
 	if(b < a)
 		m = b;
@@ -115,23 +119,23 @@ float min(float a, float b, float c){
 }
 
 // helper function to calculate a part of the beta value
-float alphacalc(float x, float x1, float x2, float y, float y1, float y2){
+float alphacalc(float x, float x1, float x2, float y, float y1, float y2) {
 	return((y1-y2)*x + (x2-x1)*y + x1*y2 - x2*y1);
 }
 
 // helper function to calculate a part of the beta value
-float betacalc(float x, float x0, float x2, float y, float y0, float y2){
+float betacalc(float x, float x0, float x2, float y, float y0, float y2) {
 	return((y2-y0)*x + (x0-x2)*y + x2*y0 - x0*y2);
 }
 
 // helper function to calculate a part of the gamma value
-float gammacalc(float x, float x0, float x1, float y, float y0, float y1){
+float gammacalc(float x, float x0, float x1, float y, float y0, float y1) {
 	return((y0-y1)*x + (x1+x0)*y + x0*y1 - x1*y0);
 }
 
 void
 draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float y2,
-		byte r, byte g, byte b){
+		byte r, byte g, byte b) {
 	(void)(x0);
 	(void)(y0);
 	(void)(x1);

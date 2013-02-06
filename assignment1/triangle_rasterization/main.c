@@ -53,21 +53,30 @@ InitOpenGL(void)
     glDisable(GL_CULL_FACE);
 }
 
-void PutPixel(int x, int y, byte r, byte g, byte b)
-{
-    if (x < 0 || y < 0 || x >= framebuffer_width || y >= framebuffer_height)
-    {
-        printf("PutPixel(): x, y coordinates (%d, %d) outside of visible area!\n",
-                x, y);
-        return;
-    }
+void PutPixel(int x, int y, byte r, byte g, byte b) {
+	if(color_by_putpixel_count) {
+		switch(framebuffer[3*(framebuffer_width*y+x)]) {
+			case 0:
+				framebuffer[3*(framebuffer_width*y+x)] = 128;
+				break;
+			default:
+				framebuffer[3*(framebuffer_width*y+x)] = 255;
+		}
+		return;
+	}
+	
+	if (x < 0 || y < 0 || x >= framebuffer_width || y >= framebuffer_height) {
+		printf("PutPixel(): x, y coordinates (%d, %d) outside of visible area!\n",
+				x, y);
+		return;
+	}
 
-    // The pixels in framebuffer[] are layed out sequentially,
-    // with the R, G and B values one after the other, e.g
-    // RGBRGBRGB...
-    framebuffer[3*(framebuffer_width*y+x)] = r;
-    framebuffer[3*(framebuffer_width*y+x)+1] = g;
-    framebuffer[3*(framebuffer_width*y+x)+2] = b;
+	// The pixels in framebuffer[] are layed out sequentially,
+	// with the R, G and B values one after the other, e.g
+	// RGBRGBRGB...
+	framebuffer[3*(framebuffer_width*y+x)] = r;
+	framebuffer[3*(framebuffer_width*y+x)+1] = g;
+	framebuffer[3*(framebuffer_width*y+x)+2] = b;
 }
 
 void
