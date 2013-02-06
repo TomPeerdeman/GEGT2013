@@ -71,7 +71,7 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 	//printf("Loop x:%f->%f y:%f->%f\n", x_min, x_max, y_min, y_max);
 	
 	f12 = alphacalc(x0, x1, x2, y0, y1, y2);
-	f20 = betacalc(x1, x0, x2, x1, y0, y2);
+	f20 = betacalc(x1, x0, x2, y1, y0, y2);
 	f01 = gammacalc(x2, x0, x1, y2, y0, y1);
 	
 	// f12(off_x, offy) * f12(x0, y0)
