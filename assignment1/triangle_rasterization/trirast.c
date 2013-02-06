@@ -83,15 +83,12 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 		for(x=x_min; x < x_max; x++){
 			beta = betacalc(x,x0,x2,y,y0,y2) / f20;
 			gamma = gammacalc(x,x0,x1,y,y0,y1) / f01;
-			alpha = 1 - beta - gamma;
+			alpha = alphacalc(x,x1,x2,y,y1,y2) / f12;
 			if(alpha >= 0 && beta >= 0 && gamma >= 0) {
-				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
-						&& (gamma > 0 || p2_off > 0)) {
-					/*r = (int) 255.0f * alpha;
-					g = (int) 255.0f * beta;
-					b = (int) 255.0f * gamma;*/
- 					PutPixel(x, y, r, g, b);
-				}
+				/*r = (int) 255.0f * alpha;
+				g = (int) 255.0f * beta;
+				b = (int) 255.0f * gamma;*/
+				PutPixel(x, y, r, g, b);
 			}
 		}
 	}
