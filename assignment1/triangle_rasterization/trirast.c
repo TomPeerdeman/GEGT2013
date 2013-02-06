@@ -52,9 +52,8 @@
  */
 void
 draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
-    byte r, byte g, byte b) {
+		byte r, byte g, byte b) {
 	
-	//printf("Draw triangle {(%f, %f), (%f, %f), (%f, %f)} color (%d, %d, %d)\n", x0, y0, x1, y1, x2, y2, r, g, b);
 	// variables
 	float x_max, y_max, x_min, y_min;
 	float x, y;
@@ -68,8 +67,6 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 	x_min = floor(min(x0,x1,x2));
 	y_min = floor(min(y0,y1,y2));
 	
-	//printf("Loop x:%f->%f y:%f->%f\n", x_min, x_max, y_min, y_max);
-	
 	f12 = alphacalc(x0, x1, x2, y0, y1, y2);
 	f20 = betacalc(x1, x0, x2, y1, y0, y2);
 	f01 = gammacalc(x2, x0, x1, y2, y0, y1);
@@ -79,17 +76,14 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 	p1_off = betacalc(OFF_X, x0, x2, OFF_Y, y0, y2) * f20;
 	p2_off = gammacalc(OFF_X, x0, x1, OFF_Y, y0, y1) * f01;
 
-	for(y=y_min; y < y_max; y++){
-		for(x=x_min; x < x_max; x++){
+	for(y=y_min; y <= y_max; y++){
+		for(x=x_min; x <= x_max; x++){
 			beta = betacalc(x,x0,x2,y,y0,y2) / f20;
 			gamma = gammacalc(x,x0,x1,y,y0,y1) / f01;
 			alpha = alphacalc(x,x1,x2,y,y1,y2) / f12;
 			if(alpha >= 0 && beta >= 0 && gamma >= 0) {
 				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
 						&& (gamma > 0 || p2_off > 0)) {
-					/*r = (int) 255.0f * alpha;
-					g = (int) 255.0f * beta;
-					b = (int) 255.0f * gamma;*/
  					PutPixel(x, y, r, g, b);
 				}
 			}
