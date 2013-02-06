@@ -85,10 +85,13 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 			gamma = gammacalc(x,x0,x1,y,y0,y1) / f01;
 			alpha = alphacalc(x,x1,x2,y,y1,y2) / f12;
 			if(alpha >= 0 && beta >= 0 && gamma >= 0) {
-				/*r = (int) 255.0f * alpha;
-				g = (int) 255.0f * beta;
-				b = (int) 255.0f * gamma;*/
-				PutPixel(x, y, r, g, b);
+				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
+						&& (gamma > 0 || p2_off > 0)) {
+					/*r = (int) 255.0f * alpha;
+					g = (int) 255.0f * beta;
+					b = (int) 255.0f * gamma;*/
+ 					PutPixel(x, y, r, g, b);
+				}
 			}
 		}
 	}
@@ -98,19 +101,27 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 // helper function to get the maximum value of three integers
 float max(float a, float b, float c) {
 	float m = a;
-	if(b > a)
+	if(b > m){
 		m = b;
-	if(c > b)
-		m = c;
+		if(c > m)
+			m = c;
+		return m;
+	}
+	if(c > m)
+	  m = c;
 	return m;
 }
 
 // helper function to get the minimum value of three integers
 float min(float a, float b, float c) {
 	float m = a;
-	if(b < a)
+	if(b < m){
 		m = b;
-	if(c < b)
+		if(c < m)
+			m = c;
+		return m;
+	}
+	if(c < m)
 		m = c;
 	return m;
 }
