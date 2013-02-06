@@ -79,7 +79,9 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 	for(y=y_min; y <= y_max; y++){
 		for(x=x_min; x <= x_max; x++){
 			beta = betacalc(x,x0,x2,y,y0,y2) / f20;
+			if(beta < 0 || beta > 1)continue;
 			gamma = gammacalc(x,x0,x1,y,y0,y1) / f01;
+			if(gamma < 0 || gamma > 1)continue;
 			alpha = alphacalc(x,x1,x2,y,y1,y2) / f12;
 			if(alpha >= 0 && beta >= 0 && gamma >= 0) {
 				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
