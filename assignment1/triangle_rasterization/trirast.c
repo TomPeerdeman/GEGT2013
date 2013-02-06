@@ -101,12 +101,8 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 // helper function to get the maximum value of three integers
 float max(float a, float b, float c) {
 	float m = a;
-	if(b > m){
+	if(b > m)
 		m = b;
-		if(c > m)
-			m = c;
-		return m;
-	}
 	if(c > m)
 	  m = c;
 	return m;
@@ -115,12 +111,8 @@ float max(float a, float b, float c) {
 // helper function to get the minimum value of three integers
 float min(float a, float b, float c) {
 	float m = a;
-	if(b < m){
+	if(b < m)
 		m = b;
-		if(c < m)
-			m = c;
-		return m;
-	}
 	if(c < m)
 		m = c;
 	return m;
