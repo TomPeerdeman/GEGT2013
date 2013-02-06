@@ -2,14 +2,14 @@ CC=gcc
 
 WARNING_FLAGS=-Wall -Wextra -Werror-implicit-function-declaration -Wshadow -Wstrict-prototypes -pedantic-errors
 CFLAGS=-g -O2 -std=c99 $(WARNING_FLAGS)
-LDFLAGS=-g -lGL -lglut -lGLU
+LDFLAGS=-g -lm -lGL -lglut -lGLU
 
 .c.o:
 	$(CC) -c $(CFLAGS) $<
 
 all: trirast
 trirast: main.o trirast.o
-	$(CC) $(LDFLAGS) -o trirast main.o trirast.o
+	$(CC) main.o trirast.o -o trirast $(LDFLAGS)
 
 clean:
 	rm -f *.o

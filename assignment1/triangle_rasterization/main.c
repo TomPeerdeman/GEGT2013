@@ -280,6 +280,8 @@ DrawScene(void)
 void
 KeyPressed(unsigned char key, int x, int y)
 {
+	(void)(x);
+	(void)(y);
     switch (key)
     {
         case '1':

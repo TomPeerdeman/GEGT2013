@@ -52,27 +52,42 @@
  */
 void
 draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
-    byte r, byte g, byte b)
-{
-
+    byte r, byte g, byte b){
 	// variables
 	float x_max, y_max, x_min, y_min;
 	float x, y;
 	float alpha, beta, gamma;
+	float f12, f20, f01;
+	float p0_off, p1_off, p2_off;
 
 	// set boundaries
 	x_max = ceil(max(x0,x1,x2));
 	y_max = ceil(max(y0,y1,y2));
 	x_min = floor(min(x0,x1,x2));
 	y_min = floor(min(y0,y1,y2));
+	
+	f12 = alphacalc(x0, x1, x2, y0, y1, y2);
+	f20 = betacalc(x1, x0, x2, x1, y0, y2);
+	f01 = gammacalc(x2, x0, x1, y2, y0, y1);
+	
+	// f12(off_x, offy) * f12(x0, y0)
+	p0_off = alphacalc(OFF_X, x1, x2, OFF_Y, y1, y2) * f12;
+	p1_off = betacalc(OFF_X, x0, x2, OFF_Y, y0, y2) * f20;
+	p2_off = gammacalc(OFF_X, x0, x1, OFF_Y, y0, y1) * f01;
 
 	for(y=y_min; y < y_max; y++){
 		for(x=x_min; x < x_max; x++){
-			beta = betacalc(x,x0,x2,y,y0,y2)/betacalc(x1,x0,x2,y1,y0,y2);
-			gamma = gammacalc(x,x0,x1,y,y0,y1)/gammacalc(x2,x0,x1,y2,y0,y1);
+			beta = betacalc(x,x0,x2,y,y0,y2) / f20;
+			gamma = gammacalc(x,x0,x1,y,y0,y1) / f01;
 			alpha = 1 - beta - gamma;
-			if(alpha > 0 && alpha < 1 && beta > 0 && beta < 1 && gamma > 0 && gamma < 1 ){
-            PutPixel(x, y, r, g, b);
+			if(alpha >= 0 && beta >= 0 && gamma >= 0){
+				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
+						&& (gamma > 0 || p2_off > 0)){
+					/*r = (int) 255.0f * alpha;
+					g = (int) 255.0f * beta;
+					b = (int) 255.0f * gamma;*/
+ 					PutPixel(x, y, r, g, b);
+				}
 			}
 		}
 	}
@@ -81,22 +96,27 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 
 // helper function to get the maximum value of three integers
 float max(float a, float b, float c){
-  float max = a;
-  if(b > a)
-    max = b;
-  if(c > b)
-    max = c;
-  return max;
+	float m = a;
+	if(b > a)
+		m = b;
+	if(c > b)
+		m = c;
+	return m;
 }
 
 // helper function to get the minimum value of three integers
 float min(float a, float b, float c){
-  float min = a;
-  if(b < a)
-    min = b;
-  if(c < b)
-    min = c;
-  return min;
+	float m = a;
+	if(b < a)
+		m = b;
+	if(c < b)
+		m = c;
+	return m;
+}
+
+// helper function to calculate a part of the beta value
+float alphacalc(float x, float x1, float x2, float y, float y1, float y2){
+	return((y1-y2)*x + (x2-x1)*y + x1*y2 - x2*y1);
 }
 
 // helper function to calculate a part of the beta value
@@ -111,6 +131,14 @@ float gammacalc(float x, float x0, float x1, float y, float y0, float y1){
 
 void
 draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float y2,
-    byte r, byte g, byte b)
-{
+		byte r, byte g, byte b){
+	(void)(x0);
+	(void)(y0);
+	(void)(x1);
+	(void)(y1);
+	(void)(x2);
+	(void)(y2);
+	(void)(r);
+	(void)(g);
+	(void)(b);
 }
