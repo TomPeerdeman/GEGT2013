@@ -137,6 +137,8 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 	float alpha, beta, gamma;
 	float f12, f20, f01;
 	float p0_off, p1_off, p2_off;
+	float f12inv, f20inv, f01inv;
+	int pixeltest;
 
 	// set boundaries
 	x_max = ceil(max(x0,x1,x2));
@@ -148,24 +150,32 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 	f20 = betacalc(x1, x0, x2, y1, y0, y2);
 	f01 = gammacalc(x2, x0, x1, y2, y0, y1);
 	
+	f12inv = 1.0/f12;
+	f20inv = 1.0/f20;
+	f01inv = 1.0/f01;
+	
 	// f12(off_x, offy) * f12(x0, y0)
 	p0_off = alphacalc(OFF_X, x1, x2, OFF_Y, y1, y2) * f12;
 	p1_off = betacalc(OFF_X, x0, x2, OFF_Y, y0, y2) * f20;
 	p2_off = gammacalc(OFF_X, x0, x1, OFF_Y, y0, y1) * f01;
 
 	for(y=y_min; y <= y_max; y++){
+		pixeltest = 0;
 		for(x=x_min; x <= x_max; x++){
-			beta = betacalc(x,x0,x2,y,y0,y2) / f20;
+			beta = betacalc(x,x0,x2,y,y0,y2) * f20inv;
 			if(beta < 0 || beta > 1)continue;
-			gamma = gammacalc(x,x0,x1,y,y0,y1) / f01;
+			gamma = gammacalc(x,x0,x1,y,y0,y1) * f01inv;
 			if(gamma < 0 || gamma > 1)continue;
-			alpha = alphacalc(x,x1,x2,y,y1,y2) / f12;
+			alpha = alphacalc(x,x1,x2,y,y1,y2) * f12inv;
 			if(alpha >= 0 && beta >= 0 && gamma >= 0) {
 				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
 						&& (gamma > 0 || p2_off > 0)) {
  					PutPixel(x, y, r, g, b);
+ 					pixeltest = 1;
 				}
 			}
+			else if(pixeltest == 1)
+				break;
 		}
 	}
 }
