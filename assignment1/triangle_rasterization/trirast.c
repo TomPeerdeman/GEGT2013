@@ -67,17 +67,19 @@ draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 	x_min = floor(min(x0,x1,x2));
 	y_min = floor(min(y0,y1,y2));
 	
+	// get the consant calculating values
 	f12 = alphacalc(x0, x1, x2, y0, y1, y2);
 	f20 = betacalc(x1, x0, x2, y1, y0, y2);
 	f01 = gammacalc(x2, x0, x1, y2, y0, y1);
 	
-	// f12(off_x, offy) * f12(x0, y0)
+	// get offscreen values
 	p0_off = alphacalc(OFF_X, x1, x2, OFF_Y, y1, y2) * f12;
 	p1_off = betacalc(OFF_X, x0, x2, OFF_Y, y0, y2) * f20;
 	p2_off = gammacalc(OFF_X, x0, x1, OFF_Y, y0, y1) * f01;
 
 	for(y=y_min; y <= y_max; y++){
 		for(x=x_min; x <= x_max; x++){
+			// calculate new values
 			beta = betacalc(x,x0,x2,y,y0,y2) / f20;
 			gamma = gammacalc(x,x0,x1,y,y0,y1) / f01;
 			alpha = alphacalc(x,x1,x2,y,y1,y2) / f12;
@@ -138,6 +140,7 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 	float f12, f20, f01;
 	float p0_off, p1_off, p2_off;
 	float f12inv, f20inv, f01inv;
+	float buf_a, buf_b, buf_g;
 	int pixeltest;
 
 	// set boundaries
@@ -146,27 +149,35 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 	x_min = floor(min(x0,x1,x2));
 	y_min = floor(min(y0,y1,y2));
 	
+	// get the consant calculating values
 	f12 = alphacalc(x0, x1, x2, y0, y1, y2);
 	f20 = betacalc(x1, x0, x2, y1, y0, y2);
 	f01 = gammacalc(x2, x0, x1, y2, y0, y1);
 	
+	// create an inverse for faster calculations later
 	f12inv = 1.0/f12;
 	f20inv = 1.0/f20;
 	f01inv = 1.0/f01;
 	
-	// f12(off_x, offy) * f12(x0, y0)
+	// get offscreen values
 	p0_off = alphacalc(OFF_X, x1, x2, OFF_Y, y1, y2) * f12;
 	p1_off = betacalc(OFF_X, x0, x2, OFF_Y, y0, y2) * f20;
 	p2_off = gammacalc(OFF_X, x0, x1, OFF_Y, y0, y1) * f01;
 
+	// calculate initial alpha
+	alpha = alphacalc(x_min,x1,x2,y_min,y1,y2) * f12inv;
+	// calculate initial beta
+	beta = betacalc(x_min,x0,x2,y_min,y0,y2) * f20inv;
+	// calculate initial gamma
+	gamma = gammacalc(x_min,x0,x1,y_min,y0,y1) * f01inv;
+
 	for(y=y_min; y <= y_max; y++){
+		// remember former alpha, beta, gamma values
+		buf_a = alpha;
+		buf_b = beta;
+		buf_g = gamma;
 		pixeltest = 0;
 		for(x=x_min; x <= x_max; x++){
-			beta = betacalc(x,x0,x2,y,y0,y2) * f20inv;
-			if(beta < 0 || beta > 1)continue;
-			gamma = gammacalc(x,x0,x1,y,y0,y1) * f01inv;
-			if(gamma < 0 || gamma > 1)continue;
-			alpha = alphacalc(x,x1,x2,y,y1,y2) * f12inv;
 			if(alpha >= 0 && beta >= 0 && gamma >= 0) {
 				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
 						&& (gamma > 0 || p2_off > 0)) {
@@ -174,8 +185,25 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
  					pixeltest = 1;
 				}
 			}
+			// done coloring all x's -> break
 			else if(pixeltest == 1)
 				break;
+			
+			// increment the values
+			alpha += (y1-y2)*f12inv;
+			beta += (y2-y0)*f20inv;
+			gamma += (y0-y1)*f01inv;
+			
 		}
+		
+		// get the former values
+		alpha = buf_a;
+		beta = buf_b;
+		gamma = buf_g;
+		
+		// increment the values
+		alpha += (x2-x1)*f12inv;
+		beta += (x0-x2)*f20inv;
+		gamma += (x1-x0)*f01inv;
 	}
 }
