@@ -48,8 +48,7 @@
  *       drawpixel (x, y) with color c
  *
  */
-void
-draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
+void draw_triangle(float x0, float y0, float x1, float y1, float x2, float y2,
 		byte r, byte g, byte b) {
 	
 	// variables
@@ -127,9 +126,8 @@ float gammacalc(float x, float x0, float x1, float y, float y0, float y1) {
 	return((y0-y1)*x + (x1-x0)*y + x0*y1 - x1*y0);
 }
 
-void
-draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float y2,
-		byte r, byte g, byte b) {
+void draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2,
+		float y2, byte r, byte g, byte b) {
 	
 	// variables
 	float x_max, y_max, x_min, y_min;
@@ -187,16 +185,14 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
  					PutPixel(x, y, r, g, b);
  					pixeltest = 1;
 				}
-			}
-			// done coloring all x's -> break
-			else if(pixeltest == 1)
+			} else if(pixeltest == 1)
+				// done coloring all x's -> break
 				break;
 			
 			// increment the values
 			alpha += (y1-y2);
 			beta += (y2-y0);
 			gamma += (y0-y1);
-			
 		}
 		
 		// get the former values
