@@ -3,14 +3,12 @@
  * Description ..... Implements triangle rasterization
  * Created by ...... Paul Melis
  *
- * Student name ....
- * Student email ...
- * Collegekaart ....
- * Date ............
- * Comments ........
+ * Student names: Tom Peerdeman & Rene Aparicio Saez
+ * Student emails: tom.peerdeman@student.uva.nl & rene.apariciosaez@student.uva.nl
+ * Collegekaart 10266186 & 10214054
+ * Date 08 Feb 2013
  *
  *
- * (always fill in these fields before submitting!!)
  */
 
 #include <stdlib.h>
@@ -141,6 +139,7 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 	float p0_off, p1_off, p2_off;
 	float f12inv, f20inv, f01inv;
 	float buf_a, buf_b, buf_g;
+	float alp, bet, gam;
 	int pixeltest;
 
 	// set boundaries
@@ -165,11 +164,11 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 	p2_off = gammacalc(OFF_X, x0, x1, OFF_Y, y0, y1) * f01;
 
 	// calculate initial alpha
-	alpha = alphacalc(x_min,x1,x2,y_min,y1,y2) * f12inv;
+	alpha = alphacalc(x_min,x1,x2,y_min,y1,y2);
 	// calculate initial beta
-	beta = betacalc(x_min,x0,x2,y_min,y0,y2) * f20inv;
+	beta = betacalc(x_min,x0,x2,y_min,y0,y2);
 	// calculate initial gamma
-	gamma = gammacalc(x_min,x0,x1,y_min,y0,y1) * f01inv;
+	gamma = gammacalc(x_min,x0,x1,y_min,y0,y1);
 
 	for(y=y_min; y <= y_max; y++){
 		// remember former alpha, beta, gamma values
@@ -178,9 +177,13 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 		buf_g = gamma;
 		pixeltest = 0;
 		for(x=x_min; x <= x_max; x++){
-			if(alpha >= 0 && beta >= 0 && gamma >= 0) {
-				if((alpha > 0 || p0_off > 0) && (beta > 0 || p1_off > 0)
-						&& (gamma > 0 || p2_off > 0)) {
+			// multiply here for good results
+			alp = alpha * f12inv;
+			bet = beta * f20inv;
+			gam = gamma * f01inv;
+			if(alp >= 0 && bet >= 0 && gam >= 0) {
+				if((alp > 0 || p0_off > 0) && (bet > 0 || p1_off > 0)
+						&& (gam > 0 || p2_off > 0)) {
  					PutPixel(x, y, r, g, b);
  					pixeltest = 1;
 				}
@@ -190,9 +193,9 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 				break;
 			
 			// increment the values
-			alpha += (y1-y2)*f12inv;
-			beta += (y2-y0)*f20inv;
-			gamma += (y0-y1)*f01inv;
+			alpha += (y1-y2);
+			beta += (y2-y0);
+			gamma += (y0-y1);
 			
 		}
 		
@@ -202,8 +205,8 @@ draw_triangle_optimized(float x0, float y0, float x1, float y1, float x2, float 
 		gamma = buf_g;
 		
 		// increment the values
-		alpha += (x2-x1)*f12inv;
-		beta += (x0-x2)*f20inv;
-		gamma += (x1-x0)*f01inv;
+		alpha += (x2-x1);
+		beta += (x0-x2);
+		gamma += (x1-x0);
 	}
 }
