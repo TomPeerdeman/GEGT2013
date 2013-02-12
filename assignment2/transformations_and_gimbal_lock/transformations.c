@@ -56,7 +56,6 @@ void myTranslatef(GLfloat x, GLfloat y, GLfloat z)
 void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 {
     GLfloat u[3], v[3], w[3], t[3];
-
 		float length, m;
 		float buf[3];
     //
@@ -90,7 +89,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 			t[1] = 1;
 			t[2] = w[2];
 		}
-		else if(w[2] == m){
+		else{
 			t[0] = w[0];
 			t[1] = w[1];
 			t[2] = 1;
@@ -161,7 +160,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     };
 
     // Convert 'angle' to radians
-		angle = angle * (PI/180);
+		angle = angle * (M_PI/180);
 		
     // Specify matrix B
 
