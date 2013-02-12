@@ -69,7 +69,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     
     // normalize w
 		// calculate the length of the vector
-    length = sqrt(w[0]*w[0]) + sqrt(w[1]*w[1]) + sqrt(w[2]*w[2]);
+    length = sqrt(w[0]*w[0] + w[1]*w[1] + w[2]*w[2]);
 
 		// calculate the new normalized values
     w[0] = w[0]/length;
@@ -99,14 +99,14 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     buf[0] = t[1]*w[2] - w[1]*t[2];
     buf[1] = t[2]*w[0] - w[2]*t[0];
     buf[2] = t[0]*w[1] - w[0]*t[1];
-    length = sqrt(buf[0]*buf[0]) + sqrt(buf[1]*buf[1]) + sqrt(buf[2]*buf[2]);
+    length = sqrt(buf[0]*buf[0] + buf[1]*buf[1] + buf[2]*buf[2]);
     u[0] = buf[0]/length;
     u[1] = buf[1]/length;
     u[2] = buf[2]/length;
 
     // Normalize u
 		// calculate the length of the vector
-    length = sqrt(u[0]*u[0]) + sqrt(u[1]*u[1]) + sqrt(u[2]*u[2]);
+    length = sqrt(u[0]*u[0] + u[1]*u[1] + u[2]*u[2]);
 
 		// calculate the new normalized values
     u[0] = u[0]/length;
@@ -117,7 +117,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     buf[0] = w[1]*u[2] - u[1]*w[2];
     buf[1] = w[2]*u[0] - u[2]*w[0];
     buf[2] = w[0]*u[1] - u[0]*w[1];
-    length = sqrt(buf[0]*buf[0]) + sqrt(buf[1]*buf[1]) + sqrt(buf[2]*buf[2]);
+    length = sqrt(buf[0]*buf[0] + buf[1]*buf[1] + buf[2]*buf[2]);
     v[0] = buf[0]/length;
     v[1] = buf[1]/length;
     v[2] = buf[2]/length;
@@ -126,7 +126,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     // not necessary
     // Normalize v
 		// calculate the length of the vector
-		length = sqrt(v[0]*v[0]) + sqrt(v[1]*v[1]) + sqrt(v[2]*v[2]);
+		length = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
 
 		// calculate the new normalized values
     v[0] = v[0]/length;
