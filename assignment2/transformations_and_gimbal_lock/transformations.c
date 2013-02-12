@@ -57,7 +57,8 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 {
     GLfloat u[3], v[3], w[3], t[3];
 
-		float length;
+		float length, m;
+		float buf[3];
     //
     // 1. Create the orthonormal basis
     //
@@ -78,7 +79,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 
     // Compute the value of t, based on w
 		// Get the smallest magnitude from the normalized vector w
-		float m = min(w[0],w[1],w[2]);
+		m = min(w[0],w[1],w[2]);
 		if(w[0] == m){
 			t[0] = 1;
 			t[1] = w[1];
@@ -96,9 +97,13 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 		}
 
     // Compute u = t x w
-    u[0] =t[1]*w[2] - w[1]*t[2];
-    u[1] =t[2]*w[0] - w[2]*t[0];
-    u[2] =t[0]*w[1] - w[0]*t[1];
+    buf[0] = t[1]*w[2] - w[1]*t[2];
+    buf[1] = t[2]*w[0] - w[2]*t[0];
+    buf[2] = t[0]*w[1] - w[0]*t[1];
+    length = sqrt(buf[0]*buf[0]) + sqrt(buf[1]*buf[1]) + sqrt(buf[2]*buf[2]);
+    u[0] = buf[0]/length;
+    u[1] = buf[1]/length;
+    u[2] = buf[2]/length;
 
     // Normalize u
 		// calculate the length of the vector
@@ -130,11 +135,13 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     // If your routine does not seem to work correctly it might be
     // a good idea to the check the vector values.
     
-    // all looking well :)
-    //printf("\nw.u: %lf\n",w[0]*u[0]+w[1]*u[1]+w[2]*u[2]);
-    //printf("w.v: %lf\n",w[0]*v[0]+w[1]*v[1]+w[2]*v[2]);
-    //printf("u.v: %lf\n",u[0]*v[0]+u[1]*v[1]+u[2]*v[2]);
-
+    /* 
+     * all looking well :)
+     * printf("\nw.u: %lf\n",w[0]*u[0]+w[1]*u[1]+w[2]*u[2]);
+     * printf("w.v: %lf\n",w[0]*v[0]+w[1]*v[1]+w[2]*v[2]);
+     * printf("u.v: %lf\n",u[0]*v[0]+u[1]*v[1]+u[2]*v[2]);
+		 */
+		 
     //
     // 2. Set up the three matrices making up the rotation
     //
