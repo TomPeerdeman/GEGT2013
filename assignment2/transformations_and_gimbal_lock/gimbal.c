@@ -11,7 +11,7 @@
  * Comments:
  *
  * Q1.
- *		line contains the following code:
+ *		line 81 to 83 contains the following code:
  * 		glRotatef(rotx, 1.0, 0.0, 0.0);
  *		glRotatef(roty, 0.0, 1.0, 0.0);
  * 		glRotatef(rotz, 0.0, 0.0, 1.0);
