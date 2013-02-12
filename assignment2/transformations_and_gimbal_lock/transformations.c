@@ -78,9 +78,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 
     // Compute the value of t, based on w
 		// Get the smallest magnitude from the normalized vector w
-		printf("wvals: %lf ; %lf ; %lf\n",w[0],w[1],w[2]);
 		float m = min(w[0],w[1],w[2]);
-		printf("min: %lf\n",m);
 		if(w[0] == m){
 			t[0] = 1;
 			t[1] = w[1];
@@ -143,7 +141,6 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 
     // Specify matrix A
 
-		// translate back
     GLfloat A[16] =
     {
         u[0], u[1], u[2], 0.0,
@@ -168,7 +165,6 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 
     // Specify matrix C
 
-		// translate to origin
     GLfloat C[16] =
     {
         u[0], v[0], w[0], 0.0,
