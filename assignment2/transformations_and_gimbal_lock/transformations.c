@@ -192,7 +192,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     glMultMatrixf(C);
 }
 
-// helper function to get the minimum value of three integers and its index
+// helper function to get the minimum value of three values
 // source: https://github.com/TomPeerdeman/GEGT2013/blob/master/assignment1/triangle_rasterization/trirast.c
 // made by: Tom Peerdeman & Rene Aparicio Saez
 float min(float a, float b, float c) {
