@@ -115,9 +115,13 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     u[2] = u[2]/length;
     
     // Compute v = w x u
-    v[0] =w[1]*u[2] - u[1]*w[2];
-    v[1] =w[2]*u[0] - u[2]*w[0];
-    v[2] =w[0]*u[1] - u[0]*w[1];
+    buf[0] = w[1]*u[2] - u[1]*w[2];
+    buf[1] = w[2]*u[0] - u[2]*w[0];
+    buf[2] = w[0]*u[1] - u[0]*w[1];
+    length = sqrt(buf[0]*buf[0]) + sqrt(buf[1]*buf[1]) + sqrt(buf[2]*buf[2]);
+    v[0] = buf[0]/length;
+    v[1] = buf[1]/length;
+    v[2] = buf[2]/length;
     
     /*
     // not necessary
