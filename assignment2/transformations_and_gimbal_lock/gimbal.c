@@ -4,14 +4,31 @@
  * Description ..... Draw teapots that can be interactively rotated with the mouse
  * Created by ...... Paul Melis
  *
- * Student name ....
- * Student email ...
- * Collegekaart ....
- * Date ............
- * Comments ........
+ * Student names: Tom Peerdeman & Rene Aparicio Saez
+ * Student emails: tom.peerdeman@student.uva.nl & rene.apariciosaez@student.uva.nl
+ * Collegekaart 10266186 & 10214054
+ * Date 12 Feb 2013
+ * Comments:
+ *
+ * Q1.
+ *		line contains the following code:
+ * 		glRotatef(rotx, 1.0, 0.0, 0.0);
+ *		glRotatef(roty, 0.0, 1.0, 0.0);
+ * 		glRotatef(rotz, 0.0, 0.0, 1.0);
+ *		this results in a rotation of the form:
+ *
+ * 		RzRyRxp
+ *
+ *		meaning, that the point first rotates in its X-rotation
+ *		followed by its Y-rotation and then its Z-rotation
  *
  *
- * (always fill in these fields before submitting!!)
+ * Q2.
+ *		Because the third teapot is rotated in an angle of 90 degrees accros its
+ *		Y-axis, the Z-axis is moved to the unmovable axis of the teapot.
+ *		The Y-axis was already set to zero, so this axis cannot be moved either.
+ *		Resulting in just one single axis that can still be moved, the X-axis.
+ *
  */
 
 #include <stdio.h>
