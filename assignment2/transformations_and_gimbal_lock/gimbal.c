@@ -102,6 +102,18 @@ void drawTeapots(void)
     glPushMatrix();
 
     drawRotatedTeapot(x_rotation, 0.0, z_rotation);
+    
+    glPopMatrix();
+    glPushMatrix();
+    
+    glTranslatef(5.0, 0.0, 0.0);
+    drawRotatedTeapot(x_rotation, 45, z_rotation);
+    
+    glPopMatrix();
+    glPushMatrix();
+    
+    glTranslatef(10.0, 0.0, 0.0);
+    drawRotatedTeapot(x_rotation, 90, z_rotation);
 
     glPopMatrix();
 }
