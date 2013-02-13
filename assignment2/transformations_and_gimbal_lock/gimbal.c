@@ -149,6 +149,8 @@ void DrawGLScene(void)
 
 void keyPressed(unsigned char key, int x, int y)
 {
+	(void)(x);
+	(void)(y);
     switch(key) {
     case 27:
       glutDestroyWindow(window);
@@ -171,10 +173,6 @@ void keyPressed(unsigned char key, int x, int y)
     }
 
     DrawGLScene();
-    
-    // no more warning!
-    x = 0;
-    y = 0;
 }
 
 void mouseClick(int button, int state, int x, int y)

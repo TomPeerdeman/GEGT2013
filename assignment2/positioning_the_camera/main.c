@@ -15,7 +15,7 @@
 #include <math.h>
 
 int window;
-int useMyLookat=0;
+int useMyLookat=1;
 
 int frame=0;
 int doRotate=1;
@@ -24,7 +24,7 @@ int doScale=1;
 double cameraRotation=0.2;
 double cameraHeight=100;
 double cameraRotationSpeed=0.001;
-double cameraHeightTarget=3;
+double cameraHeightTarget=0;
 
 double speed=0.01;
 
@@ -179,8 +179,11 @@ void DrawGLScene()
 
 void keyPressed(unsigned char key, int x, int y) 
 {
+	(void)(x);
+	(void)(y);
   switch(key) {
     case 27:
+	case 'q':
       glutDestroyWindow(window); 
       exit(0);                   
     case 'r':
@@ -202,6 +205,7 @@ void keyPressed(unsigned char key, int x, int y)
       break;
     default:
       useMyLookat = !useMyLookat;
+	  printf("Use my lookat: %d", useMyLookat);
   }      
 
   glutPostRedisplay();
@@ -209,18 +213,24 @@ void keyPressed(unsigned char key, int x, int y)
 
 void specialKeyPressed(int key, int x, int y) 
 {
+	(void)(x);
+	(void)(y);
   switch(key) {
     case GLUT_KEY_LEFT: 
       cameraRotationSpeed += 0.001;
+	  printf("Rot speed %lf\n", cameraRotationSpeed);
       break;
     case GLUT_KEY_RIGHT: 
       cameraRotationSpeed -= 0.001;
+	  printf("Rot speed %lf\n", cameraRotationSpeed);
       break;
     case GLUT_KEY_UP: 
       cameraHeightTarget += 1;
+	  printf("Height target %lf\n", cameraHeightTarget);
       break;
     case GLUT_KEY_DOWN: 
       cameraHeightTarget -= 1;
+	  printf("Height target %lf\n", cameraHeightTarget);
       break;
   }
 

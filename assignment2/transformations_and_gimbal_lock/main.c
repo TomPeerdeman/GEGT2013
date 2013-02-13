@@ -133,41 +133,39 @@ void DrawGLScene(void)
 
 void keyPressed(unsigned char key, int x, int y)
 {
-  switch(key) {
-    case 27:
-    case 'q':
-      glutDestroyWindow(window);
-      exit(0);
-    case 'r':
-      doRotate = !doRotate;
-      break;
-    case 't':
-      doTranslate = !doTranslate;
-      break;
-    case 's':
-      doScale = !doScale;
-      break;
-    case '+':
-      speed *= 1.1;
-      frame = 0;
-      break;
-    case '-':
-      speed /= 1.1;
-      frame = 0;
-      break;
-    default:
-      useMyTransformations = !useMyTransformations;
-      if (useMyTransformations)
-        glutSetWindowTitle("Your transformations");
-      else
-        glutSetWindowTitle("OpenGL transformations");
-        
-    // no more warning!
-    x = 0;
-    y = 0;
-  }
+	(void)(x);
+	(void)(y);
+	switch(key) {
+		case 27:
+		case 'q':
+			glutDestroyWindow(window);
+			exit(0);
+		case 'r':
+			doRotate = !doRotate;
+			break;
+		case 't':
+			doTranslate = !doTranslate;
+			break;
+		case 's':
+			doScale = !doScale;
+			break;
+		case '+':
+			speed *= 1.1;
+			frame = 0;
+			break;
+		case '-':
+			speed /= 1.1;
+			frame = 0;
+			break;
+		default:
+			useMyTransformations = !useMyTransformations;
+			if (useMyTransformations)
+				glutSetWindowTitle("Your transformations");
+			else
+				glutSetWindowTitle("OpenGL transformations");
+	}
 
-  glutPostRedisplay();
+	glutPostRedisplay();
 }
 
 int main(int argc, char **argv)

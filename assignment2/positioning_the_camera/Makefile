@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=$(shell sdl-config --cflags) -Wall -std=c99 -pedantic-errors
+CFLAGS=$(shell sdl-config --cflags) -Wall -std=c99 -Wextra -Werror-implicit-function-declaration -Wshadow -pedantic-errors
 LDFLAGS=$(shell sdl-config --libs) -L/usr/X11R6/lib -lm -lGL -lGLU -lglut -lXi -lXmu
 #SOURCES=$(shell ls *.c *.c??)
 
