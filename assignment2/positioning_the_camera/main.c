@@ -15,7 +15,7 @@
 #include <math.h>
 
 int window;
-int useMyLookat=1;
+int useMyLookat=0;
 
 int frame=0;
 int doRotate=1;
@@ -24,7 +24,7 @@ int doScale=1;
 double cameraRotation=0.2;
 double cameraHeight=100;
 double cameraRotationSpeed=0.001;
-double cameraHeightTarget=0;
+double cameraHeightTarget=3;
 
 double speed=0.01;
 
