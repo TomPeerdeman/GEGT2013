@@ -161,6 +161,10 @@ void keyPressed(unsigned char key, int x, int y)
         glutSetWindowTitle("Your transformations");
       else
         glutSetWindowTitle("OpenGL transformations");
+        
+    // no more warning!
+    x = 0;
+    y = 0;
   }
 
   glutPostRedisplay();
