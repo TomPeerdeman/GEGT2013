@@ -21,6 +21,31 @@
 #define M_PI           3.14159265358979323846  /* pi */
 #endif
 
+// Calculate the crossproduct of A x B where A and B are vectors in R3
+GLfloat *myCrossProduct(GLfloat *A, GLfloat *B, GLfloat *result) {
+	//a2b3 - a3b2, a3b1 - a1b3, a1b2 - a2b1
+	result[0] = A[1]*B[2] - A[2]*B[1];
+	result[1] = A[2]*B[0] - A[0]*B[2];
+	result[2] = A[0]*B[1] - A[1]*B[0];
+	
+	return result;
+}
+
+// Normalize a vector in R3
+GLfloat *myNormalizeVector(GLfloat *vector) {
+	// calculate the length
+	float length = sqrt(vector[0] * vector[0]
+	                    + vector[1] * vector[1]
+	                    + vector[2] * vector[2]);
+	                    
+	// calculate the new normalized vector
+	vector[0] /= length;
+	vector[1] /= length;
+	vector[2] /= length;
+	
+	return vector;
+}
+
 
 // scaling by setting x,y,z in the diagonals
 void myScalef(GLfloat x, GLfloat y, GLfloat z)
@@ -54,8 +79,8 @@ void myTranslatef(GLfloat x, GLfloat y, GLfloat z)
 void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 {
     GLfloat u[3], v[3], w[3], t[3];
-		float length, m;
-		float buf[3];
+		float m;
+		
     //
     // 1. Create the orthonormal basis
     //
@@ -66,13 +91,7 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
     w[2] = z;
     
     // normalize w
-		// calculate the length of the vector
-    length = sqrt(w[0]*w[0] + w[1]*w[1] + w[2]*w[2]);
-
-		// calculate the new normalized values
-    w[0] = w[0]/length;
-    w[1] = w[1]/length;
-    w[2] = w[2]/length;
+    myNormalizeVector(w);
 
     // Compute the value of t, based on w
 		// Get the smallest magnitude from the normalized vector w
@@ -94,50 +113,25 @@ void myRotatef(GLfloat angle, GLfloat x, GLfloat y, GLfloat z)
 		}
 
     // Compute u = t x w
-    buf[0] = t[1]*w[2] - w[1]*t[2];
-    buf[1] = t[2]*w[0] - w[2]*t[0];
-    buf[2] = t[0]*w[1] - w[0]*t[1];
-    length = sqrt(buf[0]*buf[0] + buf[1]*buf[1] + buf[2]*buf[2]);
-    u[0] = buf[0]/length;
-    u[1] = buf[1]/length;
-    u[2] = buf[2]/length;
+		// get the crossproduct
+    myCrossProduct(t, w, u);
 
     // Normalize u
 		// calculate the length of the vector
-    length = sqrt(u[0]*u[0] + u[1]*u[1] + u[2]*u[2]);
-
-		// calculate the new normalized values
-    u[0] = u[0]/length;
-    u[1] = u[1]/length;
-    u[2] = u[2]/length;
+		myNormalizeVector(u);
     
     // Compute v = w x u
-    buf[0] = w[1]*u[2] - u[1]*w[2];
-    buf[1] = w[2]*u[0] - u[2]*w[0];
-    buf[2] = w[0]*u[1] - u[0]*w[1];
-    length = sqrt(buf[0]*buf[0] + buf[1]*buf[1] + buf[2]*buf[2]);
-    v[0] = buf[0]/length;
-    v[1] = buf[1]/length;
-    v[2] = buf[2]/length;
-    
-    /*
-    // not necessary
-    // Normalize v
-		// calculate the length of the vector
-		length = sqrt(v[0]*v[0] + v[1]*v[1] + v[2]*v[2]);
-
-		// calculate the new normalized values
-    v[0] = v[0]/length;
-    v[1] = v[1]/length;
-    v[2] = v[2]/length;
-    */
+    // get the crossproduct
+    myCrossProduct(w, u, v);
+		
+		// NOTE: because w and u are normalized, v is also normalized.
 
     // At this point u, v and w should form an orthonormal basis.
     // If your routine does not seem to work correctly it might be
     // a good idea to the check the vector values.
     
     /* 
-     * all looking well :)
+     * all looking well, they all return 0
      * printf("\nw.u: %lf\n",w[0]*u[0]+w[1]*u[1]+w[2]*u[2]);
      * printf("w.v: %lf\n",w[0]*v[0]+w[1]*v[1]+w[2]*v[2]);
      * printf("u.v: %lf\n",u[0]*v[0]+u[1]*v[1]+u[2]*v[2]);
