@@ -17,6 +17,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <math.h>
+#include <stdio.h>
 
  
 /* ANSI C/ISO C89 does not specify this constant (?) */
@@ -38,6 +39,7 @@ void myTranslatef(GLfloat x, GLfloat y, GLfloat z){
 
 // Calculate the crossproduct of A x B where A and B are vectors in R3
 GLfloat *crossProduct(GLfloat *A, GLfloat *B, GLfloat *result) {
+	//a2b3 - a3b2, a3b1 - a1b3, a1b2 - a2b1
 	result[0] = A[1]*B[2] - A[2]*B[1];
 	result[1] = A[2]*B[0] - A[0]*B[2];
 	result[2] = A[0]*B[1] - A[1]*B[0];
@@ -69,28 +71,56 @@ void myLookAt(GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ,
 	GLfloat up[3] = {upX, upY, upZ};
 	
 	// cz is the vector Pcamera to Plookat
-	cz[0] = centerX - eyeX;
-	cz[1] = centerY - eyeY;
-	cz[2] = centerZ - eyeZ;
+	// cz[0] = centerX - eyeX;
+	// cz[1] = centerY - eyeY;
+	// cz[2] = centerZ - eyeZ;
+
+	cz[0] = eyeX - centerX;
+	cz[1] = eyeY - centerY;
+	cz[2] = eyeZ - centerZ;
 	
 	// Normalize cz
 	normalizeVector(cz);
 	
+	printf("cz: {%f, %f, %f}\n", cz[0], cz[1], cz[2]);
+	
 	// cy = up x cz
-	crossProduct(up, cz, cy);
+	//crossProduct(up, cz, cy);
+
+	// cx = up x cz
+	crossProduct(up, cz, cx);
 	
 	// Normalize cy
+	normalizeVector(cx);
+	
+	printf("cy: {%f, %f, %f}\n", cy[0], cy[1], cy[2]);
+	
+	// cx = cz x cy
+	crossProduct(cz, cx, cy);
+	
 	normalizeVector(cy);
 	
-	// cx = cy x cz
-	crossProduct(cy, cz, cx);
-	
+	// GLfloat RT[16] = {
+		// cx[0], cx[1], -cx[2], 0,
+		// cy[0], cy[1], -cy[2], 0,
+		// cz[0], cz[1], -cz[2], 0,
+		// 0    , 0    , 0     , 1
+	// };
+
 	GLfloat RT[16] = {
-		cx[0], cx[1], -cx[2], 0,
-		cy[0], cy[1], -cy[2], 0,
-		cz[0], cz[1], -cz[2], 0,
+		cx[0], cx[1], cx[2], 0,
+		cy[0], cy[1], cy[2], 0,
+		cz[0], cz[1], cz[2], 0,
 		0    , 0    , 0     , 1
 	};
+
+	// GLfloat RT[16] = {
+		// cx[0], cy[0], cz[0], 0,
+		// cx[1], cy[1], cz[1], 0,
+		// -cx[2], -cy[2], -cz[2], 0,
+		// 0    , 0    , 0     , 1
+	// };
 	
+	glTranslatef(-eyeX, -eyeY, -eyeZ);
 	glMultMatrixf(RT);
 }
