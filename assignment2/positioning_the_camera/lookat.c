@@ -32,7 +32,7 @@ GLdouble *crossProduct(GLdouble *A, GLdouble *B, GLdouble *result) {
 
 // Normalize a vector in R3
 GLdouble *normalizeVector(GLdouble *vector) {
-	float length = sqrt(vector[0] * vector[0]
+	double length = sqrt(vector[0] * vector[0]
 	                    + vector[1] * vector[1]
 	                    + vector[2] * vector[2]);
 	vector[0] /= length;
