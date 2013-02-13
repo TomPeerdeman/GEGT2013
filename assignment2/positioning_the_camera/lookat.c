@@ -4,21 +4,16 @@
  * Description ..... Contains the re-programmed lookAt function
  * Created by ...... Jurgen Sturm 
  *
- * Student name ....
- * Student email ... 
- * Collegekaart ....
- * Date ............
- * Comments ........
+ * Student names: Tom Peerdeman & Rene Aparicio Saez
+ * Student emails: tom.peerdeman@student.uva.nl & rene.apariciosaez@student.uva.nl
+ * Collegekaart 10266186 & 10214054
+ * Date 13 Feb 2013
  *
- *
- * (always fill in these fields before submitting!!)
  */
 #include <GL/glut.h>   
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <math.h>
-#include <stdio.h>
-
  
 /* ANSI C/ISO C89 does not specify this constant (?) */
 #ifndef M_PI
@@ -47,6 +42,7 @@ GLdouble *normalizeVector(GLdouble *vector) {
 	return vector;
 }
 
+// Calculate the inproduct of vector A and B in R3
 GLdouble inProduct(GLdouble *A, GLdouble *B) {
 	return A[0]*B[0] + A[1]*B[1] + A[2]*B[2];
 }
@@ -54,19 +50,15 @@ GLdouble inProduct(GLdouble *A, GLdouble *B) {
 void myLookAt(GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ,
 	          GLdouble centerX, GLdouble centerY, GLdouble centerZ,
 	          GLdouble upX, GLdouble upY, GLdouble upZ) {
-	//glTranslatef(-eyeX, -eyeY, -eyeZ);
 	
 	GLdouble cz[3];
 	GLdouble cy[3];
 	GLdouble cx[3];
 	
 	GLdouble up[3] = {upX, upY, upZ};
+	GLdouble minEye[3] = {-eyeX, -eyeY, -eyeZ};
 	
 	// cz is the vector Pcamera to Plookat
-	// cz[0] = centerX - eyeX;
-	// cz[1] = centerY - eyeY;
-	// cz[2] = centerZ - eyeZ;
-
 	cz[0] = eyeX - centerX;
 	cz[1] = eyeY - centerY;
 	cz[2] = eyeZ - centerZ;
@@ -74,33 +66,14 @@ void myLookAt(GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ,
 	// Normalize cz
 	normalizeVector(cz);
 	
-	// cy = up x cz
-	//crossProduct(up, cz, cy);
-
 	// cx = up x cz
 	crossProduct(up, cz, cx);
 	
 	// Normalize cy
 	normalizeVector(cx);
 	
-	// cx = cz x cy
+	// cy = cz x cx
 	crossProduct(cz, cx, cy);
-	
-	normalizeVector(cy);
-	
-	// GLfloat RT[16] = {
-		// cx[0], cx[1], -cx[2], 0,
-		// cy[0], cy[1], -cy[2], 0,
-		// cz[0], cz[1], -cz[2], 0,
-		// 0    , 0    , 0     , 1
-	// };
-
-	// GLfloat RT[16] = {
-		// cx[0], cx[1], cx[2], 0,
-		// cy[0], cy[1], cy[2], 0,
-		// cz[0], cz[1], cz[2], 0,
-		// 0    , 0    , 0    , 1
-	// };
 
 	GLfloat RT[16] = {
 		cx[0], cy[0], cz[0], 0,
@@ -109,8 +82,7 @@ void myLookAt(GLdouble eyeX, GLdouble eyeY, GLdouble eyeZ,
 		0    , 0    , 0    , 1
 	};
 	
-	GLdouble minEye[3] = {-eyeX, -eyeY, -eyeZ};
-	
-	glTranslatef(inProduct(minEye, cx), inProduct(minEye, cy), inProduct(minEye, cz));
+	glTranslatef(inProduct(minEye, cx), inProduct(minEye, cy), 
+			inProduct(minEye, cz));
 	glMultMatrixf(RT);
 }
