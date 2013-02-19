@@ -29,9 +29,7 @@ float factorial(int fact){
 		for(int i = 1; i < fact; i++){
 			returnVal *= (i+1);
 		}
-	}
-	printf("returnval: %lf of factorial: %d\n",returnVal, fact);
-	
+	}	
 	return returnVal;
 }
 
