@@ -42,6 +42,13 @@ float binomial(int n, int k){
 	return u;
 }
 
+float bernstein(int n, int i, int u){
+	float bernVal, bin;
+	bin = binomial(n, i);
+	bernVal = bin*pow(u,i)*pow((1-u),(n-i));
+	return bernVal
+}
+
 /* Given a Bezier curve defined by the 'num_points' control points
  * in 'p' compute the position of the point on the curve for parameter
  * value 'u'.
