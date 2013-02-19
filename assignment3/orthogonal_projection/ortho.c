@@ -5,11 +5,11 @@
  * Date ............ 01.09.2006
  * Created by ...... Jurgen Sturm 
  *
- * Student name ....
- * Student email ... 
- * Collegekaart ....
- * Date ............
- * Comments ........
+ *
+ * Student names: Tom Peerdeman & Rene Aparicio Saez
+ * Student emails: tom.peerdeman@student.uva.nl & rene.apariciosaez@student.uva.nl
+ * Collegekaart 10266186 & 10214054
+ * Date 18 Feb 2013
  *
  *
  * (always fill in these fields before submitting!!)

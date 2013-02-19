@@ -4,11 +4,11 @@
  * Date ............ 22.07.2009
  * Created by ...... Paul Melis
  *
- * Student name ....
- * Student email ...
- * Collegekaart ....
- * Date ............
- * Comments ........
+ *
+ * Student names: Tom Peerdeman & Rene Aparicio Saez
+ * Student emails: tom.peerdeman@student.uva.nl & rene.apariciosaez@student.uva.nl
+ * Collegekaart 10266186 & 10214054
+ * Date 18 Feb 2013
  *
  *
  * (always fill in these fields before submitting!!)
@@ -57,9 +57,8 @@ float bernstein(int n, int i, float u){
  * respectively.
  */
 
-void
-evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, float u)
-{
+void evaluate_bezier_curve(float *x, float *y, control_point p[], 
+				int num_points, float u){
 	float bs;
 	*x = 0.0;
 	*y = 0.0;
@@ -75,14 +74,7 @@ evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, flo
  * will contain 'num_points' points.
  *
  * Draw the line segments you compute directly on the screen
- * as a single GL_LINE_STRIP. This is as simple as using
- *
- *      glBegin(GL_LINE_STRIP);
- *      glVertex2f(..., ...);
- *      ...
- *      glEnd();
- *
- * DO NOT SET ANY COLOR!
+ * as a single GL_LINE_STRIP.
  *
  * The 'num_segments' parameter determines the "discretization" of the Bezier
  * curve and is the number of straight line segments that should be used
@@ -92,9 +84,7 @@ evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, flo
  * the curve.
  */
 
-void
-draw_bezier_curve(int num_segments, control_point p[], int num_points)
-{
+void draw_bezier_curve(int num_segments, control_point p[], int num_points){
 		float x, y;
 		float u = 0;
 		float uInc = 1.0 / num_segments;
@@ -115,9 +105,7 @@ draw_bezier_curve(int num_segments, control_point p[], int num_points)
    Return 0 if no intersection exists.
 */
 
-int
-intersect_cubic_bezier_curve(float *liney, control_point p[], float linex)
-{
+int intersect_cubic_bezier_curve(float *liney, control_point p[], float linex){
 	if(linex >= p[0].x && linex <= p[3].x) {
 		float x, y, d;
 		for(float u = 0.0; u <= 1.0; u += 0.001){
@@ -132,6 +120,6 @@ intersect_cubic_bezier_curve(float *liney, control_point p[], float linex)
 			}
 		}
 	}
-    return 0;
+	return 0;
 }
 
