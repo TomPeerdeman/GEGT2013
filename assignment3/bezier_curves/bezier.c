@@ -18,7 +18,6 @@
 #include "bezier.h"
 #include <stdio.h>
 
-
 // Helper function, given an integer value, calculate its factorial value
 float factorial(int fact){
 	float returnVal;
@@ -46,7 +45,7 @@ float bernstein(int n, int i, int u){
 	float bernVal, bin;
 	bin = binomial(n, i);
 	bernVal = bin*pow(u,i)*pow((1-u),(n-i));
-	return bernVal
+	return bernVal;
 }
 
 /* Given a Bezier curve defined by the 'num_points' control points
@@ -60,8 +59,14 @@ float bernstein(int n, int i, int u){
 void
 evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, float u)
 {
-    *x = 0.0;
-    *y = 0.0;
+	*x = 0.0;
+	*y = 0.0;
+
+	for(int i = 0; i < num_points; i++) {
+		float bs = bernstein(num_points, i, u);
+		*x += bs * p[i].x;
+		*y += bs * p[i].y;
+	}
 }
 
 /* Draw a Bezier curve defined by the control points in p[], which
@@ -88,10 +93,16 @@ evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, flo
 void
 draw_bezier_curve(int num_segments, control_point p[], int num_points)
 {
-		float* x,y;
+		float *x, *y;
 		float u = 0;
-
-		evaluate_bezier_curve(&x,&y,p,num_points,u);
+		float uInc = 1.0 / num_segments;
+		
+		glBegin(GL_LINE_STRIP);
+		for(int i = 0; i < num_segments; i++, u += uInc) {
+			evaluate_bezier_curve(x,y,p,num_points,u);
+			glVertex2f(*x, *y);
+		}
+		glEnd();
 }
 
 /* Find the intersection of a cubic Bezier curve with the line X=x.
