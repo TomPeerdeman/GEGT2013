@@ -94,14 +94,14 @@ evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, flo
 void
 draw_bezier_curve(int num_segments, control_point p[], int num_points)
 {
-		float *x, *y;
+		float x, y;
 		float u = 0;
 		float uInc = 1.0 / num_segments;
 		
 		glBegin(GL_LINE_STRIP);
 		for(int i = 0; i < num_segments; i++, u += uInc) {
-			evaluate_bezier_curve(x,y,p,num_points,u);
-			glVertex2f(*x, *y);
+			evaluate_bezier_curve(&x,&y,p,num_points,u);
+			glVertex2f(x, y);
 		}
 		glEnd();
 }
