@@ -14,7 +14,7 @@
  *
  * (always fill in these fields before submitting!!)
  */
-#include <GL/glut.h>   
+#include <GL/glut.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <stdio.h>
