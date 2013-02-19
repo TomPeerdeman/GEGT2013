@@ -85,18 +85,18 @@ void evaluate_bezier_curve(float *x, float *y, control_point p[],
  */
 
 void draw_bezier_curve(int num_segments, control_point p[], int num_points){
-		float x, y;
-		float u = 0;
-		float uInc = 1.0 / num_segments;
-		
-		glBegin(GL_LINE_STRIP);
-		for(int i = 0; i <= num_segments; i++, u += uInc) {
-			x = 0.0;
-			y = 0.0;
-			evaluate_bezier_curve(&x,&y,p,num_points,u);
-			glVertex2f(x, y);
-		}
-		glEnd();
+	float x, y;
+	float u = 0;
+	float uInc = 1.0 / num_segments;
+	
+	glBegin(GL_LINE_STRIP);
+	for(int i = 0; i <= num_segments; i++, u += uInc) {
+		x = 0.0;
+		y = 0.0;
+		evaluate_bezier_curve(&x,&y,p,num_points,u);
+		glVertex2f(x, y);
+	}
+	glEnd();
 }
 
 /* Find the intersection of a cubic Bezier curve with the line X=x.
