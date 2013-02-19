@@ -118,8 +118,22 @@ draw_bezier_curve(int num_segments, control_point p[], int num_points)
 */
 
 int
-intersect_cubic_bezier_curve(float *y, control_point p[], float x)
+intersect_cubic_bezier_curve(float *liney, control_point p[], float linex)
 {
+	if(linex >= p[0].x && linex <= p[3].x) {
+		float x, y, d;
+		for(float u = 0.0; u <= 1.0; u += 0.001){
+			x = 0;
+			y = 0;
+			evaluate_bezier_curve(&x, &y, p, 4, u);
+			
+			d = linex - x;
+			if(d <= 0.001 && d >= -0.001){
+				*liney = y;
+				return 1;
+			}
+		}
+	}
     return 0;
 }
 
