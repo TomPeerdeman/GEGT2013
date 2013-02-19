@@ -18,6 +18,32 @@
 #include "bezier.h"
 #include <stdio.h>
 
+
+// Helper function, given an integer value, calculate its factorial value
+float factorial(int fact){
+	float returnVal;
+	if(fact == 0)
+		returnVal = 1;
+	else{
+		returnVal = 1;
+		for(int i = 1; i < fact; i++){
+			returnVal *= (i+1);
+		}
+	}
+	printf("returnval: %lf of factorial: %d\n",returnVal, fact);
+	
+	return returnVal;
+}
+
+// helper function, given n and k calculate its binomial distribution
+float binomial(int n, int k){
+	float factn = factorial(n);
+	float factk = factorial(k);
+	float factnmink = factorial(n-k);
+	float u = factn/(factk*factnmink);
+	return u;
+}
+
 /* Given a Bezier curve defined by the 'num_points' control points
  * in 'p' compute the position of the point on the curve for parameter
  * value 'u'.
@@ -57,6 +83,10 @@ evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, flo
 void
 draw_bezier_curve(int num_segments, control_point p[], int num_points)
 {
+		float* x,y;
+		float u = 0;
+
+		evaluate_bezier_curve(&x,&y,p,num_points,u);
 }
 
 /* Find the intersection of a cubic Bezier curve with the line X=x.
