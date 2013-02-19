@@ -41,7 +41,7 @@ float binomial(int n, int k){
 	return u;
 }
 
-float bernstein(int n, int i, int u){
+float bernstein(int n, int i, float u){
 	float bernVal, bin;
 	bin = binomial(n, i);
 	bernVal = bin*pow(u,i)*pow((1-u),(n-i));
@@ -67,6 +67,7 @@ evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, flo
 		bs = bernstein(num_points, i, u);
 		*x += bs * p[i].x;
 		*y += bs * p[i].y;
+		//printf("\t%d bs %f x %f y %f\n", i, bs, *x, *y);
 	}
 }
 
@@ -100,7 +101,10 @@ draw_bezier_curve(int num_segments, control_point p[], int num_points)
 		
 		glBegin(GL_LINE_STRIP);
 		for(int i = 0; i < num_segments; i++, u += uInc) {
+			x = 0.0;
+			y = 0.0;
 			evaluate_bezier_curve(&x,&y,p,num_points,u);
+			//printf("%d x %lf, y %lf u %lf\n", i, x, y, u);
 			glVertex2f(x, y);
 		}
 		glEnd();
