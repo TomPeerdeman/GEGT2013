@@ -59,11 +59,12 @@ float bernstein(int n, int i, int u){
 void
 evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, float u)
 {
+	float bs;
 	*x = 0.0;
 	*y = 0.0;
 
 	for(int i = 0; i < num_points; i++) {
-		float bs = bernstein(num_points, i, u);
+		bs = bernstein(num_points, i, u);
 		*x += bs * p[i].x;
 		*y += bs * p[i].y;
 	}
