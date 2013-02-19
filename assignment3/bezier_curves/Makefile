@@ -2,13 +2,14 @@ CC=gcc
 CXX=g++
 
 #BULLET=./bullet32
-BULLET=./bullet64
+#BULLET=./bullet64
 #BULLET=./bullet64MAC
+BULLET=/home/tom/bullet-2.81-rev2613
 
 WARNING_FLAGS=-Wall -Wextra -Werror-implicit-function-declaration -Wshadow -Wstrict-prototypes -pedantic
 CFLAGS=-g -O2 -std=c99 $(WARNING_FLAGS) -fno-strict-aliasing
-CXXFLAGS=-g -O2 -W -Wall -I${BULLET}/include
-LDFLAGS=-g -lGL -lglut -lGLU -L${BULLET}/lib
+CXXFLAGS=-g -O2 -W -Wall -I$(BULLET)/src
+LDFLAGS=-lGL -lglut -lGLU
 LIBS=-lBulletDynamics -lBulletCollision -lLinearMath
 
 .c.o:
@@ -18,9 +19,9 @@ LIBS=-lBulletDynamics -lBulletCollision -lLinearMath
 
 all: singlecurve multicurve
 singlecurve: singlecurve.o bezier.o
-	$(CC) $(LDFLAGS) -o singlecurve singlecurve.o bezier.o
+	$(CC) -o singlecurve singlecurve.o bezier.o $(LDFLAGS)
 multicurve: multicurve.o bezier.o v3math.o plymodel.o rply.o physics.o
-	$(CXX) $(LDFLAGS) -o multicurve multicurve.o bezier.o v3math.o plymodel.o rply.o physics.o $(LIBS)
+	$(CXX) -g -o multicurve multicurve.o bezier.o v3math.o plymodel.o rply.o physics.o  $(LDFLAGS) -L$(BULLET)/src/.libs $(LIBS)
 
 clean:
 	rm -f *.o
