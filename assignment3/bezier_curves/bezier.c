@@ -45,6 +45,7 @@ float bernstein(int n, int i, float u){
 	float bernVal, bin;
 	bin = binomial(n, i);
 	bernVal = bin*pow(u,i)*pow((1-u),(n-i));
+	//printf("Bern(%d, %d) %f %f %f, i-u %f n-i %d\n", n, i, bin, pow(u,i), pow((1-u),(n-i)), (1-u), (n-i));
 	return bernVal;
 }
 
@@ -64,10 +65,10 @@ evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, flo
 	*y = 0.0;
 
 	for(int i = 0; i < num_points; i++) {
-		bs = bernstein(num_points, i, u);
+		bs = bernstein(num_points - 1, i, u);
 		*x += bs * p[i].x;
 		*y += bs * p[i].y;
-		//printf("\t%d bs %f x %f y %f\n", i, bs, *x, *y);
+		//printf("\t%d bs %f x %f y %f px %f py %f\n", i, bs, *x, *y, p[i].x, p[i].y);
 	}
 }
 
@@ -100,11 +101,11 @@ draw_bezier_curve(int num_segments, control_point p[], int num_points)
 		float uInc = 1.0 / num_segments;
 		
 		glBegin(GL_LINE_STRIP);
-		for(int i = 0; i < num_segments; i++, u += uInc) {
+		for(int i = 0; i <= num_segments; i++, u += uInc) {
 			x = 0.0;
 			y = 0.0;
 			evaluate_bezier_curve(&x,&y,p,num_points,u);
-			//printf("%d x %lf, y %lf u %lf\n", i, x, y, u);
+			//printf("%d x %lf, y %lf u %lf\n\n", i, x, y, u);
 			glVertex2f(x, y);
 		}
 		glEnd();
