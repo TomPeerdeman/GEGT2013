@@ -46,7 +46,7 @@ float bernstein(int n, int i, int u){
 	float bernVal, bin;
 	bin = binomial(n, i);
 	bernVal = bin*pow(u,i)*pow((1-u),(n-i));
-	return bernVal
+	return bernVal;
 }
 
 /* Given a Bezier curve defined by the 'num_points' control points
@@ -60,8 +60,16 @@ float bernstein(int n, int i, int u){
 void
 evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, float u)
 {
+		float bs;
     *x = 0.0;
     *y = 0.0;
+
+		for(int i=0; i<num_points; i++){
+			bs = bernstein(num_points, i , u);
+		  *x += bs*p[i].x;
+		  *y += bs*p[i].y;			
+		}
+
 }
 
 /* Draw a Bezier curve defined by the control points in p[], which
