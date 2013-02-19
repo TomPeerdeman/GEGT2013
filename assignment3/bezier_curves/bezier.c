@@ -41,11 +41,11 @@ float binomial(int n, int k){
 	return u;
 }
 
+// helper function, calculate the Bernstein polynomial value for point u
 float bernstein(int n, int i, float u){
 	float bernVal, bin;
 	bin = binomial(n, i);
 	bernVal = bin*pow(u,i)*pow((1-u),(n-i));
-	//printf("Bern(%d, %d) %f %f %f, i-u %f n-i %d\n", n, i, bin, pow(u,i), pow((1-u),(n-i)), (1-u), (n-i));
 	return bernVal;
 }
 
@@ -68,7 +68,6 @@ evaluate_bezier_curve(float *x, float *y, control_point p[], int num_points, flo
 		bs = bernstein(num_points - 1, i, u);
 		*x += bs * p[i].x;
 		*y += bs * p[i].y;
-		//printf("\t%d bs %f x %f y %f px %f py %f\n", i, bs, *x, *y, p[i].x, p[i].y);
 	}
 }
 
@@ -105,7 +104,6 @@ draw_bezier_curve(int num_segments, control_point p[], int num_points)
 			x = 0.0;
 			y = 0.0;
 			evaluate_bezier_curve(&x,&y,p,num_points,u);
-			//printf("%d x %lf, y %lf u %lf\n\n", i, x, y, u);
 			glVertex2f(x, y);
 		}
 		glEnd();
