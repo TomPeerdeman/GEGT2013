@@ -36,7 +36,32 @@ shade_constant(intersection_point ip)
 vec3
 shade_matte(intersection_point ip)
 {
-    return v3_create(1, 0, 0);
+    // setup variables that will hold the dotproduct and intensity values
+    float ndotli;
+    // setup variable that will store the color that should be returned
+    float color = 0.0;
+    // setup the vector variable that will hold the vector from the
+    // intersection to the light source
+    vec3 li;
+    // loop over all the light sources
+    for(int i = 0; i < scene_num_lights; i++){
+        // get the intensity of the light source
+        // calculate the vector from the intersection point to the light source
+        li = v3_subtract(scene_lights[i].position,ip.p);
+        // normalize the vector, might be unnecessary?
+        li = v3_normalize(li);
+        
+        // calculate the dotproduct between the normal vector and the vector
+        // towards the light source
+        ndotli = v3_dotprod(ip.n, li);
+        // add the found value to total color if the value is positive
+        if(ndotli > 0.0)
+            color += (scene_ambient_light + scene_lights[i].intensity*ndotli);
+        else
+            color += scene_ambient_light;
+    }
+    // return the proper color, each component must be between [0,1]
+    return v3_create(color,color,color);
 }
 
 vec3
