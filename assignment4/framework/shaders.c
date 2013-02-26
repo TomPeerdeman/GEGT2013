@@ -51,14 +51,19 @@ shade_matte(intersection_point ip)
         // normalize the vector, might be unnecessary?
         li = v3_normalize(li);
         
-        // calculate the dotproduct between the normal vector and the vector
-        // towards the light source
-        ndotli = v3_dotprod(ip.n, li);
-        // add the found value to total color if the value is positive
-        if(ndotli > 0.0)
-            color += (scene_ambient_light + scene_lights[i].intensity*ndotli);
-        else
-            color += scene_ambient_light;
+        // check for shadow, use a small offset to fix self-shading
+        // continue of the point is not a shadow
+        if(!shadow_check(v3_add(ip.p, v3_create(0.1,0.1,0.1)), li)){
+            // calculate the dotproduct between the normal vector and the
+            // vector towards the light source
+            ndotli = v3_dotprod(ip.n, li);
+            // add the found value to total color if the value is positive
+            if(ndotli > 0.0)
+                color += (scene_ambient_light
+                        + scene_lights[i].intensity*ndotli);
+            else
+                color += scene_ambient_light;
+        }
     }
     // return the proper color, each component must be between [0,1]
     return v3_create(color,color,color);
