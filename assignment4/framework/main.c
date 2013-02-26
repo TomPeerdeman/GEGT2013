@@ -184,20 +184,47 @@ ray_trace(void)
     image_plane_height = 2.0 * tan(0.5*VFOV/180*M_PI);
     image_plane_width = image_plane_height * (1.0 * framebuffer_width / framebuffer_height);
 
-    // ...
-    // ...
-    // ...
-
+    // create values that define the edges of the screen.
+    // top, right, bottom, left => t, r, b, l
+    float t = -image_plane_height/2.0;
+    float r = image_plane_width/2.0;
+    float b = image_plane_height/2.0;
+    float l = -image_plane_width/2.0;
+    
+    // setup floats that will hold the components of the vector.
+    float v2, v3;
+    // setup the a vector that will hold the direction of the ray
+    // also setup a vector that will hold the calculated value
+    // of the outer loop
+    vec3 ray, ray_buf;
+    
     // Loop over all pixels in the framebuffer
     for (j = 0; j < framebuffer_height; j++)
     {
+        // v1 can be set to 1 and then multiplied by the forward_vector
+				// this will result in the forward_vector
+				// vec3 v1_mult = forward_vector;
+				
+    		// calculate v3 and v3_mult here, i does not change its value
+    		// recalculating this inside the next for-loop is pointless
+        v3 = b + ((t-b)*(j+0.5)/framebuffer_height);
+        vec3 v3_mult  = v3_multiply(up_vector, v3);
+        
+        // v1_mult and v3_mult can be added here, to save time
+        ray_buf = v3_add(forward_vector, v3_mult);
         for (i = 0; i < framebuffer_width; i++)
         {
-            // ...
-            // ...
-            // ...
+            v2 = l + ((r-l)*(i+0.5)/framebuffer_width);
 
-            // Output pixel color
+            // the ray is made up out of three parts, each part going in either
+            // the up, the right or the forward way. The values have to be
+            // multiplied in the correct way, then they can be added to form
+            // the correct vector of the ray.
+            vec3 v2_mult  = v3_multiply(right_vector, v2);
+            ray = v3_add(ray_buf, v2_mult);
+
+            // show the right color from this camera position.
+            color = ray_color(0, scene_camera_position, ray);
             put_pixel(i, j, color.x, color.y, color.z);
         }
 
