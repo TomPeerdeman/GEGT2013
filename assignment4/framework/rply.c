@@ -520,7 +520,7 @@ int ply_write_header(p_ply ply) {
         p_ply_element element = &ply->element[i];
         assert(element->property || element->nproperties == 0); 
         assert(!element->property || element->nproperties > 0); 
-        if (fprintf(ply->fp, "element %s %ld\n", element->name, 
+        if (fprintf(ply->fp, "element %s %d\n", element->name, 
                     element->ninstances) <= 0) goto error;
         for (j = 0; j < element->nproperties; j++) {
             p_ply_property property = &element->property[j];
@@ -1147,7 +1147,7 @@ static int ply_read_header_element(p_ply ply) {
     strcpy(element->name, BWORD(ply));
     /* get number of elements of this type */
     if (!ply_read_word(ply)) return 0;
-    if (sscanf(BWORD(ply), "%ld", &dummy) != 1) {
+    if (sscanf(BWORD(ply), "%d", &dummy) != 1) {
         ply_error(ply, "Expected number got '%s'", BWORD(ply));
         return 0;
     }

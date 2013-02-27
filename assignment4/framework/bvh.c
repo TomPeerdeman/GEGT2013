@@ -191,13 +191,12 @@ partition_on_split_value(int *num_triangles_left, int *num_triangles_right,
                 // Correct the triangle count in this case, as we included
                 // the triangle on the right initially, while it is actually
                 // on the left of the split plane
-                *num_triangles_left++;
-                *num_triangles_right--;
+               // *num_triangles_left++;
+               // *num_triangles_right--;
             }
 
         }
     }
-
 }
 
 // Recursively subdivide triangles into two groups, by determining

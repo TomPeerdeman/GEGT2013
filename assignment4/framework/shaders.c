@@ -31,6 +31,7 @@
 vec3
 shade_constant(intersection_point ip)
 {
+	(void)(ip);
     return v3_create(1, 0, 0);
 }
 
