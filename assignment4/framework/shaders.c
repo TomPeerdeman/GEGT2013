@@ -129,9 +129,11 @@ shade_reflection(intersection_point ip)
 {
     vec3 r = v3_subtract(v3_multiply(v3_multiply(ip.n,v3_dotprod(ip.i,ip.n)),2),ip.i);
     ip.ray_level++;
-    vec3 color = ray_color(ip.ray_level, ip.p,r);
+    vec3 color = ray_color(ip.ray_level, v3_add(ip.p, v3_create(0.1,0.1,0.1)),r);
     vec3 color_matte = shade_matte(ip);
-    return v3_add(v3_multiply(color,0.25),v3_multiply(color_matte,0.75));
+    if(color.x < 1.0 && color.y < 1.0 && color.z < 1.0)
+        return v3_add(v3_multiply(color,0.25),v3_multiply(color_matte,0.75));
+    return color_matte;
 }
 
 // Returns the shaded color for the given point to shade.
