@@ -20,6 +20,7 @@
 #include "scene.h"
 #include "quat.h"
 #include "constants.h"
+#define C_SHADOW v3_create(0.001,0.001,0.001)
 
 // shade_constant()
 //
@@ -54,7 +55,7 @@ shade_matte(intersection_point ip)
         
         // check for shadow, use a small offset to fix self-shading
         // continue of the point is not a shadow
-        if(!shadow_check(v3_add(ip.p, v3_create(0.1,0.1,0.1)), li)){
+        if(!shadow_check(v3_add(ip.p, C_SHADOW), li)){
             // calculate the dotproduct between the normal vector and the
             // vector towards the light source
             ndotli = v3_dotprod(ip.n, li);
@@ -101,7 +102,7 @@ shade_blinn_phong(intersection_point ip)
         
         // check for shadow, use a small offset to fix self-shading
         // continue of the point is not a shadow
-        if(!shadow_check(v3_add(ip.p, v3_create(0.1,0.1,0.1)), li)){
+        if(!shadow_check(v3_add(ip.p, C_SHADOW), li)){
             // calculate the dotproduct between the normal vector and the
             // vector towards the light source
             ndotli = v3_dotprod(ip.n, li);
@@ -140,7 +141,7 @@ shade_reflection(intersection_point ip)
     // get the color from the reflection direction, add a small value to the
     // current point p to make sure self-shadowing does not occur
     vec3 color = ray_color(ip.ray_level, v3_add(
-                                             ip.p, v3_create(0.1,0.1,0.1)
+                                             ip.p, C_SHADOW
                                          ),r);
     // get the color from the matte shading
     vec3 color_matte = shade_matte(ip);

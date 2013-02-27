@@ -118,9 +118,9 @@ put_pixel(int x, int y, float r, float g, float b)
 void
 setup_camera(void)
 {
-    float	cx, cy, cz;
-    float	t;
-    float 	beta, gamma;
+    float    cx, cy, cz;
+    float    t;
+    float     beta, gamma;
 
     // degrees -> radians
     beta = camAzimuth / 180.0 * M_PI;
@@ -132,14 +132,14 @@ setup_camera(void)
     // Rotate around Y
     t = cx;
     cx = cx * cos(beta) + cz * sin(beta);
-	// cy remains unchanged
+    // cy remains unchanged
     cz = -t * sin(beta) + cz * cos(beta);
 
     // Rotate around Z
     t = cx;
     cx = cx * cos(gamma) - cy * sin(gamma);
     cy = t * sin(gamma) + cy * cos(gamma);
-	// cz remains unchanged
+    // cz remains unchanged
 
     scene_camera_position.x = cx;
     scene_camera_position.y = cy;
@@ -196,36 +196,83 @@ ray_trace(void)
     // setup the a vector that will hold the direction of the ray
     // also setup a vector that will hold the calculated value
     // of the outer loop
-    vec3 ray, ray_buf;
+    vec3 ray, ray_buff;
     
     // Loop over all pixels in the framebuffer
     for (j = 0; j < framebuffer_height; j++)
     {
         // v1 can be set to 1 and then multiplied by the forward_vector
-				// this will result in the forward_vector
-				// vec3 v1_mult = forward_vector;
-				
-    		// calculate v3 and v3_mult here, i does not change its value
-    		// recalculating this inside the next for-loop is pointless
+        // this will result in the forward_vector
+        // vec3 v1_mult = forward_vector;
+                
+        // calculate v3 and v3_mult here, i does not change its value
+        // recalculating this inside the next for-loop is pointless
         v3 = b + ((t-b)*(j+0.5)/framebuffer_height);
         vec3 v3_mult  = v3_multiply(up_vector, v3);
         
         // v1_mult and v3_mult can be added here, to save time
-        ray_buf = v3_add(forward_vector, v3_mult);
+        ray_buff = v3_add(forward_vector, v3_mult);
         for (i = 0; i < framebuffer_width; i++)
         {
-            v2 = l + ((r-l)*(i+0.5)/framebuffer_width);
+            // anti-aliasing disabled
+            if(!do_antialiasing){
+                v2 = l + ((r-l)*(i+0.5)/framebuffer_width);
 
-            // the ray is made up out of three parts, each part going in either
-            // the up, the right or the forward way. The values have to be
-            // multiplied in the correct way, then they can be added to form
-            // the correct vector of the ray.
-            vec3 v2_mult  = v3_multiply(right_vector, v2);
-            ray = v3_add(ray_buf, v2_mult);
+                // the ray is made up out of three parts, each part going in either
+                // the up, the right or the forward way. The values have to be
+                // multiplied in the correct way, then they can be added to form
+                // the correct vector of the ray.
+                vec3 v2_mult  = v3_multiply(right_vector, v2);
+                ray = v3_add(ray_buff, v2_mult);
 
-            // show the right color from this camera position.
-            color = ray_color(0, scene_camera_position, ray);
-            put_pixel(i, j, color.x, color.y, color.z);
+                // show the right color from this camera position.
+                color = ray_color(0, scene_camera_position, ray);
+                put_pixel(i, j, color.x, color.y, color.z);
+            }
+            
+            // anti-aliasing enabled
+            else{
+                float v20, v21, v30, v31;
+                vec3 ray1, ray2, ray3, ray4, ray1buf, ray2buf;
+                // divide a pixel into four pieces, their centers are at:
+                // 0.25;0.25, 0.25;0.75, 0.75;0.25, 0.75;0.75
+                // first x location
+                v20 = l + ((r-l)*(i+0.25)/framebuffer_width);
+                vec3 v20_mult  = v3_multiply(right_vector, v20);
+                
+                // second x location
+                v21 = l + ((r-l)*(i+0.75)/framebuffer_width);
+                vec3 v21_mult  = v3_multiply(right_vector, v21);
+                
+                // first y location
+                v30 = b + ((t-b)*(j+0.25)/framebuffer_height);
+                vec3 v30_mult  = v3_multiply(up_vector, v30);
+                
+                // second y location
+                v31 = b + ((t-b)*(j+0.75)/framebuffer_height);
+                vec3 v31_mult  = v3_multiply(up_vector, v31);
+                
+                // create buffers for the first addition
+                ray1buf = v3_add(forward_vector, v30_mult);
+                ray2buf = v3_add(forward_vector, v31_mult);
+                
+                // use the buffers to create the four rays
+                ray1 = v3_add(ray1buf,v20_mult);
+                ray2 = v3_add(ray1buf,v21_mult);
+                ray3 = v3_add(ray2buf,v20_mult);
+                ray4 = v3_add(ray2buf,v21_mult);
+                
+                // calculate the color for each ray and add them
+                color = ray_color(0, scene_camera_position, ray1);
+                color = v3_add(color,ray_color(0, scene_camera_position, ray2));
+                color = v3_add(color,ray_color(0, scene_camera_position, ray3));
+                color = v3_add(color,ray_color(0, scene_camera_position, ray4));
+                
+                // divide the total found color by 4
+                color = v3_multiply(color,0.25);
+                // put the right color on the screen
+                put_pixel(i, j, color.x, color.y, color.z);
+            }
         }
 
         sprintf(buf, "Ray-tracing ::: %.0f%% done", 100.0*j/framebuffer_height);
@@ -414,7 +461,7 @@ draw_scene(void)
         glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, zero);
         glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, one);
 
-		// Draw the triangles in the scene
+        // Draw the triangles in the scene
 
         triangle    tri;
         int         p, q, r;
@@ -465,7 +512,7 @@ draw_scene(void)
             glEnable(GL_LIGHTING);
         }
 
-		// Draw the spheres in the scene
+        // Draw the spheres in the scene
 
         for (int s = 0; s < scene_num_spheres; s++)
         {
@@ -486,23 +533,23 @@ draw_scene(void)
                 draw_bvh_inner_nodes(1, bvh_root);
         }
 
-		/*
-		// Draw some axes
+        /*
+        // Draw some axes
 
-		glDisable(GL_LIGHTING);
+        glDisable(GL_LIGHTING);
 
-		glBegin(GL_LINES);
-			glColor3f(1, 0, 0);
-			glVertex3f(0, 0, 0);
-			glVertex3f(10, 0, 0);
-			glColor3f(0, 1, 0);
-			glVertex3f(0, 0, 0);
-			glVertex3f(0, 10, 0);
-			glColor3f(0, 0, 1);
-			glVertex3f(0, 0, 0);
-			glVertex3f(0, 0, 10);
-		glEnd();
-		*/
+        glBegin(GL_LINES);
+            glColor3f(1, 0, 0);
+            glVertex3f(0, 0, 0);
+            glVertex3f(10, 0, 0);
+            glColor3f(0, 1, 0);
+            glVertex3f(0, 0, 0);
+            glVertex3f(0, 10, 0);
+            glColor3f(0, 0, 1);
+            glVertex3f(0, 0, 0);
+            glVertex3f(0, 0, 10);
+        glEnd();
+        */
     }
 
     // finally, swap the draw buffers to make the triangles appear on screen
@@ -744,7 +791,7 @@ main(int argc, char **argv)
     glutMouseFunc(&mouse_func);
     glutMotionFunc(&motion_func);
 
-	read_scene(argv[1]);
+    read_scene(argv[1]);
 
     init_opengl();
     init_noise();
