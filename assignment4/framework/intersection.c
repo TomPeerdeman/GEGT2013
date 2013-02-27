@@ -224,7 +224,8 @@ static int bvh_check(intersection_point* ip, bvh_node *node,
 		found = bbox_intersect(&t_min, &t_max, node->bbox, ray_origin, ray_direction, t0, t1);
 		
 		// Box is not intersected, don't check the subtrees
-		if(!found)return 0;
+		// Optimalisation done: Don't check subtrees if the found intersection is closer than this box
+		if(!found || ip->t < t_min)return 0;
 
 		// Check both subtrees, the ip contains the current closest t so it isn't overwritten bij the right subtree call
 		found = bvh_check(ip, inner_node_left_child(node), ray_origin, ray_direction, t_min, t_max);
