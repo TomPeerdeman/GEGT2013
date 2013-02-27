@@ -127,12 +127,28 @@ shade_blinn_phong(intersection_point ip)
 vec3
 shade_reflection(intersection_point ip)
 {
-    vec3 r = v3_subtract(v3_multiply(v3_multiply(ip.n,v3_dotprod(ip.i,ip.n)),2),ip.i);
+    // calculate the value of r, the vector that represents the reflection
+    vec3 r = v3_subtract(
+                 v3_multiply(
+                   v3_multiply(ip.n,v3_dotprod(
+                                        ip.i,ip.n)
+                   ),2
+                 ),ip.i
+              );
+    // increment the reflection level
     ip.ray_level++;
-    vec3 color = ray_color(ip.ray_level, v3_add(ip.p, v3_create(0.1,0.1,0.1)),r);
+    // get the color from the reflection direction, add a small value to the
+    // current point p to make sure self-shadowing does not occur
+    vec3 color = ray_color(ip.ray_level, v3_add(
+                                             ip.p, v3_create(0.1,0.1,0.1)
+                                         ),r);
+    // get the color from the matte shading
     vec3 color_matte = shade_matte(ip);
+    // if the reflection is not the background color, add it to the matte color
     if(color.x < 1.0 && color.y < 1.0 && color.z < 1.0)
         return v3_add(v3_multiply(color,0.25),v3_multiply(color_matte,0.75));
+    // if the background color was reflected, only return the color found by
+    // the matte shader
     return color_matte;
 }
 
