@@ -20,7 +20,7 @@
 #include "scene.h"
 #include "quat.h"
 #include "constants.h"
-#define C_SHADOW v3_create(0.001,0.001,0.001)
+#define C_SHADOW v3_multiply(ip.n, 0.001)
 
 // shade_constant()
 //
@@ -39,19 +39,19 @@ vec3
 shade_matte(intersection_point ip)
 {
     // setup variables that will hold the dotproduct and total color values
-    float ndotli, color = 0.0;
+    // start by adding the ambient light
+    float ndotli, color = scene_ambient_light;
     
     // setup the vector variable that will hold the vector from the
     // intersection to the light source
     vec3 li;
-    
     // loop over all the light sources
     for(int i = 0; i < scene_num_lights; i++){
         // get the intensity of the light source
         // calculate the vector from the intersection point to the light source
         li = v3_subtract(scene_lights[i].position,ip.p);
         
-        // normalize the vector, might be unnecessary?
+        // normalize the vector
         li = v3_normalize(li);
         
         // check for shadow, use a small offset to fix self-shading
@@ -63,11 +63,7 @@ shade_matte(intersection_point ip)
             
             // add the found value to the total color if the value is positive
             if(ndotli > 0.0)
-                color += (scene_ambient_light
-                        + scene_lights[i].intensity*ndotli);
-            // else only add the ambient light value
-            else
-                color += scene_ambient_light;
+                color += scene_lights[i].intensity*ndotli;
         }
     }
     // return the proper color, each component must be between [0,1]
