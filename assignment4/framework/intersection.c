@@ -38,6 +38,9 @@ int num_bboxes_tested = 0;
 static int  find_first_intersected_bvh_triangle(intersection_point* ip,
                 vec3 ray_origin, vec3 ray_direction);
 
+static int bvh_check(intersection_point* ip, bvh_node *node, 
+                vec3 ray_origin, vec3 ray_direction, float to, float t1);
+
 // Checks if the given triangle is intersected by ray with given
 // origin and direction.
 //
@@ -179,7 +182,55 @@ static int
 find_first_intersected_bvh_triangle(intersection_point* ip,
     vec3 ray_origin, vec3 ray_direction)
 {
-    return 0;
+	// Set t to infinity, this is used as the closest t found 
+	ip->t = C_INFINITY;
+
+	// First call of root bvh node, the t boundary's are not set yet, so use all
+	return bvh_check(ip, bvh_root, ray_origin, ray_direction, 0, C_INFINITY);
+}
+
+static int bvh_check(intersection_point* ip, bvh_node *node, 
+                     vec3 ray_origin, vec3 ray_direction, float t0, float t1){
+	int found = 0;	
+
+	if(node->is_leaf){
+		// Leaf node found loop over all triangles in the leaf node
+		triangle *triangles = leaf_node_triangles(node);
+		
+		// Nearest is the current found nearest
+		float t_nearest = ip->t;
+		intersection_point  ip2;
+
+		for (int t = 0; t < leaf_node_num_triangles(node); t++)
+        {
+            if (ray_intersects_triangle(&ip2, triangles[t], ray_origin, ray_direction))
+            {
+				// Closer intersection found, use it
+                if (ip2.t < t_nearest)
+                {
+                    *ip = ip2;
+                    t_nearest = ip2.t;
+                    found = 1;
+                }
+            }
+        }
+
+		return found;
+	}else{
+		// Inner node found
+
+		float t_min, t_max;
+
+		found = bbox_intersect(&t_min, &t_max, node->bbox, ray_origin, ray_direction, t0, t1);
+		
+		// Box is not intersected, don't check the subtrees
+		if(!found)return 0;
+
+		// Check both subtrees, the ip contains the current closest t so it isn't overwritten bij the right subtree call
+		found = bvh_check(ip, inner_node_left_child(node), ray_origin, ray_direction, t_min, t_max);
+		found = (bvh_check(ip, inner_node_right_child(node), ray_origin, ray_direction, t_min, t_max)) ? 1 : found;
+		return found;
+	}
 }
 
 // Returns the nearest hit of the given ray with objects in the scene
