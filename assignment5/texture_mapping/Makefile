@@ -9,7 +9,7 @@ LDFLAGS=-g -lGL -lglut -lGLU
 
 all: main
 main: geometry.o main.o polys.o ppmio.o
-	$(CC) $(LDFLAGS) -o main geometry.o main.o polys.o ppmio.o
+	$(CC) -o main geometry.o main.o polys.o ppmio.o $(LDFLAGS) 
 
 clean:
 	rm -f *.o
