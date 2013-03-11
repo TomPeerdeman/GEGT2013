@@ -303,7 +303,7 @@ void
 DrawPolylist(polys * list)
 {
     int i, j;
-    float size;
+    float sizex, sizey;
     for (i = 0; i < list->length; i++)
     {
         poly p = list->items[i];
@@ -312,24 +312,29 @@ DrawPolylist(polys * list)
 
         // Make the correct texture active
         glBindTexture(GL_TEXTURE_2D, p.texture_id);
-
+        // set the number of texture multiplications in the directions
+        sizex = fabs(p.pts[0].x/p.pts[0].z);
+        sizey = fabs(p.pts[0].x/p.pts[1].x);
         glBegin(GL_POLYGON);
         for (j = 0; j < p.points; j++)
         {
             glNormal3f(p.normal[j].x, p.normal[j].y, p.normal[j].z);
-              //printf("try this: %lf\n",fabs(p.normal[j].x/p.normal[j].z));
-              size = fabs(p.pts[j].x/p.pts[j].z);
+            // ugly, hardcoded repeat the ground 10 times in the y-axis
+            if (p.texture_id == 0){
+              sizey = 10.0f;
+            }
+            
             // wrong: glTexCoord2f(0.0f,0.0f);
             // set the right 2d coordinates for the texture, 4 different points
-            // TODO: make sure size works for all objects also in y-axis
+
             if(j == 0)
               glTexCoord2f(0.0f,0.0f);
             else if(j == 1)
-              glTexCoord2f(size,0.0f);
+              glTexCoord2f(sizex,0.0f);
             else if(j == 2)
-              glTexCoord2f(size,1.0f);
+              glTexCoord2f(sizex,sizey);
             else if(j == 3)
-              glTexCoord2f(0.0f,1.0f);
+              glTexCoord2f(0.0f,sizey);
             glVertex3f(p.pts[j].x, p.pts[j].y, p.pts[j].z);
         }
         glEnd();
