@@ -41,6 +41,90 @@ interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, u
 static int
 generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell c, int v0, int v1, int v2, int v3)
 {
+    // case 0000 or 1111, no triangles
+    if((c.values[v0] < isovalues && c.values[v1] < isovalue
+        && c.values[v2] < isovalues && c.values[v3] < isovalue)
+        ||
+        (c.values[v0] > isovalues && c.values[v1] > isovalue
+        && c.values[v2] > isovalues && c.values[v3] > isovalue
+        )){
+    
+      return 0;
+    }
+
+    // case 0001 or 1110, 1 triangle
+    if((c.values[v0] < isovalues && c.values[v1] < isovalue
+        && c.values[v2] < isovalues && c.values[v3] > isovalue)
+        ||
+        (c.values[v0] > isovalues && c.values[v1] > isovalue
+        && c.values[v2] > isovalues && c.values[v3] < isovalue
+        )){
+    
+      return 1;
+    }
+
+    // case 0010 or 1101, 1 triangle
+    if((c.values[v0] < isovalues && c.values[v1] < isovalue
+        && c.values[v2] > isovalues && c.values[v3] < isovalue)
+        ||
+        (c.values[v0] > isovalues && c.values[v1] > isovalue
+        && c.values[v2] < isovalues && c.values[v3] > isovalue
+        )){
+    
+      return 1;
+    }
+
+    // case 0100 or 1011, 1 triangle
+    if((c.values[v0] < isovalues && c.values[v1] > isovalue
+        && c.values[v2] < isovalues && c.values[v3] < isovalue)
+        ||
+        (c.values[v0] > isovalues && c.values[v1] < isovalue
+        && c.values[v2] > isovalues && c.values[v3] > isovalue
+        )){
+    
+      return 1;
+    }
+
+    // case 1000 or 0111, 1 triangle
+    if((c.values[v0] > isovalues && c.values[v1] < isovalue
+        && c.values[v2] < isovalues && c.values[v3] < isovalue)
+        ||
+        (c.values[v0] < isovalues && c.values[v1] > isovalue
+        && c.values[v2] > isovalues && c.values[v3] > isovalue
+        )){
+    
+      return 1;
+    }
+    
+    // case 0011 or 1100, quad -> 2 triangles
+    if((c.values[v0] < isovalues && c.values[v1] < isovalue
+        && c.values[v2] > isovalues && c.values[v3] > isovalue)
+        ||
+        (c.values[v0] > isovalues && c.values[v1] > isovalue
+        && c.values[v2] < isovalues && c.values[v3] < isovalue
+        )){
+      return 2;
+    }
+    
+    // case 0101 or 1010, quad -> 2 triangles
+    if((c.values[v0] < isovalues && c.values[v1] > isovalue
+        && c.values[v2] < isovalues && c.values[v3] > isovalue)
+        ||
+        (c.values[v0] > isovalues && c.values[v1] < isovalue
+        && c.values[v2] > isovalues && c.values[v3] < isovalue
+        )){
+      return 2;
+    }
+    
+    // case 0110 or 1001, 1 triangle
+    if((c.values[v0] < isovalues && c.values[v1] > isovalue
+        && c.values[v2] > isovalues && c.values[v3] < isovalue)
+        ||
+        (c.values[v0] > isovalues && c.values[v1] < isovalue
+        && c.values[v2] < isovalues && c.values[v3] > isovalue
+        )){
+      return 1;
+    }
     return 0;
 }
 
