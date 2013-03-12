@@ -267,12 +267,27 @@ InitGL(void)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            /*
+             * Possible MipMaps:
+             * GL_NEAREST_MIPMAP_NEAREST
+             * GL_LINEAR_MIPMAP_NEAREST
+             * GL_NEAREST_MIPMAP_LINEAR
+             * GL_LINEAR_MIPMAP_LINEAR
+             * Other possibilities (not MipMap):
+             * GL_NEAREST
+             * GL_LINEAR
+             *
+             * not sure if im doing something wrong, but they are kinda ugly imo
+             */
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glCheckError("glTexParameteri");
-
-            glTexImage2D(GL_TEXTURE_2D, 0, texture_internal_format,
-                width, height, 0, texture_format, texture_type, image_data);
+            
+            // Build MipMaps
+            gluBuild2DMipmaps(GL_TEXTURE_2D, texture_internal_format,
+                width, height, texture_format, texture_type, image_data);
+            //glTexImage2D(GL_TEXTURE_2D, 0, texture_internal_format,
+                //width, height, 0, texture_format, texture_type, image_data);
             glCheckError("glTexImage2D");
 
             // Free the image data, as OpenGL will have made its internal copy by now
@@ -447,7 +462,7 @@ DrawGLScene(void)
 
     glPushAttrib(GL_LIGHTING_BIT);
     glDisable(GL_LIGHTING);
-    //DrawPolylist(polylistSkydome);
+    DrawPolylist(polylistSkydome);
     glPopAttrib();
 
     glutSwapBuffers();
