@@ -42,86 +42,86 @@ static int
 generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell c, int v0, int v1, int v2, int v3)
 {
     // case 0000 or 1111, no triangles
-    if((c.values[v0] < isovalues && c.values[v1] < isovalue
-        && c.values[v2] < isovalues && c.values[v3] < isovalue)
+    if((c.value[v0] < isovalue && c.value[v1] < isovalue
+        && c.value[v2] < isovalue && c.value[v3] < isovalue)
         ||
-        (c.values[v0] > isovalues && c.values[v1] > isovalue
-        && c.values[v2] > isovalues && c.values[v3] > isovalue
+        (c.value[v0] > isovalue && c.value[v1] > isovalue
+        && c.value[v2] > isovalue && c.value[v3] > isovalue
         )){
     
       return 0;
     }
 
     // case 0001 or 1110, 1 triangle
-    if((c.values[v0] < isovalues && c.values[v1] < isovalue
-        && c.values[v2] < isovalues && c.values[v3] > isovalue)
+    if((c.value[v0] < isovalue && c.value[v1] < isovalue
+        && c.value[v2] < isovalue && c.value[v3] > isovalue)
         ||
-        (c.values[v0] > isovalues && c.values[v1] > isovalue
-        && c.values[v2] > isovalues && c.values[v3] < isovalue
+        (c.value[v0] > isovalue && c.value[v1] > isovalue
+        && c.value[v2] > isovalue && c.value[v3] < isovalue
         )){
     
       return 1;
     }
 
     // case 0010 or 1101, 1 triangle
-    if((c.values[v0] < isovalues && c.values[v1] < isovalue
-        && c.values[v2] > isovalues && c.values[v3] < isovalue)
+    if((c.value[v0] < isovalue && c.value[v1] < isovalue
+        && c.value[v2] > isovalue && c.value[v3] < isovalue)
         ||
-        (c.values[v0] > isovalues && c.values[v1] > isovalue
-        && c.values[v2] < isovalues && c.values[v3] > isovalue
+        (c.value[v0] > isovalue && c.value[v1] > isovalue
+        && c.value[v2] < isovalue && c.value[v3] > isovalue
         )){
     
       return 1;
     }
 
     // case 0100 or 1011, 1 triangle
-    if((c.values[v0] < isovalues && c.values[v1] > isovalue
-        && c.values[v2] < isovalues && c.values[v3] < isovalue)
+    if((c.value[v0] < isovalue && c.value[v1] > isovalue
+        && c.value[v2] < isovalue && c.value[v3] < isovalue)
         ||
-        (c.values[v0] > isovalues && c.values[v1] < isovalue
-        && c.values[v2] > isovalues && c.values[v3] > isovalue
+        (c.value[v0] > isovalue && c.value[v1] < isovalue
+        && c.value[v2] > isovalue && c.value[v3] > isovalue
         )){
     
       return 1;
     }
 
     // case 1000 or 0111, 1 triangle
-    if((c.values[v0] > isovalues && c.values[v1] < isovalue
-        && c.values[v2] < isovalues && c.values[v3] < isovalue)
+    if((c.value[v0] > isovalue && c.value[v1] < isovalue
+        && c.value[v2] < isovalue && c.value[v3] < isovalue)
         ||
-        (c.values[v0] < isovalues && c.values[v1] > isovalue
-        && c.values[v2] > isovalues && c.values[v3] > isovalue
+        (c.value[v0] < isovalue && c.value[v1] > isovalue
+        && c.value[v2] > isovalue && c.value[v3] > isovalue
         )){
     
       return 1;
     }
     
     // case 0011 or 1100, quad -> 2 triangles
-    if((c.values[v0] < isovalues && c.values[v1] < isovalue
-        && c.values[v2] > isovalues && c.values[v3] > isovalue)
+    if((c.value[v0] < isovalue && c.value[v1] < isovalue
+        && c.value[v2] > isovalue && c.value[v3] > isovalue)
         ||
-        (c.values[v0] > isovalues && c.values[v1] > isovalue
-        && c.values[v2] < isovalues && c.values[v3] < isovalue
+        (c.value[v0] > isovalue && c.value[v1] > isovalue
+        && c.value[v2] < isovalue && c.value[v3] < isovalue
         )){
       return 2;
     }
     
     // case 0101 or 1010, quad -> 2 triangles
-    if((c.values[v0] < isovalues && c.values[v1] > isovalue
-        && c.values[v2] < isovalues && c.values[v3] > isovalue)
+    if((c.value[v0] < isovalue && c.value[v1] > isovalue
+        && c.value[v2] < isovalue && c.value[v3] > isovalue)
         ||
-        (c.values[v0] > isovalues && c.values[v1] < isovalue
-        && c.values[v2] > isovalues && c.values[v3] < isovalue
+        (c.value[v0] > isovalue && c.value[v1] < isovalue
+        && c.value[v2] > isovalue && c.value[v3] < isovalue
         )){
       return 2;
     }
     
     // case 0110 or 1001, 1 triangle
-    if((c.values[v0] < isovalues && c.values[v1] > isovalue
-        && c.values[v2] > isovalues && c.values[v3] < isovalue)
+    if((c.value[v0] < isovalue && c.value[v1] > isovalue
+        && c.value[v2] > isovalue && c.value[v3] < isovalue)
         ||
-        (c.values[v0] > isovalues && c.values[v1] < isovalue
-        && c.values[v2] < isovalues && c.values[v3] > isovalue
+        (c.value[v0] > isovalue && c.value[v1] < isovalue
+        && c.value[v2] < isovalue && c.value[v3] > isovalue
         )){
       return 1;
     }
