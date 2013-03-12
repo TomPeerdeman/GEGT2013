@@ -56,25 +56,29 @@ void *readppm(const char *filename, int *width, int *height)
     }
 
     /* read and check magic number */
-    fscanf(fd, "%s\n", buffer);
+    int ret = fscanf(fd, "%s\n", buffer);
+	(void)ret;
     if (strcmp(buffer, "P6"))
         return NULL;            /* not a PPM raw file */
 
     /* skip comment line (if any) */
 
-    fgets(buffer, 80, fd);
+    char *retc = fgets(buffer, 80, fd);
     if (buffer[0] == '#')
-        fgets(buffer, 80, fd);
+        retc = fgets(buffer, 80, fd);
+		
+	(void)retc;
 
     /* read width, height and maximum color-component value */
     sscanf(buffer, "%d %d", width, height);
-    fscanf(fd, "%s\n", buffer);
+    ret = fscanf(fd, "%s\n", buffer);
     maxcol = atoi(buffer);
 
 #if defined(DEBUG)
-    fprintf(stderr, "%s is %d x %d, max %d. Allocating %d bytes.\n",
+    ret = fprintf(stderr, "%s is %d x %d, max %d. Allocating %d bytes.\n",
             filename, *width, *height, maxcol, (*width) * (*height) * 3);
 #endif
+	(void)maxcol;
 
     /* allocate storage, then read data */
     if (!(area = (byte *) malloc((*width) * (*height) * 3 * sizeof(byte))))
@@ -98,7 +102,7 @@ void *readppm(const char *filename, int *width, int *height)
 #if defined(DEBUG)
         dummy =
 #endif
-            fread(area + j*(*width)*3, sizeof(byte), (*width) * 3, fd);
+            ret = fread(area + j*(*width)*3, sizeof(byte), (*width) * 3, fd);
 
 #if defined(DEBUG)
         fprintf(stderr, "%d bytes read. First 16 bytes:\n", dummy);
