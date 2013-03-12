@@ -39,21 +39,21 @@ get_cell(int i, int j, int k)
 {
     cell c;
     c.p[0] = v3_create(i,j,k);
-    c.p[0] = voxel2idx(i,j,k);
+    c.values[0] = (double)volume[voxel2idx(i,j,k)];
     c.p[1] = v3_create(i+1,j,k);
-    c.p[1] = voxel2idx(i+1,j,k);
+    c.values[1] = (double)volume[voxel2idx(i+1,j,k)];
     c.p[2] = v3_create(i+1,j+1,k);
-    c.p[2] = voxel2idx(i+1,j+1,k);
+    c.values[2] = (double)volume[voxel2idx(i+1,j+1,k)];
     c.p[3] = v3_create(i,j+1,k);
-    c.p[3] = voxel2idx(i,j+1,k);
+    c.values[3] = (double)volume[voxel2idx(i,j+1,k)];
     c.p[4] = v3_create(i,j,k+1);
-    c.p[4] = voxel2idx(i,j,k+1);
+    c.values[4] = (double)volume[voxel2idx(i,j,k+1)];
     c.p[5] = v3_create(i+1,j,k+1);
-    c.p[5] = voxel2idx(i+1,j,k+1);
+    c.values[5] = (double)volume[voxel2idx(i+1,j,k+1)];
     c.p[6] = v3_create(i+1,j+1,k+1);
-    c.p[6] = voxel2idx(i+1,j+1,k+1);
+    c.values[6] = (double)volume[voxel2idx(i+1,j+1,k+1)];
     c.p[7] = v3_create(i,j+1,k+1);
-    c.p[7] = voxel2idx(i+1,j+1,k+1);
+    c.values[7] = (double)volume[voxel2idx(i+1,j+1,k+1)];
     return c;
 }
 
