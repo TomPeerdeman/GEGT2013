@@ -56,5 +56,12 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 int
 generate_cell_triangles(triangle *triangles, cell c, unsigned char isovalue)
 {
-    return 0;
+	int ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 3, 7);
+	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 6, 7);
+	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 5, 7);
+	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 3, 7);
+	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 5, 7);
+	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 6, 7);
+	
+    return ntriangles;
 }
