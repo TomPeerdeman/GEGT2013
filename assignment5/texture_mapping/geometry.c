@@ -103,12 +103,10 @@ setHemispherePoint(vec3 *p, vec3* n, vec3* t, int latitude, int longitude,
     p->z = oz + cos(longitude * dToR) * cos(latitude * dToR) * s;
 
     // Set texture coordinate
-    // 1 time is for full sphere mapping
-    //t->x = (longitude * dToR) / (2*M_PI);
-    //t->y = (M_PI - (latitude * dToR)) / M_PI;
-    // dividing by 2 f-ed things up, therefore multiply
-    t->x = 2*(longitude * dToR) / (2*M_PI);
-    t->y = 2*(M_PI - (latitude * dToR)) / M_PI;
+    // x rotates 360 degrees, full circle
+    // y rotates 90 degrees, edge to top
+    t->x = longitude / 360.0;
+    t->y = latitude / 90.0;
 
     // calculate normal
     n->x = p->x - ox;
@@ -202,10 +200,8 @@ createCylinder(polys * list, double radius, double height,
             p.normal[i].z /= len;
 
             // Set texture coordinate
-            //p.tcoord[i].x = p.tcoord[i].y = 0.0;
-            // I presume this is the right call.
-            p.tcoord[i].x = p.normal[i].x / 2 * M_PI;
-            p.tcoord[i].y = (M_PI - p.normal[i].y) / M_PI;
+            // 360 degrees, full circle
+            p.tcoord[i].x = p.tcoord[i].y = longitude / 360.0;
         }
 
         AddPolyToPolylist(list, p);
