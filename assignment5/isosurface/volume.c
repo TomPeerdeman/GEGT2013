@@ -36,6 +36,7 @@ cell
 get_cell(int i, int j, int k)
 {
     cell c;
+    // fill the cell with neighbouring points
     c.p[0] = v3_create(i,j,k);
     c.value[0] = (double)volume[voxel2idx(i,j,k)];
     c.p[1] = v3_create(i+1,j,k);
