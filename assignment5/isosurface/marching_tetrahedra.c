@@ -192,21 +192,22 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     // case 0101 or 1010, quad -> 2 triangles
     if((!(v0_less) &&   v1_less  && !(v2_less) && v3_less) ||
        (  v0_less  && !(v1_less) &&   v2_less  && v3_less)){
-        vec3 vec01, vec03, vec21, vec23;
+        vec3 vec01, vec03, vec30, vec12, vec32;
         vec01 = interpolate_points(isovalue, c.p[v0], c.p[v1], val0, val1);
         vec03 = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
-        vec21 = interpolate_points(isovalue, c.p[v2], c.p[v1], val2, val1);
-        vec23 = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
+        vec30 = interpolate_points(isovalue, c.p[v3], c.p[v0], val3, val0);
+        vec12 = interpolate_points(isovalue, c.p[v1], c.p[v2], val1, val2);
+        vec32 = interpolate_points(isovalue, c.p[v3], c.p[v2], val3, val2);
         
-        triangles->p[0] = vec03;
-        triangles->p[1] = vec23;
-        triangles->p[2] = vec21;
+        triangles->p[0] = vec30;
+        triangles->p[1] = vec32;
+        triangles->p[2] = vec12;
 
         triangle_calc_normal(triangles);
         triangles++;
         
         triangles->p[0] = vec01;
-        triangles->p[1] = vec21;
+        triangles->p[1] = vec12;
         triangles->p[2] = vec03;
 
         triangle_calc_normal(triangles);
@@ -219,22 +220,23 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     if((!(v0_less) &&   v1_less  &&   v2_less  && !(v3_less)) ||
        (  v0_less  && !(v1_less) && !(v2_less) && v3_less)){
        
-        vec3 vec13, vec10, vec23, vec20;
+        vec3 vec13, vec31, vec10, vec32, vec02;
         vec13 = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
+        vec31 = interpolate_points(isovalue, c.p[v3], c.p[v1], val3, val1);
         vec10 = interpolate_points(isovalue, c.p[v1], c.p[v0], val1, val0);
-        vec23 = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
-        vec20 = interpolate_points(isovalue, c.p[v2], c.p[v0], val2, val0);
+        vec32 = interpolate_points(isovalue, c.p[v3], c.p[v2], val3, val2);
+        vec02 = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
         
-        triangles->p[0] = vec23;
-        triangles->p[1] = vec13;
-        triangles->p[2] = vec20;
+        triangles->p[0] = vec32;
+        triangles->p[1] = vec31;
+        triangles->p[2] = vec02;
 
         triangle_calc_normal(triangles);
         triangles++;
         
         triangles->p[0] = vec13;
         triangles->p[1] = vec10;
-        triangles->p[2] = vec20;
+        triangles->p[2] = vec02;
 
         triangle_calc_normal(triangles);
         triangles++;
