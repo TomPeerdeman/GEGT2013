@@ -1,0 +1,29 @@
+1)
+Q.
+What happens for case 0011/1100 when two of the tetrahedron’s vertex
+values are equal to the iso-value of interest and the other two are greater
+than the iso-value? Is this a bad thing? Hint: think of the kind of output
+generated in this case.
+
+A.
+In this case, a line is drawn through the points that have the same value as the iso-value. This is a bad thing, you get a weirdly shaped and defined triangle. Drawing lines is unnecesarry, without a specified thickness they wont be visible.
+
+2)
+Q.
+We render the isosurface two-sided here, that is, without back-face culling.
+If the isosurface forms a closed surface, there would be no need for this,
+as the inside/back-side of the surface would never be visible. For what
+situation does marching tetrahedra not produce a closed isosurface?
+
+A.
+For any open object. E.g. a cylinder without a top and bottom.
+
+3)
+Q.
+What optimizations to the marching tetrahedra algorithm as described in
+Section 2.2 can you think of? Are there computations that are performed
+redundantly? Is there an opportunity for parallel processing?
+
+A.
+It could be possible to only calculate and compute the surface visible from the current camera position. This will reduce the total computation time. But when the camera position is moved, new calculations have to be done foir that position. And it could be difficult and/or timeconsuming to find the visible triangles from the camera position.
+Parallel processing is possible, by computing each cell (or a small set of cells) in parallel. For each cell, each tetrahedron could be run in parallel. It is also possible to draw a quad (2 triangles) in parallel if one is found in a tetrahedron.
