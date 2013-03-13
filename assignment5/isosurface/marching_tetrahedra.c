@@ -51,6 +51,8 @@ interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, u
 static int
 generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell c, int v0, int v1, int v2, int v3)
 {
+	// TODO: change c.value[v] < isovalue to c.value[v] <= isovalue
+	
     // case 0000 or 1111, no triangles
     if((c.value[v0] < isovalue && c.value[v1] < isovalue
         && c.value[v2] < isovalue && c.value[v3] < isovalue)
@@ -58,19 +60,35 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
         (c.value[v0] > isovalue && c.value[v1] > isovalue
         && c.value[v2] > isovalue && c.value[v3] > isovalue
         )){
-    
+		
       return 0;
     }
+	
+	// Do all the casting already
+	unsigned char val0, val1, val2, val3;
+	val0 = (unsigned char) c.value[v0];
+	val1 = (unsigned char) c.value[v1];
+	val2 = (unsigned char) c.value[v2];
+	val3 = (unsigned char) c.value[v3];
 
     // case 0001 or 1110, 1 triangle
     if((c.value[v0] < isovalue && c.value[v1] < isovalue
-        && c.value[v2] < isovalue && c.value[v3] > isovalue)
-        ||
-        (c.value[v0] > isovalue && c.value[v1] > isovalue
-        && c.value[v2] > isovalue && c.value[v3] < isovalue
-        )){
-    
-      return 1;
+			&& c.value[v2] < isovalue && c.value[v3] > isovalue)
+			||
+			(c.value[v0] > isovalue && c.value[v1] > isovalue
+			&& c.value[v2] > isovalue && c.value[v3] < isovalue
+			)){
+		triangles->p[0] = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
+		triangles->p[1] = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
+		triangles->p[2] = interpolate_points(isovalue, c.p[v0], c.p[v1], val0, val1);
+		
+		// TODO: normals
+		triangles->p[0] = v3_create(0, 0, 0);
+		triangles->p[1] = v3_create(0, 0, 0);
+		triangles->p[2] = v3_create(0, 0, 0);
+		
+		triangles++;
+		return 1;
     }
 
     // case 0010 or 1101, 1 triangle
@@ -150,12 +168,18 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 int
 generate_cell_triangles(triangle *triangles, cell c, unsigned char isovalue)
 {
+	// Save pointer so we can move the triangles pointer forward
+	triangle *tmp = triangles;
+	
 	int ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 3, 7);
 	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 6, 7);
 	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 5, 7);
 	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 3, 7);
 	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 5, 7);
 	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 6, 7);
+	
+	// Restore pointer to original value
+	triangles = tmp;
 	
     return ntriangles;
 }
