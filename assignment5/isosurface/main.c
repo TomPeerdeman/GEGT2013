@@ -225,7 +225,7 @@ void DrawVolumeAsIsosurface(void)
 
 void FillArrayWithIsosurface(void)
 {
-	int n;
+	int n, total = 0;
 	// Make room for 10 triangles
 	triangle *triangles = malloc(10 * sizeof(triangle));
 	if(triangles == NULL){
@@ -245,9 +245,13 @@ void FillArrayWithIsosurface(void)
 					AddVertexToArray(triangles[c].p[1], triangles[c].n[1]);
 					AddVertexToArray(triangles[c].p[2], triangles[c].n[2]);
 				}
+				
+				total += n;
 			}
 		}
 	}
+	
+	printf("Num triangles generated for isosurface: %d\n", total);
 	
 	free(triangles);
 }
