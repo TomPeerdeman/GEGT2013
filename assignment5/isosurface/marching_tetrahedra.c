@@ -128,12 +128,7 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
       triangles->p[1] = interpolate_points(isovalue, c.p[v2], c.p[v1], val2, val1);
       triangles->p[2] = interpolate_points(isovalue, c.p[v2], c.p[v0], val2, val0);
 
-      normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), v3_subtract(triangles->p[2], triangles->p[0]));
-
-      triangles->n[0] = normal;
-      triangles->n[1] = normal;
-      triangles->n[2] = normal;
-
+      triangle_calc_normal(triangles);
       triangles++;
     
       return 1;
@@ -147,12 +142,7 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
       triangles->p[1] = interpolate_points(isovalue, c.p[v3], c.p[v1], val3, val1);
       triangles->p[2] = interpolate_points(isovalue, c.p[v3], c.p[v0], val3, val0);
 
-      normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), v3_subtract(triangles->p[2], triangles->p[0]));
-
-      triangles->n[0] = normal;
-      triangles->n[1] = normal;
-      triangles->n[2] = normal;
-
+      triangle_calc_normal(triangles);
       triangles++;
     
       return 1;
