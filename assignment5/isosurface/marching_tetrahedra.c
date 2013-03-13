@@ -256,18 +256,29 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 int
 generate_cell_triangles(triangle *triangles, cell c, unsigned char isovalue)
 {
-    // Save pointer so we can move the triangles pointer forward
-    triangle *tmp = triangles;
+	int ntriangles, ntotal;
     
-    int ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 3, 7);
-    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 6, 7);
-    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 5, 7);
-    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 3, 7);
-    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 5, 7);
-    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 6, 7);
+    ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 3, 7);
+	triangles += ntriangles;
+	ntotal += ntriangles;
+	
+    ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 6, 7);
+	triangles += ntriangles;
+	ntotal += ntriangles;
+	
+    ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 5, 7);
+	triangles += ntriangles;
+	ntotal += ntriangles;
+	
+    ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 3, 7);
+	triangles += ntriangles;
+	ntotal += ntriangles;
+	
+    ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 5, 7);
+	triangles += ntriangles;
+	ntotal += ntriangles;
+	
+    ntotal += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 6, 7);
     
-    // Restore pointer to original value
-    triangles = tmp;
-    
-    return ntriangles;
+    return ntotal;
 }

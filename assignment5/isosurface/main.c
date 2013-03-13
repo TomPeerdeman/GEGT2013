@@ -226,8 +226,8 @@ void DrawVolumeAsIsosurface(void)
 void FillArrayWithIsosurface(void)
 {
 	int n, total = 0;
-	// Make room for 10 triangles
-	triangle *triangles = malloc(10 * sizeof(triangle));
+	// Make room for 12 triangles
+	triangle *triangles = malloc(12 * sizeof(triangle));
 	if(triangles == NULL){
 		perror("Triangles array NULL");
 		return;
