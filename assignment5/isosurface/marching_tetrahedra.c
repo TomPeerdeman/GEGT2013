@@ -183,6 +183,27 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     // case 0110 or 1001, quad -> 2 triangles
     if((!(v0_less) &&   v1_less  &&   v2_less  && !(v3_less)) ||
        (  v0_less  && !(v1_less) && !(v2_less) && v3_less)){
+	   
+		vec3 vec13, vec10, vec23, vec20;
+		vec13 = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
+		vec10 = interpolate_points(isovalue, c.p[v1], c.p[v0], val1, val0);
+		vec23 = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
+		vec20 = interpolate_points(isovalue, c.p[v2], c.p[v0], val2, val0);
+		
+		triangles->p[0] = vec10;
+        triangles->p[1] = vec13;
+        triangles->p[2] = vec20;
+
+        triangle_calc_normal(triangles);
+        triangles++;
+		
+		triangles->p[0] = vec23;
+        triangles->p[1] = vec20;
+        triangles->p[2] = vec13;
+
+        triangle_calc_normal(triangles);
+        triangles++;
+		
       return 2;
     }
     return 0;
