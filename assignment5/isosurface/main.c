@@ -227,23 +227,23 @@ void FillArrayWithIsosurface(void)
 {
 	int n;
 	// Make room for 10 triangles
-	trianlge *triangles = malloc(10 * sizeof(triangle));
+	triangle *triangles = malloc(10 * sizeof(triangle));
 	if(triangles == NULL){
 		perror("Triangles array NULL");
 		return;
 	}
 	
-	for (k = 0; k < nz; k++){
-		for (j = 0; j < ny; j++){
-			for (i = 0; i < nx; i++){
+	for(int k = 0; k < nz; k++) {
+		for(int j = 0; j < ny; j++) {
+			for(int i = 0; i < nx; i++) {
 				// For each cell generate the triangles
 				n = generate_cell_triangles(triangles, get_cell(i, j, k), isovalue);
 				
 				for(int c = 0; c < n; c++){
 					// Add alle the vertices from the triangle
-					AddVertexToArray(triangles[c].p[0], triangles[c].v[0]);
-					AddVertexToArray(triangles[c].p[1], triangles[c].v[1]);
-					AddVertexToArray(triangles[c].p[2], triangles[c].v[2]);
+					AddVertexToArray(triangles[c].p[0], triangles[c].n[0]);
+					AddVertexToArray(triangles[c].p[1], triangles[c].n[1]);
+					AddVertexToArray(triangles[c].p[2], triangles[c].n[2]);
 				}
 			}
 		}
