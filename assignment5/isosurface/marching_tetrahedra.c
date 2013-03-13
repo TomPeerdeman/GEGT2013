@@ -70,6 +70,7 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 	val1 = (unsigned char) c.value[v1];
 	val2 = (unsigned char) c.value[v2];
 	val3 = (unsigned char) c.value[v3];
+	vec3 normal;
 
     // case 0001 or 1110, 1 triangle
     if((c.value[v0] < isovalue && c.value[v1] < isovalue
@@ -82,9 +83,11 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 		triangles->p[1] = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
 		triangles->p[2] = interpolate_points(isovalue, c.p[v0], c.p[v1], val0, val1);
 		
-		triangles->n[0] = c.n[v3];
-		triangles->n[1] = c.n[v2];
-		triangles->n[2] = c.n[v1];
+		normal = v3_crossprod(v3_subtract(c.p[1], c.p[0]), v3_subtract(c.p[2], c.p[0]));
+		
+		triangles->n[0] = normal;
+		triangles->n[1] = normal;
+		triangles->n[2] = normal;
 		
 		triangles++;
 		return 1;

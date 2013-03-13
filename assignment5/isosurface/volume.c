@@ -54,12 +54,12 @@ get_cell(int i, int j, int k)
     c.value[6] = (double)volume[voxel2idx(i+1,j+1,k+1)];
     c.p[7] = v3_create(i,j+1,k+1);
     c.value[7] = (double)volume[voxel2idx(i+1,j+1,k+1)];
-    for(int a = 0; a < 8; a++){
+    /*for(int a = 0; a < 8; a++){
     c.n[a] = v3_normalize(v3_crossprod(
                             v3_subtract(c.p[a].y,c.p[a].x),
                             v3_subtract(c.p[a].z,c.p[a].x)
                          ));
-    }
+    }*/
     return c;
 }
 
