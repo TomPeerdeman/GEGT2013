@@ -21,7 +21,7 @@
 static vec3
 interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, unsigned char v2)
 {
-	// C+P DO NOT USE!
+    // C+P DO NOT USE!
     double ratio;
 
     ratio = abs(isovalue-v1) / abs(v2-v1);
@@ -59,21 +59,12 @@ interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, u
 */
 
 static void triangle_calc_normal(triangle *triangles) {
-    vec3 normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), 
-        v3_subtract(triangles->p[2], triangles->p[0]));
-
+    vec3 normal = v3_normalize(v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), 
+        v3_subtract(triangles->p[2], triangles->p[0])));
+        
     triangles->n[0] = normal;
     triangles->n[1] = normal;
     triangles->n[2] = normal;
-	
-	// C+P DO NOT USE!
-	/*vec3 dir1, dir2;
-    for (int i = 0; i < 3; i++){
-        dir1 = v3_subtract(tri->p[(i+1)%3], tri->p[i]);
-        dir2 = v3_subtract(tri->p[(i+2)%3], tri->p[i]);
-        tri->n[i] = v3_normalize(v3_crossprod(dir1, dir2));
-    }*/
-
 }
 
 static int
@@ -255,28 +246,28 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 int
 generate_cell_triangles(triangle *triangles, cell c, unsigned char isovalue)
 {
-	int ntriangles, ntotal = 0;
+    int ntriangles, ntotal = 0;
     
     ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 3, 7);
-	triangles += ntriangles;
-	ntotal += ntriangles;
-	
+    triangles += ntriangles;
+    ntotal += ntriangles;
+    
     ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 6, 7);
-	triangles += ntriangles;
-	ntotal += ntriangles;
-	
+    triangles += ntriangles;
+    ntotal += ntriangles;
+    
     ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 5, 7);
-	triangles += ntriangles;
-	ntotal += ntriangles;
-	
+    triangles += ntriangles;
+    ntotal += ntriangles;
+    
     ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 3, 7);
-	triangles += ntriangles;
-	ntotal += ntriangles;
-	
+    triangles += ntriangles;
+    ntotal += ntriangles;
+    
     ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 5, 7);
-	triangles += ntriangles;
-	ntotal += ntriangles;
-	
+    triangles += ntriangles;
+    ntotal += ntriangles;
+    
     ntotal += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 6, 7);
     
     return ntotal;
