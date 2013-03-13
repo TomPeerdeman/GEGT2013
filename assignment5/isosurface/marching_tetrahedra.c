@@ -82,19 +82,18 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     // case 0001 or 1110, 1 triangle
     if((!(v0_less) && !(v1_less) && !(v2_less) &&   v3_less) ||
        (  v0_less  &&   v1_less  &&   v2_less  && !(v3_less))){
-			
-			
-		triangles->p[0] = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
-		triangles->p[1] = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
-		triangles->p[2] = interpolate_points(isovalue, c.p[v0], c.p[v1], val0, val1);
-		
-		normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), v3_subtract(triangles->p[2], triangles->p[0]));
-		
-		triangles->n[0] = normal;
-		triangles->n[1] = normal;
-		triangles->n[2] = normal;
-		
-		triangles++;
+
+      triangles->p[0] = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
+      triangles->p[1] = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
+      triangles->p[2] = interpolate_points(isovalue, c.p[v0], c.p[v1], val0, val1);
+
+      normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), v3_subtract(triangles->p[2], triangles->p[0]));
+
+      triangles->n[0] = normal;
+      triangles->n[1] = normal;
+      triangles->n[2] = normal;
+
+      triangles++;
 		return 1;
     }
 
