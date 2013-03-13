@@ -91,8 +91,8 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     vec3 normal;
 
     // case 0001 or 1110, 1 triangle
-    if((!(v0_less) && !(v1_less) && !(v2_less) &&   v3_less) ||
-        (  v0_less  &&   v1_less  &&   v2_less  && !(v3_less))){
+    if(( v0_less  && !(v1_less) && !(v2_less) && !(v3_less)) ||
+      (!(v0_less) &&   v1_less  &&   v2_less  &&   v3_less)){
 
         triangles->p[0] = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
         triangles->p[1] = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
@@ -105,8 +105,8 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     }
 
     // case 0010 or 1101, 1 triangle
-    if((!(v0_less) && !(v1_less) &&   v2_less  && !(v3_less)) ||
-       (  v0_less  &&   v1_less  && !(v2_less) &&   v3_less)){
+    if((!(v0_less) &&   v1_less  && !(v2_less) && !(v3_less)) ||
+      (   v0_less  && !(v1_less) &&   v2_less  &&   v3_less)){
 
         triangles->p[0] = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
         triangles->p[1] = interpolate_points(isovalue, c.p[v1], c.p[v2], val1, val2);
@@ -119,8 +119,8 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     }
 
     // case 0100 or 1011, 1 triangle
-    if((!(v0_less) &&   v1_less  && !(v2_less) && !(v3_less)) ||
-       (  v0_less  && !(v1_less) &&   v2_less  &&   v3_less)){
+    if((!(v0_less) && !(v1_less) &&   v2_less  && !(v3_less)) ||
+      (   v0_less  &&   v1_less  && !(v2_less) &&   v3_less)){
 
         triangles->p[0] = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
         triangles->p[1] = interpolate_points(isovalue, c.p[v2], c.p[v1], val2, val1);
@@ -133,8 +133,8 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     }
 
     // case 1000 or 0111, 1 triangle
-    if((  v0_less  && !(v1_less) && !(v2_less) && !(v3_less)) ||
-       (!(v0_less) &&   v1_less  &&   v2_less  &&   v3_less)){
+    if((!(v0_less) && !(v1_less) && !(v2_less) &&   v3_less) ||
+      (   v0_less  &&   v1_less  &&   v2_less  && !(v3_less))){
 
         triangles->p[0] = interpolate_points(isovalue, c.p[v3], c.p[v2], val3, val2);
         triangles->p[1] = interpolate_points(isovalue, c.p[v3], c.p[v1], val3, val1);
