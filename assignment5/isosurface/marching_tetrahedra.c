@@ -21,6 +21,8 @@
 static vec3
 interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, unsigned char v2)
 {
+	return v3_add(v3_multiply(p1, 0.5), v3_multiply(p2, 0.5));
+/*
 	double shift;
 	if(v1 > v2) {
 		// Isovalue - v2 = 0 means isovalue = v2, so shift = 0
@@ -34,7 +36,7 @@ interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, u
 		return p1;
 	}
 
-    return v3_add(v3_multiply(p1, shift), v3_multiply(p2, (1.0 - shift)));
+    return v3_add(v3_multiply(p1, shift), v3_multiply(p2, (1.0 - shift)));*/
 }
 
 /* Using the given iso-value generate triangles for the tetrahedron
@@ -96,6 +98,8 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 		triangles++;
 		return 1;
     }
+	
+	return 0;
 
     // case 0010 or 1101, 1 triangle
     if((!(v0_less) && !(v1_less) &&   v2_less  && !(v3_less)) ||
