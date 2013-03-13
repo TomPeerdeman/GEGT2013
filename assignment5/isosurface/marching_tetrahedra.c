@@ -21,30 +21,12 @@
 static vec3
 interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, unsigned char v2)
 {
-    // C+P DO NOT USE!
-    double ratio;
-
-    ratio = abs(isovalue-v1) / abs(v2-v1);
-    vec3 v = v3_add(v3_multiply(p1,ratio), v3_multiply(p2, 1-ratio));
-    return v3_create(v.x * sizex, v.y * sizey, v.z * sizez);
-
-
-    //return v3_add(v3_multiply(p1, 0.5), v3_multiply(p2, 0.5));
-/*
     double shift;
-    if(v1 > v2) {
-        // Isovalue - v2 = 0 means isovalue = v2, so shift = 0
-        // Shift = 0 means 1.0 - 0.0 = 1.0 times v2 and 0.0 times v1
-        shift = (double) (isovalue - v2) / (double) (v1 - v2);
-    } else if(v2 > v1) {
-        shift = (double) (isovalue - v1) / (double) (v2 - v1);
-        // Reverse the shift since the points are the other way around
-        shift = 1.0 - shift;
-    } else {
-        return p1;
-    }
 
-    return v3_add(v3_multiply(p1, shift), v3_multiply(p2, (1.0 - shift)));*/
+    shift = abs(isovalue - v1) / abs(v2 - v1);
+	
+    vec3 vec = v3_add(v3_multiply(p1, shift), v3_multiply(p2, 1.0 - shift));
+    return v3_create(vec.x * sizex, vec.y * sizey, vec.z * sizez);
 }
 
 /* Using the given iso-value generate triangles for the tetrahedron
