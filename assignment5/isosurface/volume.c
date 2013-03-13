@@ -76,38 +76,41 @@ read_volume(const char *fname)
         fprintf(stderr, "read_volume(): Could not open file '%s' for reading!\n", fname);
         exit(-1);
     }
+	
+	char *ignore;
+	int ignore2;
 
     // header line
-    fgets(s, 255, f);
+    ignore = fgets(s, 255, f);
 
     // comment line
-    fgets(s, 255, f);
+    ignore = fgets(s, 255, f);
 
     // BINARY
-    fgets(s, 255, f);
+    ignore = fgets(s, 255, f);
 
     // DATASET STRUCTURED_POINTS
-    fgets(s, 255, f);
+    ignore =  fgets(s, 255, f);
 
     // DIMENSIONS %d %d %d
-    fscanf(f, "%s %d %d %d\n", s, &nx, &ny, &nz);
+    ignore2 = fscanf(f, "%s %d %d %d\n", s, &nx, &ny, &nz);
     printf("%d x %d x %d voxels\n", nx, ny, nz);
 
     // ASPECT_RATIO/SPACING %f %f %f
-    fscanf(f, "%s %f %f %f\n", s, &sizex, &sizey, &sizez);
+    ignore2 = fscanf(f, "%s %f %f %f\n", s, &sizex, &sizey, &sizez);
     printf("voxel sizes: %.3f, %.3f, %.3f\n", sizex, sizey, sizez);
 
     // ORIGIN ...
-    fgets(s, 255, f);
+    ignore = fgets(s, 255, f);
 
     // POINT_DATA ...
-    fgets(s, 255, f);
+     ignore = fgets(s, 255, f);
 
     // SCALARS ...
-    fgets(s, 255, f);
+     ignore = fgets(s, 255, f);
 
     // LOOKUP_TABLE ...
-    fgets(s, 255, f);
+     ignore = fgets(s, 255, f);
 
     // allocate memory to hold the volume data and read it from file
     nvoxels = nx * ny * nz;
@@ -117,6 +120,9 @@ read_volume(const char *fname)
     {
         printf("WARNING: not all data could be read!\n");
     }
+	
+	(void)ignore;
+	(void)ignore2;
 
     fclose(f);
 }
