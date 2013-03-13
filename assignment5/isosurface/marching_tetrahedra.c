@@ -58,21 +58,21 @@ interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, u
          2 triangles.
 */
 
-static void triangle_calc_normal(triangle *tri) {
-   /* vec3 normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), 
+static void triangle_calc_normal(triangle *triangles) {
+    vec3 normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), 
         v3_subtract(triangles->p[2], triangles->p[0]));
 
     triangles->n[0] = normal;
     triangles->n[1] = normal;
-    triangles->n[2] = normal;*/
+    triangles->n[2] = normal;
 	
 	// C+P DO NOT USE!
-	vec3 dir1, dir2;
+	/*vec3 dir1, dir2;
     for (int i = 0; i < 3; i++){
         dir1 = v3_subtract(tri->p[(i+1)%3], tri->p[i]);
         dir2 = v3_subtract(tri->p[(i+2)%3], tri->p[i]);
         tri->n[i] = v3_normalize(v3_crossprod(dir1, dir2));
-    }
+    }*/
 
 }
 
@@ -105,7 +105,6 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     val1 = (unsigned char) c.value[v1];
     val2 = (unsigned char) c.value[v2];
     val3 = (unsigned char) c.value[v3];
-    vec3 normal;
 
     // case 0001 or 1110, 1 triangle
     if(( v0_less  && !(v1_less) && !(v2_less) && !(v3_less)) ||
@@ -192,14 +191,13 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     // case 0101 or 1010, quad -> 2 triangles
     if((!(v0_less) &&   v1_less  && !(v2_less) && v3_less) ||
        (  v0_less  && !(v1_less) &&   v2_less  && !(v3_less))){
-        vec3 vec01, vec03, vec30, vec12, vec32;
+        vec3 vec01, vec03, vec12, vec32;
         vec01 = interpolate_points(isovalue, c.p[v0], c.p[v1], val0, val1);
         vec03 = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
-        vec30 = interpolate_points(isovalue, c.p[v3], c.p[v0], val3, val0);
         vec12 = interpolate_points(isovalue, c.p[v1], c.p[v2], val1, val2);
         vec32 = interpolate_points(isovalue, c.p[v3], c.p[v2], val3, val2);
         
-        triangles->p[0] = vec30;
+        triangles->p[0] = vec03;
         triangles->p[1] = vec32;
         triangles->p[2] = vec12;
 
@@ -220,15 +218,14 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     if((!(v0_less) &&   v1_less  &&   v2_less  && !(v3_less)) ||
        (  v0_less  && !(v1_less) && !(v2_less) && v3_less)){
        
-        vec3 vec13, vec31, vec10, vec32, vec02;
+        vec3 vec13, vec10, vec32, vec02;
         vec13 = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
-        vec31 = interpolate_points(isovalue, c.p[v3], c.p[v1], val3, val1);
         vec10 = interpolate_points(isovalue, c.p[v1], c.p[v0], val1, val0);
         vec32 = interpolate_points(isovalue, c.p[v3], c.p[v2], val3, val2);
         vec02 = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
         
         triangles->p[0] = vec32;
-        triangles->p[1] = vec31;
+        triangles->p[1] = vec13;
         triangles->p[2] = vec02;
 
         triangle_calc_normal(triangles);
@@ -258,7 +255,7 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 int
 generate_cell_triangles(triangle *triangles, cell c, unsigned char isovalue)
 {
-	int ntriangles, ntotal;
+	int ntriangles, ntotal = 0;
     
     ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 3, 7);
 	triangles += ntriangles;
