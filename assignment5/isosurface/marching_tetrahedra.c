@@ -21,20 +21,20 @@
 static vec3
 interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, unsigned char v2)
 {
-	return v3_add(v3_multiply(p1, 0.5), v3_multiply(p2, 0.5));
+    return v3_add(v3_multiply(p1, 0.5), v3_multiply(p2, 0.5));
 /*
-	double shift;
-	if(v1 > v2) {
-		// Isovalue - v2 = 0 means isovalue = v2, so shift = 0
-		// Shift = 0 means 1.0 - 0.0 = 1.0 times v2 and 0.0 times v1
-		shift = (double) (isovalue - v2) / (double) (v1 - v2);
-	} else if(v2 > v1) {
-		shift = (double) (isovalue - v1) / (double) (v2 - v1);
-		// Reverse the shift since the points are the other way around
-		shift = 1.0 - shift;
-	} else {
-		return p1;
-	}
+    double shift;
+    if(v1 > v2) {
+        // Isovalue - v2 = 0 means isovalue = v2, so shift = 0
+        // Shift = 0 means 1.0 - 0.0 = 1.0 times v2 and 0.0 times v1
+        shift = (double) (isovalue - v2) / (double) (v1 - v2);
+    } else if(v2 > v1) {
+        shift = (double) (isovalue - v1) / (double) (v2 - v1);
+        // Reverse the shift since the points are the other way around
+        shift = 1.0 - shift;
+    } else {
+        return p1;
+    }
 
     return v3_add(v3_multiply(p1, shift), v3_multiply(p2, (1.0 - shift)));*/
 }
@@ -51,44 +51,44 @@ interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, u
 */
 
 static void triangle_calc_normal(triangle *triangles) {
-	vec3 normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), 
-		v3_subtract(triangles->p[2], triangles->p[0]));
+    vec3 normal = v3_crossprod(v3_subtract(triangles->p[1], triangles->p[0]), 
+        v3_subtract(triangles->p[2], triangles->p[0]));
 
-	triangles->n[0] = normal;
-	triangles->n[1] = normal;
-	triangles->n[2] = normal;
+    triangles->n[0] = normal;
+    triangles->n[1] = normal;
+    triangles->n[2] = normal;
 }
 
 static int
 generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell c, int v0, int v1, int v2, int v3)
 {
-	// set the values used for the boolean operators
-	// values set by checking cell values against the isovalue
-	int v0_less = 0, v1_less = 0, v2_less = 0, v3_less = 0;
-	if(c.value[v0] <= isovalue)
-	  v0_less++;
-	if(c.value[v1] <= isovalue)
-	  v1_less++;
-	if(c.value[v2] <= isovalue)
-	  v2_less++;
-	if(c.value[v3] <= isovalue)
-	  v3_less++;
-	
-	
+    // set the values used for the boolean operators
+    // values set by checking cell values against the isovalue
+    int v0_less = 0, v1_less = 0, v2_less = 0, v3_less = 0;
+    if(c.value[v0] <= isovalue)
+      v0_less++;
+    if(c.value[v1] <= isovalue)
+      v1_less++;
+    if(c.value[v2] <= isovalue)
+      v2_less++;
+    if(c.value[v3] <= isovalue)
+      v3_less++;
+    
+    
     // case 0000 or 1111, no triangles
     if((!(v0_less) && !(v1_less) && !(v2_less) && !(v3_less)) ||
        (  v0_less  &&   v1_less  &&   v2_less  &&   v3_less)){
-		
+        
       return 0;
     }
-	
-	// Do all the casting already
-	unsigned char val0, val1, val2, val3;
-	val0 = (unsigned char) c.value[v0];
-	val1 = (unsigned char) c.value[v1];
-	val2 = (unsigned char) c.value[v2];
-	val3 = (unsigned char) c.value[v3];
-	vec3 normal;
+    
+    // Do all the casting already
+    unsigned char val0, val1, val2, val3;
+    val0 = (unsigned char) c.value[v0];
+    val1 = (unsigned char) c.value[v1];
+    val2 = (unsigned char) c.value[v2];
+    val3 = (unsigned char) c.value[v3];
+    vec3 normal;
 
     // case 0001 or 1110, 1 triangle
     if((!(v0_less) && !(v1_less) && !(v2_less) &&   v3_less) ||
@@ -108,123 +108,121 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
     if((!(v0_less) && !(v1_less) &&   v2_less  && !(v3_less)) ||
        (  v0_less  &&   v1_less  && !(v2_less) &&   v3_less)){
 
-      triangles->p[0] = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
-      triangles->p[1] = interpolate_points(isovalue, c.p[v1], c.p[v2], val1, val2);
-      triangles->p[2] = interpolate_points(isovalue, c.p[v1], c.p[v0], val1, val0);
+        triangles->p[0] = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
+        triangles->p[1] = interpolate_points(isovalue, c.p[v1], c.p[v2], val1, val2);
+        triangles->p[2] = interpolate_points(isovalue, c.p[v1], c.p[v0], val1, val0);
 
-      triangle_calc_normal(triangles);
-      triangles++;
+        triangle_calc_normal(triangles);
+        triangles++;
     
-      return 1;
+        return 1;
     }
-	
-	return 0;
 
     // case 0100 or 1011, 1 triangle
     if((!(v0_less) &&   v1_less  && !(v2_less) && !(v3_less)) ||
        (  v0_less  && !(v1_less) &&   v2_less  &&   v3_less)){
 
-      triangles->p[0] = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
-      triangles->p[1] = interpolate_points(isovalue, c.p[v2], c.p[v1], val2, val1);
-      triangles->p[2] = interpolate_points(isovalue, c.p[v2], c.p[v0], val2, val0);
+        triangles->p[0] = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
+        triangles->p[1] = interpolate_points(isovalue, c.p[v2], c.p[v1], val2, val1);
+        triangles->p[2] = interpolate_points(isovalue, c.p[v2], c.p[v0], val2, val0);
 
-      triangle_calc_normal(triangles);
-      triangles++;
+        triangle_calc_normal(triangles);
+        triangles++;
     
-      return 1;
+        return 1;
     }
 
     // case 1000 or 0111, 1 triangle
     if((  v0_less  && !(v1_less) && !(v2_less) && !(v3_less)) ||
        (!(v0_less) &&   v1_less  &&   v2_less  &&   v3_less)){
 
-      triangles->p[0] = interpolate_points(isovalue, c.p[v3], c.p[v2], val3, val2);
-      triangles->p[1] = interpolate_points(isovalue, c.p[v3], c.p[v1], val3, val1);
-      triangles->p[2] = interpolate_points(isovalue, c.p[v3], c.p[v0], val3, val0);
+        triangles->p[0] = interpolate_points(isovalue, c.p[v3], c.p[v2], val3, val2);
+        triangles->p[1] = interpolate_points(isovalue, c.p[v3], c.p[v1], val3, val1);
+        triangles->p[2] = interpolate_points(isovalue, c.p[v3], c.p[v0], val3, val0);
 
-      triangle_calc_normal(triangles);
-      triangles++;
+        triangle_calc_normal(triangles);
+        triangles++;
     
-      return 1;
+        return 1;
     }
     
     // case 0011 or 1100, quad -> 2 triangles
     if((!(v0_less) && !(v1_less) &&   v2_less  &&   v3_less) ||
        (  v0_less  &&   v1_less  && !(v2_less) && !(v3_less))){
-	   	vec3 vec02, vec03, vec13, vec12;
-		vec02 = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
-		vec03 = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
-		vec13 = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
-		vec12 = interpolate_points(isovalue, c.p[v1], c.p[v2], val1, val2);
-		
-		triangles->p[0] = vec03;
+           vec3 vec02, vec03, vec13, vec12;
+        vec02 = interpolate_points(isovalue, c.p[v0], c.p[v2], val0, val2);
+        vec03 = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
+        vec13 = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
+        vec12 = interpolate_points(isovalue, c.p[v1], c.p[v2], val1, val2);
+        
+        triangles->p[0] = vec03;
         triangles->p[1] = vec02;
         triangles->p[2] = vec13;
 
         triangle_calc_normal(triangles);
         triangles++;
-		
-		triangles->p[0] = vec12;
+        
+        triangles->p[0] = vec12;
         triangles->p[1] = vec13;
         triangles->p[2] = vec02;
 
         triangle_calc_normal(triangles);
         triangles++;
-		
-      return 2;
+        
+        return 2;
     }
     
     // case 0101 or 1010, quad -> 2 triangles
     if((!(v0_less) &&   v1_less  && !(v2_less) && v3_less) ||
        (  v0_less  && !(v1_less) &&   v2_less  && v3_less)){
         vec3 vec01, vec03, vec21, vec23;
-		vec01 = interpolate_points(isovalue, c.p[v0], c.p[v1], val0, val1);
-		vec03 = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
-		vec21 = interpolate_points(isovalue, c.p[v2], c.p[v1], val2, val1);
-		vec23 = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
-		
-		triangles->p[0] = vec03;
+        vec01 = interpolate_points(isovalue, c.p[v0], c.p[v1], val0, val1);
+        vec03 = interpolate_points(isovalue, c.p[v0], c.p[v3], val0, val3);
+        vec21 = interpolate_points(isovalue, c.p[v2], c.p[v1], val2, val1);
+        vec23 = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
+        
+        triangles->p[0] = vec03;
         triangles->p[1] = vec21;
         triangles->p[2] = vec01;
 
         triangle_calc_normal(triangles);
         triangles++;
-		
-		triangles->p[0] = vec03;
+        
+        triangles->p[0] = vec03;
         triangles->p[1] = vec23;
         triangles->p[2] = vec21;
 
         triangle_calc_normal(triangles);
         triangles++;
-		
+        
         return 2;
     }
     
     // case 0110 or 1001, quad -> 2 triangles
     if((!(v0_less) &&   v1_less  &&   v2_less  && !(v3_less)) ||
        (  v0_less  && !(v1_less) && !(v2_less) && v3_less)){
-	   
-		vec3 vec13, vec10, vec23, vec20;
-		vec13 = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
-		vec10 = interpolate_points(isovalue, c.p[v1], c.p[v0], val1, val0);
-		vec23 = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
-		vec20 = interpolate_points(isovalue, c.p[v2], c.p[v0], val2, val0);
-		
-		triangles->p[0] = vec10;
+       
+        vec3 vec13, vec10, vec23, vec20;
+        vec13 = interpolate_points(isovalue, c.p[v1], c.p[v3], val1, val3);
+        vec10 = interpolate_points(isovalue, c.p[v1], c.p[v0], val1, val0);
+        vec23 = interpolate_points(isovalue, c.p[v2], c.p[v3], val2, val3);
+        vec20 = interpolate_points(isovalue, c.p[v2], c.p[v0], val2, val0);
+        
+        triangles->p[0] = vec10;
         triangles->p[1] = vec13;
         triangles->p[2] = vec20;
 
         triangle_calc_normal(triangles);
         triangles++;
-		
-		triangles->p[0] = vec23;
+        
+        triangles->p[0] = vec23;
         triangles->p[1] = vec20;
         triangles->p[2] = vec13;
 
         triangle_calc_normal(triangles);
         triangles++;
-		
-      return 2;
+        
+        return 2;
     }
     return 0;
 }
@@ -241,18 +239,18 @@ generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell
 int
 generate_cell_triangles(triangle *triangles, cell c, unsigned char isovalue)
 {
-	// Save pointer so we can move the triangles pointer forward
-	triangle *tmp = triangles;
-	
-	int ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 3, 7);
-	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 6, 7);
-	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 5, 7);
-	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 3, 7);
-	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 5, 7);
-	ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 6, 7);
-	
-	// Restore pointer to original value
-	triangles = tmp;
-	
+    // Save pointer so we can move the triangles pointer forward
+    triangle *tmp = triangles;
+    
+    int ntriangles = generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 3, 7);
+    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 6, 7);
+    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 1, 5, 7);
+    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 2, 3, 7);
+    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 5, 7);
+    ntriangles += generate_tetrahedron_triangles(triangles, isovalue, c, 0, 4, 6, 7);
+    
+    // Restore pointer to original value
+    triangles = tmp;
+    
     return ntriangles;
 }
