@@ -5,13 +5,11 @@
  * Date ............ 29.10.2007
  * Created by ...... Paul Melis
  *
- * Student name ....
- * Student email ...
- * Collegekaart ....
- * Date ............
- * Comments ........
+ * Student names: Tom Peerdeman & Rene Aparicio Saez
+ * Student emails: tom.peerdeman@student.uva.nl & rene.apariciosaez@student.uva.nl
+ * Collegekaart 10266186 & 10214054
+ * Date 13 March 2013
  *
- * (always fill in these fields before submitting!!)
  */
 
 #include <stdio.h>
