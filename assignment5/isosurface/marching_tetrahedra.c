@@ -51,7 +51,8 @@ interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, u
 static int
 generate_tetrahedron_triangles(triangle *triangles, unsigned char isovalue, cell c, int v0, int v1, int v2, int v3)
 {
-	// TODO: change c.value[v] < isovalue to c.value[v] <= isovalue
+	// set the values used for the boolean operators
+	// values set by checking cell values against the isovalue
 	int v0_less = 0, v1_less = 0, v2_less = 0, v3_less = 0;
 	if(c.value[v0] <= isovalue)
 	  v0_less++;
