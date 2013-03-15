@@ -21,10 +21,10 @@ interpolate_points(unsigned char isovalue, vec3 p1, vec3 p2, unsigned char v1, u
 {
     double shift;
     // get the ratio between two points
-    shift = abs(isovalue - v1) / abs(v2 - v1);
+    shift = (isovalue - v2) / (double) (v1 - v2);
     // apply the calculated ratio to get the interpolation between the points
-    vec3 vec = v3_add(v3_multiply(p1, shift), v3_multiply(p2, 1.0 - shift));
-    return v3_create(vec.x * sizex, vec.y * sizey, vec.z * sizez);
+    return v3_add(v3_multiply(p1, shift), v3_multiply(p2,1 - shift));
+    //return v3_create(vec.x * sizex, vec.y * sizey, vec.z * sizez);
 }
 
 /* Using the given iso-value generate triangles for the tetrahedron
