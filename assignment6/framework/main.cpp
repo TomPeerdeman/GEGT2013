@@ -17,10 +17,7 @@
 #include <Box2D/Box2D.h>
 
 #include "levels.h"
-
-#ifndef M_PI
-#define M_PI 4.0 * atanf(1.0f)
-#endif
+#include "objects.h"
 
 unsigned int reso_x = 800, reso_y = 600; // Window size in pixels
 const float world_x = 8.f, world_y = 6.f; // Level (world) size in meters
@@ -36,7 +33,7 @@ level_t *levels;
 unsigned int current_level;
 
 b2World *world;
-b2Body *ball;
+Ball *ball;
 
 /*
  * Load a given world, i.e. read the world from the `levels' data structure and
@@ -55,6 +52,7 @@ void load_world(unsigned int level)
 	// Unload previous world
 	if(world != NULL){
 		delete world;
+		delete ball;
 	}
 
     // Create a Box2D world and populate it with all bodies for this level
@@ -65,18 +63,7 @@ void load_world(unsigned int level)
 	// Create the world
 	world = new b2World(gravity);
 	
-	b2BodyDef bodyDef;
-	
-	// Ball
-	bodyDef.position.Set(levels[level].start.x, levels[level].start.y);
-	bodyDef.type = b2_dynamicBody;
-	
-	ball = world->CreateBody(&bodyDef);
-	
-	b2CircleShape ballShape;
-	ballShape.m_radius = 0.5f;
-	
-	ball->CreateFixture(&ballShape, 1.0f);
+	ball = new Ball(world, &levels[level], 0.3f, 1.0f);
 }
 
 
@@ -109,25 +96,8 @@ void draw(void)
 	// Simulate the world
 	world->Step((frametime / 1000.0f), 8, 3);
 
-	b2Vec2 position = ball->GetPosition();
-
-	printf("%4.2f %4.2f %d\n", position.x, position.y, frametime);
 	glColor3f(1.0f, 0.0f, 0.0f);
-
-	glBegin(GL_TRIANGLE_FAN);
-	glVertex2f(position.x, position.y);
-	const float r = 0.3f;
-	const int segments = 100;
-	/*
-	 * Source:
-	 * http://stackoverflow.com/questions/5094992/c-drawing-a-2d-disk-in-opengl
-	 */
-	for(int i = 0; i <= segments; i++){
-        float const t = 2 * M_PI * (float) i / (float) segments;
-        glVertex2f(position.x + sin(t) * r, position.y + cos(t) * r);
-	}
-
-	glEnd();	
+	ball->render();
 	
     // Show rendered frame
     glutSwapBuffers();

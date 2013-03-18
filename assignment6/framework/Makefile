@@ -1,5 +1,5 @@
 PROGNAME = main
-SRCFILES = main.cpp levels.cpp
+SRCFILES = main.cpp levels.cpp Ball.cpp
 TARNAME = box2d.tgz
 
 BOX_H = include/
@@ -40,3 +40,4 @@ buildbox:
 	unzip Box2D_v2.2.1.zip
 	mv Box2D_v2.2.1 Box2D
 	cd Box2D && cmake -DBOX2D_INSTALL=ON -DBOX2D_BUILD_SHARED=ON && make
+
