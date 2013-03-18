@@ -28,6 +28,10 @@ int frame_count;
 unsigned int num_levels;
 level_t *levels;
 
+unsigned int current_level;
+
+b2World *world;
+b2Body *ball;
 
 /*
  * Load a given world, i.e. read the world from the `levels' data structure and
@@ -42,9 +46,31 @@ void load_world(unsigned int level)
         printf("Warning: level %d does not exist.\n", level);
         return;
     }
+	
+	if(world != NULL){
+		delete world;
+	}
 
     // Create a Box2D world and populate it with all bodies for this level
     // (including the ball).
+	
+	b2Vec2 gravity(0.0f, -10.0f);
+	
+	// Create the world
+	world = new b2World(gravity);
+	
+	b2BodyDef bodyDef;
+	
+	// Ball
+	bodyDef.position.Set(levels[level].start.x, levels[level].start.y);
+	bodyDef.type = b2_dynamicBody;
+	
+	ball = world->CreateBody(&bodyDef);
+	
+	b2CircleShape ballShape;
+	ballShape.m_radius = 1.0f;
+	
+	ball->CreateFixture(&ballShape, 1.0f);
 }
 
 
@@ -66,8 +92,15 @@ void draw(void)
     //
     // Do any logic and drawing here.
     //
+	
+	world->Step((frametime / 10000.0f), 8, 3);
 
+	b2Vec2 position = ball->GetPosition();
 
+	printf("%4.2f %4.2f\n", position.x, position.y);
+
+	
+	
     // Show rendered frame
     glutSwapBuffers();
 
@@ -77,7 +110,7 @@ void draw(void)
         char window_title[128];
         snprintf(window_title, 128,
                 "Box2D: %f fps, level %d/%d",
-                frame_count / (frametime / 1000.f), -1, num_levels);
+                frame_count / (frametime / 1000.f), (current_level + 1), num_levels);
         glutSetWindowTitle(window_title);
         last_time = time;
         frame_count = 0;
@@ -106,8 +139,22 @@ void key_pressed(unsigned char key, int x, int y)
         case 'q':
             exit(0);
             break;
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			current_level = key - 49;
+			load_world(current_level);
+			printf("New level: %u\n", (current_level + 1));
+			break;
         // Add any keys you want to use, either for debugging or gameplay.
         default:
+			printf("Pressed: %u\n", key);
             break;
     }
 }
