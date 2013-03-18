@@ -18,10 +18,15 @@
 
 #include "levels.h"
 
+#ifndef M_PI
+#define M_PI 4.0 * atanf(1.0f)
+#endif
+
 unsigned int reso_x = 800, reso_y = 600; // Window size in pixels
 const float world_x = 8.f, world_y = 6.f; // Level (world) size in meters
 
 int last_time;
+int timebase;
 int frame_count;
 
 // Information about the levels loaded from files will be available in these.
@@ -47,6 +52,7 @@ void load_world(unsigned int level)
         return;
     }
 	
+	// Unload previous world
 	if(world != NULL){
 		delete world;
 	}
@@ -68,7 +74,7 @@ void load_world(unsigned int level)
 	ball = world->CreateBody(&bodyDef);
 	
 	b2CircleShape ballShape;
-	ballShape.m_radius = 1.0f;
+	ballShape.m_radius = 0.5f;
 	
 	ball->CreateFixture(&ballShape, 1.0f);
 }
@@ -81,7 +87,14 @@ void load_world(unsigned int level)
 void draw(void)
 {
     int time = glutGet(GLUT_ELAPSED_TIME);
+
     int frametime = time - last_time;
+	// Fix first frame to simulate no time
+	if(last_time == 0.0f) {
+		frametime = 0.0f;
+	}
+	last_time = time;
+
     frame_count++;
 
     // Clear the buffer
@@ -93,26 +106,41 @@ void draw(void)
     // Do any logic and drawing here.
     //
 	
-	world->Step((frametime / 10000.0f), 8, 3);
+	// Simulate the world
+	world->Step((frametime / 1000.0f), 8, 3);
 
 	b2Vec2 position = ball->GetPosition();
 
-	printf("%4.2f %4.2f\n", position.x, position.y);
+	printf("%4.2f %4.2f %d\n", position.x, position.y, frametime);
+	glColor3f(1.0f, 0.0f, 0.0f);
 
-	
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex2f(position.x, position.y);
+	const float r = 0.3f;
+	const int segments = 100;
+	/*
+	 * Source:
+	 * http://stackoverflow.com/questions/5094992/c-drawing-a-2d-disk-in-opengl
+	 */
+	for(int i = 0; i <= segments; i++){
+        float const t = 2 * M_PI * (float) i / (float) segments;
+        glVertex2f(position.x + sin(t) * r, position.y + cos(t) * r);
+	}
+
+	glEnd();	
 	
     // Show rendered frame
     glutSwapBuffers();
 
     // Display fps in window title.
-    if (frametime >= 1000)
+    if (time - timebase >= 1000)
     {
         char window_title[128];
         snprintf(window_title, 128,
-                "Box2D: %f fps, level %d/%d",
-                frame_count / (frametime / 1000.f), (current_level + 1), num_levels);
+                "Box2D: %3.2f fps, level %d/%d",
+                frame_count / ((time - timebase) / 1000.f), (current_level + 1), num_levels);
         glutSetWindowTitle(window_title);
-        last_time = time;
+        timebase = time;
         frame_count = 0;
     }
 }
