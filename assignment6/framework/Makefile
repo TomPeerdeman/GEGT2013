@@ -36,8 +36,10 @@ clean:
 	rm -fv $(PROGNAME) $(OBJFILES) $(TARNAME)
 	
 buildbox:
-	sudo apt-get install unzip cmake
+	sudo apt-get autoremove libbox2d-dev
+	sudo apt-get install unzip cmake wget
+	wget http://box2d.googlecode.com/files/Box2D_v2.2.1.zip
 	unzip Box2D_v2.2.1.zip
 	mv Box2D_v2.2.1 Box2D
 	cd Box2D && cmake -DBOX2D_INSTALL=ON -DBOX2D_BUILD_SHARED=ON && make
-
+	rm Box2D_v2.2.1.zip
