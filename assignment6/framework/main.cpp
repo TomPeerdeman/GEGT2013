@@ -258,21 +258,28 @@ void mouse_clicked(int button, int state, int x, int y)
 			// overwrite old values
 			mousecounter = mousecounter % 4;
 			
-			// pixel values
-			mousevert_x[mousecounter] = x;
-			mousevert_y[mousecounter] = y;
-			
-			// box2D values
-			worldvert_x[mousecounter] = (float)mousevert_x[mousecounter]/100.0f;
-			worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
-			mousecounter++;
-			
-			// print new values
-			for(int i = 0; i < 4; i++){
-				printf("mouse\tx: %u, y: %u\n",mousevert_x[i],mousevert_y[i]);
+			// check for concave points
+			if(mousecounter == 3){
+				bool allowed = bary_check(worldvert_x, worldvert_y);
 			}
-			for(int i = 0; i < 4; i++){
-				printf("world\tx: %g, y: %g\n",worldvert_x[i],worldvert_y[i]);
+			
+			if(allowed){
+				// pixel values
+				mousevert_x[mousecounter] = x;
+				mousevert_y[mousecounter] = y;
+			
+				// box2D values
+				worldvert_x[mousecounter] = (float)mousevert_x[mousecounter]/100.0f;
+				worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
+				mousecounter++;
+			
+				// print new values
+				for(int i = 0; i < 4; i++){
+					printf("mouse\tx: %u, y: %u\n",mousevert_x[i],mousevert_y[i]);
+				}
+				for(int i = 0; i < 4; i++){
+					printf("world\tx: %g, y: %g\n",worldvert_x[i],worldvert_y[i]);
+				}
 			}
 		}
 	
