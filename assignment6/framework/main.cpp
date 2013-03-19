@@ -66,8 +66,6 @@ void load_world(unsigned int level)
         return;
     }
 	
-	winObject.reset();
-	
 	// Unload previous world
 	if(world != NULL){
 		delete world;
@@ -77,6 +75,9 @@ void load_world(unsigned int level)
 		}
 		delete[] spolygons;
 	}
+	
+	current_level = level;
+	winObject.reset();
 
     // Create a Box2D world and populate it with all bodies for this level
     // (including the ball).
@@ -128,8 +129,11 @@ void draw(void)
     // Do any logic and drawing here.
     //
 	
-	// Simulate the world
-	world->Step((frametime / 1000.0f), 8, 3);
+	if(world != NULL) {
+		if(!winObject.hasWon()) {
+			// Simulate the world
+			world->Step((frametime / 1000.0f), 8, 3);
+		}
 
 	// Draw ball
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -151,7 +155,8 @@ void draw(void)
 		}
 	}
 
-	winObject.render();
+		winObject.render();
+	}
 	
     // Show rendered frame
     glutSwapBuffers();
@@ -219,7 +224,7 @@ void mouse_clicked(int button, int state, int x, int y)
 	// only work if left mousebutton pressed
 	if(button == 0){
 		// only add point when the mouse is pressed
-		if(state){
+		if(state && !winObject.hasWon()){
 			// overwrite old values
 			mousecounter = mousecounter % 4;
 			
@@ -243,6 +248,11 @@ void mouse_clicked(int button, int state, int x, int y)
 	
 		// if mouse released draw if there are 4 vertices
 		if(!state){
+			if(winObject.hasWon()) {
+				load_world(current_level + 1);
+				return;
+			}
+		
 			if(mousecounter == 3){
 				// fill a poly_t object
         poly_t poly;
