@@ -247,21 +247,6 @@ void key_pressed(unsigned char key, int x, int y)
 }
 
 /*
- * Called to check for concave points in the given polygon, if so return false
- */
-bool bary_check(){
-	float alpha, beta, gamma;
-	for(int i = 0; i < 4; i++){
-	  alpha = alphacalc(world_x[(i+3)%4], world_x[(i+1)%4], world_x[(i+2)%4],
-	  		world_y[(i+3)%4], world_y[(i+1)%4], world_y[(i+2)%4]);
-	 // beta = betacalc(world_x[(i+3)%4], world_x[(i)%4], world_x[(i+2)%4],
-	  //		world_y[(i+3)%4], world_y[(i+1)%4], world_y[(i+2)%4]);
-	}
-
-	return true;
-}
-
-/*
  * helper function to calculate a part of the alpha value
  * Source:
  * Assignment1
@@ -295,6 +280,21 @@ float betacalc(float x, float x0, float x2, float y, float y0, float y2) {
  */
 float gammacalc(float x, float x0, float x1, float y, float y0, float y1) {
 	return((y0-y1)*x + (x1-x0)*y + x0*y1 - x1*y0);
+}
+
+/*
+ * Called to check for concave points in the given polygon, if so return false
+ */
+bool bary_check(){
+	float alpha, beta, gamma;
+	for(int i = 0; i < 4; i++){
+	  alpha = alphacalc(mousevert_x[(i+3)%4], mousevert_x[(i+1)%4], mousevert_x[(i+2)%4],
+	  		mousevert_y[(i+3)%4], mousevert_y[(i+1)%4], mousevert_y[(i+2)%4]);
+	 // beta = betacalc(world_x[(i+3)%4], world_x[(i)%4], world_x[(i+2)%4],
+	  //		world_y[(i+3)%4], world_y[(i+1)%4], world_y[(i+2)%4]);
+	}
+
+	return true;
 }
 
 /*
