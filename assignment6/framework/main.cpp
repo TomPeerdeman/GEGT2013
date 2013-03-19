@@ -368,17 +368,22 @@ void mouse_clicked(int button, int state, int x, int y)
 					for(int i = 0; i < 3; i++){
 						poly1.verts[i].x = worldvert_x[i];
 						poly1.verts[i].y = worldvert_y[i];
-						poly2.verts[(i+2)%3].x = worldvert_x[i];
-						poly2.verts[(i+2)%3].y = worldvert_y[i];
+						poly2.verts[i].x = worldvert_x[(i+2)%4];
+						poly2.verts[i].y = worldvert_y[(i+2)%4];
 					}
 				}
 				else{
 					for(int i = 0; i < 3; i++){
 						poly1.verts[i].x = worldvert_x[2-i];
 						poly1.verts[i].y = worldvert_y[2-i];
-						poly2.verts[(i+2)%3].x = worldvert_x[2-i];
-						poly2.verts[(i+2)%3].y = worldvert_y[2-i];
 					}
+					// ugly, couldnt think of a good for-loop function
+					poly2.verts[0].x = worldvert_x[3];
+					poly2.verts[0].y = worldvert_y[3];
+					poly2.verts[1].x = worldvert_x[2];
+					poly2.verts[1].y = worldvert_y[2];
+					poly2.verts[2].x = worldvert_x[0];
+					poly2.verts[2].y = worldvert_y[0];
 				}
         
 				dpolygons[dpolylist_length++] = new Polygon(world, &poly1, 1, 1.0f);
