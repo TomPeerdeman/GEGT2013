@@ -265,6 +265,67 @@ void mouse_clicked(int button, int state, int x, int y)
 				poly.num_verts = 4;
 				poly.verts = new point_t[4];
 				
+				/* possible intersection 1
+				 *    3
+				 *  2   1
+				 *    0
+				 */
+				if(worldvert_x[1] > worldvert_x[0] &&
+					 worldvert_x[1] > worldvert_x[2] &&
+					 worldvert_x[2] < worldvert_x[3]){
+					float buf_x = worldvert_x[3];
+					float buf_y = worldvert_y[3];
+					worldvert_x[3] = worldvert_x[2];
+					worldvert_y[3] = worldvert_y[2];
+					worldvert_x[2] = buf_x;
+					worldvert_y[2] = buf_y;
+				}
+				/* possible intersection 2
+				 *    2
+				 *  0   3
+				 *    1
+				 */
+				if(worldvert_y[1] < worldvert_y[0] &&
+					 worldvert_y[1] < worldvert_y[2] &&
+					 worldvert_y[2] > worldvert_y[3]){
+					float buf_x = worldvert_x[3];
+					float buf_y = worldvert_y[3];
+					worldvert_x[3] = worldvert_x[2];
+					worldvert_y[3] = worldvert_y[2];
+					worldvert_x[2] = buf_x;
+					worldvert_y[2] = buf_y;
+				}
+				/* possible intersection 3
+				 *    3
+				 *  1   2
+				 *    0
+				 */
+				if(worldvert_x[1] < worldvert_x[0] &&
+					 worldvert_x[1] < worldvert_x[2] &&
+					 worldvert_x[2] > worldvert_x[3]){
+					float buf_x = worldvert_x[3];
+					float buf_y = worldvert_y[3];
+					worldvert_x[3] = worldvert_x[2];
+					worldvert_y[3] = worldvert_y[2];
+					worldvert_x[2] = buf_x;
+					worldvert_y[2] = buf_y;
+				}
+				/* possible intersection 1
+				 *    1
+				 *  3   0
+				 *    2
+				 */
+				if(worldvert_y[1] > worldvert_y[0] &&
+					 worldvert_y[1] > worldvert_y[2] &&
+					 worldvert_y[2] < worldvert_y[3]){
+					float buf_x = worldvert_x[3];
+					float buf_y = worldvert_y[3];
+					worldvert_x[3] = worldvert_x[2];
+					worldvert_y[3] = worldvert_y[2];
+					worldvert_x[2] = buf_x;
+					worldvert_y[2] = buf_y;
+				}
+				
 				int sum = 0;
 				for(int i = 0; i < 4; i++){
 					sum = sum + ((worldvert_x[(i+1)%4]-worldvert_x[i]) * (worldvert_y[(i+1)%4]+worldvert_y[i]));
