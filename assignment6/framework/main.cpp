@@ -310,7 +310,7 @@ void mouse_clicked(int button, int state, int x, int y)
 					worldvert_x[2] = buf_x;
 					worldvert_y[2] = buf_y;
 				}
-				/* possible intersection 1
+				/* possible intersection 4
 				 *    1
 				 *  3   0
 				 *    2
