@@ -63,8 +63,6 @@ void load_world(unsigned int level)
         return;
     }
 	
-	winObject.reset();
-	
 	// Unload previous world
 	if(world != NULL){
 		delete world;
@@ -74,6 +72,9 @@ void load_world(unsigned int level)
 		}
 		delete[] spolygons;
 	}
+	
+	current_level = level;
+	winObject.reset();
 
     // Create a Box2D world and populate it with all bodies for this level
     // (including the ball).
@@ -124,33 +125,37 @@ void draw(void)
     // Do any logic and drawing here.
     //
 	
-	// Simulate the world
-	world->Step((frametime / 1000.0f), 8, 3);
+	if(world != NULL) {
+		if(!winObject.hasWon()) {
+			// Simulate the world
+			world->Step((frametime / 1000.0f), 8, 3);
+		}
 
-	// Draw ball
-	glColor3f(1.0f, 0.0f, 0.0f);
-	ball->render();
-	
-	glColor3f(1.0f, 1.0f, 1.0f);
-	endPoint->render();
-	
-	// Draw static polygons
-	glColor3f(0.0f, 1.0f, 0.0f);
-	for(int i = 0; i < spolylist_length; i++){
-		spolygons[i]->render();
-	}
-	
-	if(drawbox){
-		glColor3f(0.5f, 0.5f, 0.5f);
-		glBegin(GL_POLYGON);
-		glVertex2f(worldvert_x[0], worldvert_y[0]);
-		glVertex2f(worldvert_x[1], worldvert_y[1]);
-		glVertex2f(worldvert_x[2], worldvert_y[2]);
-		glVertex2f(worldvert_x[3], worldvert_y[3]);
-		glEnd();
-	}
+		// Draw ball
+		glColor3f(1.0f, 0.0f, 0.0f);
+		ball->render();
+		
+		glColor3f(1.0f, 1.0f, 1.0f);
+		endPoint->render();
+		
+		// Draw static polygons
+		glColor3f(0.0f, 1.0f, 0.0f);
+		for(int i = 0; i < spolylist_length; i++){
+			spolygons[i]->render();
+		}
+		
+		if(drawbox){
+			glColor3f(0.5f, 0.5f, 0.5f);
+			glBegin(GL_POLYGON);
+			glVertex2f(worldvert_x[0], worldvert_y[0]);
+			glVertex2f(worldvert_x[1], worldvert_y[1]);
+			glVertex2f(worldvert_x[2], worldvert_y[2]);
+			glVertex2f(worldvert_x[3], worldvert_y[3]);
+			glEnd();
+		}
 
-	winObject.render();
+		winObject.render();
+	}
 	
     // Show rendered frame
     glutSwapBuffers();
@@ -218,7 +223,7 @@ void mouse_clicked(int button, int state, int x, int y)
 	// only work if left mousebutton pressed
 	if(button == 0){
 		// only add point when the mouse is pressed
-		if(state){
+		if(state && !winObject.hasWon()){
 			// overwrite old values
 			mousecounter = mousecounter % 4;
 			
@@ -242,6 +247,11 @@ void mouse_clicked(int button, int state, int x, int y)
 	
 		// if mouse released draw if there are 4 vertices
 		if(!state){
+			if(winObject.hasWon()) {
+				load_world(current_level + 1);
+				return;
+			}
+		
 			if(mousecounter == 3){
 				drawbox = true;
 			}
