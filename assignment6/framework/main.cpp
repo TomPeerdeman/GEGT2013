@@ -71,18 +71,6 @@ void load_world(unsigned int level)
 	world = new b2World(gravity);
 	
 	ball = new Ball(world, &levels[level], 0.3f, 1.0f);
-	//level_t cur_level = levels[level];
-	
-	// making static object polygons
-	/*b2PolygonShape *polygons = new b2PolygonShape[cur_level.num_polygons];
-	for(unsigned int i = 0; i < cur_level.num_polygons; i++){
-		b2Vec2 *vertices = new b2Vec2[cur_level.polygons[i].num_verts];
-		for(unsigned int j = 0; j < cur_level.polygons[i].num_verts; j++){
-			vertices[j].Set(cur_level.polygons[i].verts[j].x,
-					cur_level.polygons[i].verts[j].y);
-		}
-		polygons[i].Set(vertices, cur_level.polygons[i].num_verts);
-	}*/
 	
 	// Static polygon's
 	spolylist_length = levels[level].num_polygons;
@@ -191,12 +179,39 @@ void key_pressed(unsigned char key, int x, int y)
     }
 }
 
+
+
+int mousecounter = 0;
+signed int mousevert_x[4];
+signed int mousevert_y[4];
+
 /*
  * Called when the user clicked (or released) a mouse buttons inside the window.
  */
 void mouse_clicked(int button, int state, int x, int y)
 {
-
+	// only work if left mousebutton pressed
+	if(button == 0){
+		// only add point when the mouse is pressed
+		if(state){
+			// overwrite old values
+			mousecounter = mousecounter % 4;
+			mousevert_x[mousecounter] = x;
+			mousevert_y[mousecounter] = y;
+			mousecounter++;
+			// print new values
+			for(int i = 0; i < 4; i++){
+				printf("x: %u, y: %u\n",mousevert_x[i],mousevert_y[i]);
+			}
+		}
+	
+		// if mouse released draw if there are 4 vertices
+		if(!state){
+			if(mousecounter < 3){
+		
+			}
+		}
+	}
 }
 
 /*
