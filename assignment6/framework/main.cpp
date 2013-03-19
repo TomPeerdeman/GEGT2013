@@ -249,15 +249,17 @@ void mouse_clicked(int button, int state, int x, int y)
 		if(state){
 			if(winObject.hasWon()) {
 				load_world(current_level + 1);
+				mousecounter = 0;
 				return;
 			}
 			
 			if(winObject.hasLost()) {
 				load_world(current_level);
+				mousecounter = 0;
 				return;
 			}
 			
-			if(mousecounter > 3 && dpolylist_length < 10){
+			if(mousecounter == 4 && dpolylist_length < 10){
 				// fill a poly_t object
 				poly_t poly;
 				poly.num_verts = 4;
