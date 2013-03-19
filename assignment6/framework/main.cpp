@@ -64,6 +64,17 @@ void load_world(unsigned int level)
 	world = new b2World(gravity);
 	
 	ball = new Ball(world, &levels[level], 0.3f, 1.0f);
+	
+	// making static object poylgons
+  b2PolygonShape polygons[&levels[level].num_polygons];
+	for(int i = 0; i < &levels[level].num_polygons; i++){
+	  b2Vec2 vertices[&levels[level].polygons[i].num_verts];
+	  for(int j = 0; j < &levels[level].polygons[i].num_verts; j++){
+  	  vertices[j].Set(&levels[level].polygons[i].verts[j].x,
+  	                  &levels[level].polygons[i].verts[j].y);
+	  }
+	  polygons.Set(vertices, &levels[level].polygons[i].num_verts);
+	}
 }
 
 
