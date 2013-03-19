@@ -26,6 +26,14 @@ int last_time;
 int timebase;
 int frame_count;
 
+// information for user input
+int mousecounter = 0;
+int mousevert_x[4];
+int mousevert_y[4];
+float worldvert_x[4];
+float worldvert_y[4];
+bool drawbox = false;
+
 // Information about the levels loaded from files will be available in these.
 unsigned int num_levels;
 level_t *levels;
@@ -121,6 +129,17 @@ void draw(void)
 		spolygons[i]->render();
 	}
 	
+	if(drawbox){
+		glColor3f(0.5f, 0.5f, 0.5f);
+		glBegin(GL_POLYGON);
+	  glVertex2f(worldvert_x[0], worldvert_y[0]);
+	  glVertex2f(worldvert_x[1], worldvert_y[1]);
+	  glVertex2f(worldvert_x[2], worldvert_y[2]);
+	  glVertex2f(worldvert_x[3], worldvert_y[3]);
+		glEnd();
+	
+	}
+	
     // Show rendered frame
     glutSwapBuffers();
 
@@ -179,15 +198,6 @@ void key_pressed(unsigned char key, int x, int y)
     }
 }
 
-
-
-int mousecounter = 0;
-int mousevert_x[4];
-int mousevert_y[4];
-float worldvert_x[4];
-float worldvert_y[4];
-bool drawbox = false;
-
 /*
  * Called when the user clicked (or released) a mouse buttons inside the window.
  */
@@ -212,13 +222,15 @@ void mouse_clicked(int button, int state, int x, int y)
 			// print new values
 			for(int i = 0; i < 4; i++){
 				printf("mouse\tx: %u, y: %u\n",mousevert_x[i],mousevert_y[i]);
+			}
+			for(int i = 0; i < 4; i++){
 				printf("world\tx: %g, y: %g\n",worldvert_x[i],worldvert_y[i]);
 			}
 		}
 	
 		// if mouse released draw if there are 4 vertices
 		if(!state){
-			if(mousecounter < 3){
+			if(mousecounter == 3){
 				drawbox = true;
 			}
 			else{
