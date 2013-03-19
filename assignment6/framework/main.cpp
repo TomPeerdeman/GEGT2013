@@ -67,10 +67,10 @@ void load_world(unsigned int level)
 	level_t cur_level = levels[level];
 	
 	// making static object polygons
-  b2PolygonShape *polygons = new b2PolygonShape[cur_level.num_polygons];
-	for(int i = 0; i < cur_level.num_polygons; i++){
+	b2PolygonShape *polygons = new b2PolygonShape[cur_level.num_polygons];
+	for(unsigned int i = 0; i < cur_level.num_polygons; i++){
 		b2Vec2 *vertices = new b2Vec2[cur_level.polygons[i].num_verts];
-		for(int j = 0; j < cur_level.polygons[i].num_verts; j++){
+		for(unsigned int j = 0; j < cur_level.polygons[i].num_verts; j++){
 			vertices[j].Set(cur_level.polygons[i].verts[j].x,
 					cur_level.polygons[i].verts[j].y);
 		}
