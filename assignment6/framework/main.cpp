@@ -33,7 +33,7 @@ int mousevert_y[4];
 float worldvert_x[4];
 float worldvert_y[4];
 int dpolylist_length;
-Polygon **dpolygons = new Polygon *[10];
+Polygon **dpolygons = new Polygon *[20];
 
 // Information about the levels loaded from files will be available in these.
 unsigned int num_levels;
@@ -261,15 +261,17 @@ void mouse_clicked(int button, int state, int x, int y)
 			
 			if(mousecounter == 4 && dpolylist_length < 10){
 				// fill a poly_t object
-				poly_t poly;
-				poly.num_verts = 4;
-				poly.verts = new point_t[4];
+				poly_t poly1, poly2;
+				poly1.num_verts = 3;
+				poly2.num_verts = 3;
+				poly1.verts = new point_t[3];
+				poly2.verts = new point_t[3];
 				
 				/* possible intersection 1
 				 *    3
 				 *  2   1
 				 *    0
-				 */
+				 *
 				if(worldvert_x[1] > worldvert_x[0] &&
 					 worldvert_x[1] > worldvert_x[2] &&
 					 worldvert_x[2] < worldvert_x[3]){
@@ -284,7 +286,7 @@ void mouse_clicked(int button, int state, int x, int y)
 				 *    2
 				 *  0   3
 				 *    1
-				 */
+				 *
 				if(worldvert_y[1] < worldvert_y[0] &&
 					 worldvert_y[1] < worldvert_y[2] &&
 					 worldvert_y[2] > worldvert_y[3]){
@@ -299,7 +301,7 @@ void mouse_clicked(int button, int state, int x, int y)
 				 *    3
 				 *  1   2
 				 *    0
-				 */
+				 *
 				if(worldvert_x[1] < worldvert_x[0] &&
 					 worldvert_x[1] < worldvert_x[2] &&
 					 worldvert_x[2] > worldvert_x[3]){
@@ -314,7 +316,7 @@ void mouse_clicked(int button, int state, int x, int y)
 				 *    1
 				 *  3   0
 				 *    2
-				 */
+				 *
 				if(worldvert_y[1] > worldvert_y[0] &&
 					 worldvert_y[1] > worldvert_y[2] &&
 					 worldvert_y[2] < worldvert_y[3]){
@@ -324,7 +326,7 @@ void mouse_clicked(int button, int state, int x, int y)
 					worldvert_y[3] = worldvert_y[2];
 					worldvert_x[2] = buf_x;
 					worldvert_y[2] = buf_y;
-				}
+				}*/
 				
 				int sum = 0;
 				for(int i = 0; i < 4; i++){
@@ -332,21 +334,27 @@ void mouse_clicked(int button, int state, int x, int y)
 				}
 				
 				if(sum < 0){
-					for(int i = 0; i < 4; i++){
-						poly.verts[i].x = worldvert_x[i];
-						poly.verts[i].y = worldvert_y[i];
+					for(int i = 0; i < 3; i++){
+						poly1.verts[i].x = worldvert_x[i];
+						poly1.verts[i].y = worldvert_y[i];
+						poly2.verts[(i+2)%3].x = worldvert_x[i];
+						poly2.verts[(i+2)%3].y = worldvert_y[i];
 					}
 				}
 				else{
-					for(int i = 0; i < 4; i++){
-						poly.verts[i].x = worldvert_x[3-i];
-						poly.verts[i].y = worldvert_y[3-i];
+					for(int i = 0; i < 3; i++){
+						poly1.verts[i].x = worldvert_x[2-i];
+						poly1.verts[i].y = worldvert_y[2-i];
+						poly2.verts[(i+2)%3].x = worldvert_x[2-i];
+						poly2.verts[(i+2)%3].y = worldvert_y[2-i];
 					}
 				}
         
-				dpolygons[dpolylist_length++] = new Polygon(world, &poly, 1, 1.0f);
+				dpolygons[dpolylist_length++] = new Polygon(world, &poly1, 1, 1.0f);
+				dpolygons[dpolylist_length++] = new Polygon(world, &poly2, 1, 1.0f);
 				
-				delete poly.verts;
+				delete poly1.verts;
+				delete poly2.verts;
 			}
 		}
 	}
