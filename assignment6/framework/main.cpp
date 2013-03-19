@@ -250,8 +250,6 @@ void key_pressed(unsigned char key, int x, int y)
  * Called to check for concave points in the given polygon, if so return false
  */
 bool bary_check(int x, int y){
-	float buf_x =  (float)x/100.0f;
-	float buf_y = (float)y/100.0f;
 	
 
 	return false;
@@ -302,9 +300,10 @@ void mouse_clicked(int button, int state, int x, int y)
 	if(button == 0){
 		// only add point when the mouse is pressed
 		if(!state && !winObject.hasWon() && !winObject.hasLost()){
+			bool allowed = false;
+			
 			// overwrite old values
 			mousecounter = mousecounter % 4;
-			bool allowed = false;
 			
 			// pixel values
 			mousevert_x[mousecounter] = x;
@@ -316,7 +315,7 @@ void mouse_clicked(int button, int state, int x, int y)
 		
 			// check for concave points
 			if(mousecounter == 3){
-				allowed = bary_check(x,y);
+				allowed = bary_check();
 			}
 			
 			if(allowed){			
