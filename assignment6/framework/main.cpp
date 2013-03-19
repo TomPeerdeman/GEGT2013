@@ -132,7 +132,7 @@ void draw(void)
     glClear(GL_COLOR_BUFFER_BIT);
 	
 	if(world != NULL) {
-		if(!winObject.hasWon() && !winObject.hasLost()) {
+		if(!winObject.hasWon() && !winObject.hasLost() && 0) {
 			// Simulate the world
 			world->Step((frametime / 1000.0f), 8, 3);
 		}
