@@ -265,7 +265,6 @@ void mouse_clicked(int button, int state, int x, int y)
 				for(int i = 0; i < 4; i++){
 					poly.verts[i].x = worldvert_x[i];
 					poly.verts[i].y = worldvert_y[i];
-					printf("ADD \tx: %g, y: %g\n",worldvert_x[i],worldvert_y[i]);
 				}
         
 				dpolygons[dpolylist_length++] = new Polygon(world, &poly, 1, 1.0f);
