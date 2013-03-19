@@ -391,6 +391,9 @@ void mouse_clicked(int button, int state, int x, int y)
 			}
 		}
 	} else {
+		if(mousecounter > 0) {
+			mousecounter = 0;
+		}
 		/*printf("Mouse 2\n");
 		for(int i = 0; i < dpolylist_length; i++){
 			printf("Intersect %d %d\n", i, dpolygons[i]->intersects(x / 100.0f, 6.0f - (y / 100.0f)));
