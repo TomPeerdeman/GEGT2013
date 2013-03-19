@@ -17,7 +17,12 @@ Polygon::Polygon(b2World *world, poly_t *polys, int dynamic, float d) {
 	
 	body = world->CreateBody(&bodyDef);
 	
-	body->CreateFixture(shape, d);
+	fixture = body->CreateFixture(shape, d);
+}
+
+int Polygon::intersects(float x, float y) {
+	b2Vec2 vec(x, y);
+	return fixture->TestPoint(vec);
 }
 
 Polygon::~Polygon() {
@@ -27,12 +32,12 @@ Polygon::~Polygon() {
 }
 
 void Polygon::render() {
-		glBegin(GL_POLYGON);
+	glBegin(GL_POLYGON);
 	
-		for(int i = 0; i < shape->GetVertexCount(); i++){
-				b2Vec2 point = shape->GetVertex(i);
-			  glVertex2f(point.x, point.y);
-		}
-
-		glEnd();
+	for(int i = 0; i < shape->GetVertexCount(); i++){
+		b2Vec2 point = shape->GetVertex(i);
+		glVertex2f(point.x, point.y);
+	}
+	
+	glEnd();
 }

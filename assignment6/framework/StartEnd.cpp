@@ -27,6 +27,10 @@ Ball::Ball(b2World *world, level_t *level, float r, float d) {
 	bodyDef.type = b2_dynamicBody;
 
 	body = world->CreateBody(&bodyDef);
+	
+	// Test to not simulate the ball
+	//body->SetAwake(0);
+	//body->SetGravityScale(0.0f);
 
 	b2CircleShape shape;
 	shape.m_radius = r;
