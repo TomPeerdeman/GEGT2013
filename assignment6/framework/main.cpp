@@ -223,7 +223,7 @@ void mouse_clicked(int button, int state, int x, int y)
 	// only work if left mousebutton pressed
 	if(button == 0){
 		// only add point when the mouse is pressed
-		if(state && !winObject.hasWon() && !winObject.hasLost()){
+		if(!state && !winObject.hasWon() && !winObject.hasLost()){
 			// overwrite old values
 			mousecounter = mousecounter % 4;
 			
@@ -246,7 +246,7 @@ void mouse_clicked(int button, int state, int x, int y)
 		}
 	
 		// if mouse released draw if there are 4 vertices
-		if(!state){
+		if(state){
 			if(winObject.hasWon()) {
 				load_world(current_level + 1);
 				return;
@@ -257,14 +257,28 @@ void mouse_clicked(int button, int state, int x, int y)
 				return;
 			}
 			
-			if(mousecounter == 3 && dpolylist_length < 10){
+			if(mousecounter > 3 && dpolylist_length < 10){
 				// fill a poly_t object
 				poly_t poly;
 				poly.num_verts = 4;
 				poly.verts = new point_t[4];
+				
+				int sum = 0;
 				for(int i = 0; i < 4; i++){
-					poly.verts[i].x = worldvert_x[i];
-					poly.verts[i].y = worldvert_y[i];
+					sum = sum + ((worldvert_x[(i+1)%4]-worldvert_x[i]) * (worldvert_y[(i+1)%4]+worldvert_y[i]));
+				}
+				
+				if(sum < 0){
+					for(int i = 0; i < 4; i++){
+						poly.verts[i].x = worldvert_x[i];
+						poly.verts[i].y = worldvert_y[i];
+					}
+				}
+				else{
+					for(int i = 0; i < 4; i++){
+						poly.verts[i].x = worldvert_x[3-i];
+						poly.verts[i].y = worldvert_y[3-i];
+					}
 				}
         
 				dpolygons[dpolylist_length++] = new Polygon(world, &poly, 1, 1.0f);
