@@ -132,7 +132,7 @@ void draw(void)
     glClear(GL_COLOR_BUFFER_BIT);
 	
 	if(world != NULL) {
-		if(!winObject.hasWon() && !winObject.hasLost() && 0) {
+		if(!winObject.hasWon() && !winObject.hasLost()) {
 			// Simulate the world
 			world->Step((frametime / 1000.0f), 8, 3);
 		}
@@ -158,8 +158,9 @@ void draw(void)
 		
 		// Draw outline of object to build
 		if(mousecounter >= 1){
-			glColor3f(0.0f, 0.0f, 1.0f);
+			glColor3f(0.5f, 0.5f, 0.5f);
 			
+			// Draw the lines between the already placed vertices
 			if(mousecounter >= 2){
 				glBegin(GL_LINE_STRIP);
 				for(int i = 0; i < mousecounter; i++) {
@@ -168,10 +169,18 @@ void draw(void)
 				glEnd();
 			}
 			
+			// Draw a line from the last placed vertex to the mouse position
 			if(world_mouse_x > 0 && world_mouse_y > 0) {
 				glBegin(GL_LINES);
-					glVertex2f(worldvert_x[mousecounter - 1], worldvert_y[mousecounter - 1]);
+					glVertex2f(worldvert_x[mousecounter - 1], 
+					           worldvert_y[mousecounter - 1]);
 					glVertex2f(world_mouse_x, world_mouse_y);
+					// If we are placing the last vertex connect to the first 
+					// to see the complete object
+					if(mousecounter == 3) {
+						glVertex2f(world_mouse_x, world_mouse_y);
+						glVertex2f(worldvert_x[0], worldvert_y[0]);
+					}
 				glEnd();
 			}
 		}
