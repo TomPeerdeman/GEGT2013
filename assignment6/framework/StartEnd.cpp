@@ -53,8 +53,31 @@ EndPoint::EndPoint(b2World *world, level_t *level, float r) {
 	body->SetUserData(this);
 }
 
+Ground::Ground(b2World *world) {
+	b2BodyDef bodyDef;
+
+	bodyDef.position.Set(0.0f, 0.0f);
+	
+	body = world->CreateBody(&bodyDef);
+	
+	b2PolygonShape shape;
+	shape.SetAsBox(4.0f, 0.01f);
+
+	body->CreateFixture(&shape, 0.0f);
+	
+	body->SetUserData(this);
+}
+
 void WinObject::render(void) {
-	if(win){
+	char *msg;
+	
+	if(win) {
+		msg = (char *) "YOU WIN!";
+	}else if(lose) {
+		msg = (char *) "YOU LOSE!";
+	}
+	
+	if(win || lose){
 		glColor3f(1.0f, 0, 0);
 		glBegin(GL_QUADS);
 			glVertex2f(2.5, 2);
@@ -64,16 +87,11 @@ void WinObject::render(void) {
 		glEnd();
 		
 		glColor3f(1.0f, 1.0f, 1.0f);
-		glPushMatrix();
-		//glTranslatef(3.0f, 2.5f, 0.0f);
+		
 		glRasterPos2f(3.5f, 3.0f);
-		char *msg = (char *) "YOU WIN!";
 		for(unsigned int i = 0; i < strlen(msg); i++){
 			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, msg[i]);
 		}
-		//glutBitmapString(GLUT_STROKE_ROMAN, msg);
-		glPopMatrix();
-	
 	}
 }
 
@@ -82,11 +100,15 @@ void WinObject::BeginContact(b2Contact* contact) {
 	void *userDataB = contact->GetFixtureB()->GetBody()->GetUserData();
 	
 	if(userDataA != NULL && userDataB != NULL){
-		Circle *A = static_cast<Circle *> (userDataA);
-		Circle *B = static_cast<Circle *> (userDataB);
+		BodyObject *A = static_cast<BodyObject *> (userDataA);
+		BodyObject *B = static_cast<BodyObject *> (userDataB);
+		
+		printf("Collision %d, %d\n", A->getType(), B->getType());
 		
 		if(A->getType() + B->getType() == 3){
 			win = 1;
+		}else if(A->getType() + B->getType() == 6) {
+			lose = 1;
 		}
 	}
 }

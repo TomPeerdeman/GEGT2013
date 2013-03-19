@@ -46,6 +46,7 @@ unsigned int current_level;
 b2World *world;
 Ball *ball;
 EndPoint *endPoint;
+Ground *ground;
 // Static polygons
 int spolylist_length;
 Polygon **spolygons;
@@ -74,6 +75,7 @@ void load_world(unsigned int level)
 			delete spolygons[i];
 		}
 		delete[] spolygons;
+		delete ground;
 	}
 	
 	current_level = level;
@@ -89,6 +91,7 @@ void load_world(unsigned int level)
 	
 	ball = new Ball(world, &levels[level], 0.3f, 1.0f);
 	endPoint = new EndPoint(world, &levels[level], 0.05f);
+	ground = new Ground(world);
 	
 	world->SetContactListener(&winObject);
 	
@@ -130,7 +133,7 @@ void draw(void)
     //
 	
 	if(world != NULL) {
-		if(!winObject.hasWon()) {
+		if(!winObject.hasWon() && !winObject.hasLost()) {
 			// Simulate the world
 			world->Step((frametime / 1000.0f), 8, 3);
 		}
@@ -224,7 +227,7 @@ void mouse_clicked(int button, int state, int x, int y)
 	// only work if left mousebutton pressed
 	if(button == 0){
 		// only add point when the mouse is pressed
-		if(state && !winObject.hasWon()){
+		if(state && !winObject.hasWon() && !winObject.hasLost()){
 			// overwrite old values
 			mousecounter = mousecounter % 4;
 			
@@ -250,6 +253,11 @@ void mouse_clicked(int button, int state, int x, int y)
 		if(!state){
 			if(winObject.hasWon()) {
 				load_world(current_level + 1);
+				return;
+			}
+			
+			if(winObject.hasLost()) {
+				load_world(current_level);
 				return;
 			}
 		

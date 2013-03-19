@@ -12,10 +12,20 @@
 
 #include "levels.h"
 
-class Circle {
+class BodyObject {
+	protected:
+		b2Body *body;
+	public:
+		virtual void render(void){
+		};
+		virtual int getType(void){
+			return 0;
+		};
+};
+
+class Circle : public BodyObject {
 	protected:
 		float radius;
-		b2Body *body;
 	public:
 		void render(void);
 		virtual int getType(void){
@@ -39,8 +49,7 @@ class EndPoint : public Circle {
 		};
 };
 
-class Polygon {
-	b2Body *body;
+class Polygon : public BodyObject {
 	b2PolygonShape *shape;
 	public:
 		Polygon(b2World *, poly_t *, int, float);
@@ -49,17 +58,31 @@ class Polygon {
 		
 };
 
+class Ground : public BodyObject {
+	public:
+		Ground(b2World *);
+		int getType(void){
+			return 4;
+		};
+};
+
 class WinObject : public b2ContactListener {
 	int win;
+	int lose;
 	public:
 		WinObject(void){
 			win = 0;
+			lose = 0;
 		};
 		void reset(void){
 			win = 0;
+			lose = 0;
 		};
 		int hasWon(void){
 			return win;
+		};
+		int hasLost(void){
+			return lose;
 		};
 		void render(void);
 		void BeginContact(b2Contact* contact);
