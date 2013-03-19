@@ -32,6 +32,8 @@ int mousevert_x[4];
 int mousevert_y[4];
 float worldvert_x[4];
 float worldvert_y[4];
+float world_mouse_x;
+float world_mouse_y;
 int dpolylist_length;
 Polygon **dpolygons = new Polygon *[20];
 
@@ -153,7 +155,27 @@ void draw(void)
 		for(int i = 0; i < dpolylist_length; i++) {
 			dpolygons[i]->render();
 		}
-
+		
+		// Draw outline of object to build
+		if(mousecounter >= 1){
+			glColor3f(0.0f, 0.0f, 1.0f);
+			
+			if(mousecounter >= 2){
+				glBegin(GL_LINE_STRIP);
+				for(int i = 0; i < mousecounter; i++) {
+					glVertex2f(worldvert_x[i], worldvert_y[i]);
+				}
+				glEnd();
+			}
+			
+			if(world_mouse_x > 0 && world_mouse_y > 0) {
+				glBegin(GL_LINES);
+					glVertex2f(worldvert_x[mousecounter - 1], worldvert_y[mousecounter - 1]);
+					glVertex2f(world_mouse_x, world_mouse_y);
+				glEnd();
+			}
+		}
+		
 		winObject.render();
 	}
 	
@@ -355,17 +377,24 @@ void mouse_clicked(int button, int state, int x, int y)
 				
 				delete poly1.verts;
 				delete poly2.verts;
+				
+				mousecounter = 0;
 			}
 		}
+	} else {
+		/*printf("Mouse 2\n");
+		for(int i = 0; i < dpolylist_length; i++){
+			printf("Intersect %d %d\n", i, dpolygons[i]->intersects(x / 100.0f, 6.0f - (y / 100.0f)));
+		}*/
 	}
 }
 
 /*
  * Called when the mouse is moved to a certain given position.
  */
-void mouse_moved(int x, int y)
-{
-
+void mouse_moved(int x, int y) {
+	world_mouse_x = (float) x / 100.0f;
+	world_mouse_y = 6.0f-(float) y / 100.0f;
 }
 
 
