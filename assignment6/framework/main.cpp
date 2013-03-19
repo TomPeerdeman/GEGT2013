@@ -247,6 +247,53 @@ void key_pressed(unsigned char key, int x, int y)
 }
 
 /*
+ * Called to check for concave points in the given polygon, if so return false
+ */
+bool bary_check(int x, int y){
+	float buf_x =  (float)x/100.0f;
+	float buf_y = (float)y/100.0f;
+	
+
+	return false;
+}
+
+/*
+ * helper function to calculate a part of the alpha value
+ * Source:
+ * Assignment1
+ * File: trirast.c
+ * Made by: Tom Peerdeman & Rene Aparicio Saez
+ * https://github.com/TomPeerdeman/GEGT2013/blob/master/assignment1/triangle_rasterization/trirast.c
+ */
+float alphacalc(float x, float x1, float x2, float y, float y1, float y2) {
+	return((y1-y2)*x + (x2-x1)*y + x1*y2 - x2*y1);
+}
+
+/*
+ * helper function to calculate a part of the beta value
+ * Source:
+ * Assignment1
+ * File: trirast.c
+ * Made by: Tom Peerdeman & Rene Aparicio Saez
+ * https://github.com/TomPeerdeman/GEGT2013/blob/master/assignment1/triangle_rasterization/trirast.c
+ */
+float betacalc(float x, float x0, float x2, float y, float y0, float y2) {
+	return((y2-y0)*x + (x0-x2)*y + x2*y0 - x0*y2);
+}
+
+/*
+ * helper function to calculate a part of the gamma value
+ * Source:
+ * Assignment1
+ * File: trirast.c
+ * Made by: Tom Peerdeman & Rene Aparicio Saez
+ * https://github.com/TomPeerdeman/GEGT2013/blob/master/assignment1/triangle_rasterization/trirast.c
+ */
+float gammacalc(float x, float x0, float x1, float y, float y0, float y1) {
+	return((y0-y1)*x + (x1-x0)*y + x0*y1 - x1*y0);
+}
+
+/*
  * Called when the user clicked (or released) a mouse buttons inside the window.
  */
 void mouse_clicked(int button, int state, int x, int y)
@@ -257,30 +304,33 @@ void mouse_clicked(int button, int state, int x, int y)
 		if(!state && !winObject.hasWon() && !winObject.hasLost()){
 			// overwrite old values
 			mousecounter = mousecounter % 4;
+			bool allowed = false;
 			
+			// pixel values
+			mousevert_x[mousecounter] = x;
+			mousevert_y[mousecounter] = y;
+	
+			// box2D values
+			worldvert_x[mousecounter] = (float)mousevert_x[mousecounter]/100.0f;
+			worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
+		
 			// check for concave points
 			if(mousecounter == 3){
-				bool allowed = bary_check(worldvert_x, worldvert_y);
+				allowed = bary_check(x,y);
 			}
 			
-			if(allowed){
-				// pixel values
-				mousevert_x[mousecounter] = x;
-				mousevert_y[mousecounter] = y;
-			
-				// box2D values
-				worldvert_x[mousecounter] = (float)mousevert_x[mousecounter]/100.0f;
-				worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
+			if(allowed){			
 				mousecounter++;
-			
-				// print new values
-				for(int i = 0; i < 4; i++){
-					printf("mouse\tx: %u, y: %u\n",mousevert_x[i],mousevert_y[i]);
-				}
-				for(int i = 0; i < 4; i++){
-					printf("world\tx: %g, y: %g\n",worldvert_x[i],worldvert_y[i]);
-				}
 			}
+			
+			// print new values
+			for(int i = 0; i < 4; i++){
+				printf("mouse\tx: %u, y: %u\n",mousevert_x[i],mousevert_y[i]);
+			}
+			for(int i = 0; i < 4; i++){
+				printf("world\tx: %g, y: %g\n",worldvert_x[i],worldvert_y[i]);
+			}
+
 		}
 	
 		// if mouse released draw if there are 4 vertices
