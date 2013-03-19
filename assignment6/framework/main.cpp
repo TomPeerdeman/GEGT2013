@@ -28,11 +28,14 @@ int frame_count;
 
 // information for user input
 int mousecounter = 0;
+int currentpolyidx = 0;
+int currentpoly = 0;
 int mousevert_x[4];
 int mousevert_y[4];
 float worldvert_x[4];
 float worldvert_y[4];
 bool drawbox = false;
+Polygon **dpolygons = new Polygon *[10];
 
 // Information about the levels loaded from files will be available in these.
 unsigned int num_levels;
@@ -95,6 +98,7 @@ void load_world(unsigned int level)
 		// Static so immovable, set density to 0 for no gravity effect.
 		spolygons[i] = new Polygon(world, &levels[level].polygons[i], 0, 0.0f);
 	}
+	
 }
 
 
@@ -142,12 +146,9 @@ void draw(void)
 	
 	if(drawbox){
 		glColor3f(0.5f, 0.5f, 0.5f);
-		glBegin(GL_POLYGON);
-		glVertex2f(worldvert_x[0], worldvert_y[0]);
-		glVertex2f(worldvert_x[1], worldvert_y[1]);
-		glVertex2f(worldvert_x[2], worldvert_y[2]);
-		glVertex2f(worldvert_x[3], worldvert_y[3]);
-		glEnd();
+		for(int i = 0; i < currentpoly; i++){
+			dpolygons[i]->render();
+		}
 	}
 
 	winObject.render();
@@ -243,6 +244,25 @@ void mouse_clicked(int button, int state, int x, int y)
 		// if mouse released draw if there are 4 vertices
 		if(!state){
 			if(mousecounter == 3){
+				// fill a poly_t object
+        poly_t poly;
+        poly.num_verts = 4;
+        poly.verts = new point_t[4];
+        for(int i = 0; i < 4; i++){
+		      poly.verts[i].x = worldvert_x[i];
+		      poly.verts[i].y = worldvert_y[i];
+        }
+        
+				currentpolyidx = currentpolyidx % 10;
+				dpolygons[currentpoly] = new Polygon(world, &poly, 0, 1.0f);
+				
+				currentpolyidx++;
+				if(currentpoly <= 10){
+					currentpoly++;
+				}
+				drawbox = true;
+			}
+			else if(currentpoly > 0){
 				drawbox = true;
 			}
 			else{
