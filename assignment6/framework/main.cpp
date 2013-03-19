@@ -249,11 +249,13 @@ void mouse_clicked(int button, int state, int x, int y)
 		if(state){
 			if(winObject.hasWon()) {
 				load_world(current_level + 1);
+				mousecounter = 0;
 				return;
 			}
 			
 			if(winObject.hasLost()) {
 				load_world(current_level);
+				mousecounter = 0;
 				return;
 			}
 			
