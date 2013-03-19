@@ -26,7 +26,13 @@ Polygon::~Polygon() {
 	}
 }
 
-void Polygon::render(void) {
+void Polygon::render() {
+		glBegin(GL_POLYGON);
 	
+		for(int i = 0; i < shape->GetVertexCount(); i++){
+				b2Vec2 point = shape->GetVertex(i);
+			  glVertex2f(point.x, point.y);
+		}
 
+		glEnd();
 }
