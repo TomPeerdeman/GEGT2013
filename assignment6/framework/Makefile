@@ -1,5 +1,5 @@
 PROGNAME = main
-SRCFILES = main.cpp levels.cpp Ball.cpp
+SRCFILES = main.cpp levels.cpp Ball.cpp Polygon.cpp
 TARNAME = box2d.tgz
 
 BOX_H = include/
