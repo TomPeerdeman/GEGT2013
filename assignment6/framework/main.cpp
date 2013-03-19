@@ -288,10 +288,14 @@ float gammacalc(float x, float x0, float x1, float y, float y0, float y1) {
 bool bary_check(){
 	float alpha, beta, gamma;
 	for(int i = 0; i < 4; i++){
-	  alpha = alphacalc(mousevert_x[(i+3)%4], mousevert_x[(i+1)%4], mousevert_x[(i+2)%4],
-	  		mousevert_y[(i+3)%4], mousevert_y[(i+1)%4], mousevert_y[(i+2)%4]);
-	 // beta = betacalc(world_x[(i+3)%4], world_x[(i)%4], world_x[(i+2)%4],
-	  //		world_y[(i+3)%4], world_y[(i+1)%4], world_y[(i+2)%4]);
+	  alpha = alphacalc(worldvert_x[(i+3)%4], worldvert_x[(i+1)%4], worldvert_x[(i+2)%4],
+	  		worldvert_y[(i+3)%4], worldvert_y[(i+1)%4], worldvert_y[(i+2)%4]);
+	  beta = betacalc(worldvert_x[(i+3)%4], worldvert_x[i], worldvert_x[(i+2)%4],
+	  		worldvert_y[(i+3)%4], worldvert_y[i], worldvert_y[(i+2)%4]);
+	  gamma = gammacalc(worldvert_x[(i+3)%4], worldvert_x[i], worldvert_x[(i+1)%4],
+	  		worldvert_y[(i+3)%4], worldvert_y[i], worldvert_y[(i+1)%4]);
+	  if(alpha+beta+gamma <= 1.0f && alpha+beta+gamma >= 0.0f)
+	  	return false;
 	}
 
 	return true;
@@ -306,11 +310,11 @@ void mouse_clicked(int button, int state, int x, int y)
 	if(button == 0){
 		// only add point when the mouse is pressed
 		if(!state && !winObject.hasWon() && !winObject.hasLost()){
-			bool allowed = false;
+			bool allowed = true;
 			
 			// overwrite old values
 			mousecounter = mousecounter % 4;
-			
+			printf("mousecounter: %u\n", mousecounter);
 			// pixel values
 			mousevert_x[mousecounter] = x;
 			mousevert_y[mousecounter] = y;
@@ -320,7 +324,7 @@ void mouse_clicked(int button, int state, int x, int y)
 			worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
 		
 			// check for concave points
-			if(mousecounter == 3){
+			if(mousecounter == 2){
 				allowed = bary_check();
 			}
 			
