@@ -17,3 +17,14 @@ class Ball {
 		void render(void);
 };
 
+class Polygon {
+	b2Body *body;
+	b2PolygonShape *shape;
+	public:
+		Polygon(b2World *, poly_t *, int, float);
+		~Polygon(void);
+		void render(void);
+		b2PolygonShape *GetShape(void){
+			return shape;
+		};
+};

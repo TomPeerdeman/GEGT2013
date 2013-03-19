@@ -34,6 +34,9 @@ unsigned int current_level;
 
 b2World *world;
 Ball *ball;
+// Static polygons
+int spolylist_length;
+Polygon **spolygons;
 
 /*
  * Load a given world, i.e. read the world from the `levels' data structure and
@@ -53,6 +56,10 @@ void load_world(unsigned int level)
 	if(world != NULL){
 		delete world;
 		delete ball;
+		for(int i = 0; i < spolylist_length; i++){
+			delete spolygons[i];
+		}
+		delete[] spolygons;
 	}
 
     // Create a Box2D world and populate it with all bodies for this level
@@ -64,10 +71,10 @@ void load_world(unsigned int level)
 	world = new b2World(gravity);
 	
 	ball = new Ball(world, &levels[level], 0.3f, 1.0f);
-	level_t cur_level = levels[level];
+	//level_t cur_level = levels[level];
 	
 	// making static object polygons
-	b2PolygonShape *polygons = new b2PolygonShape[cur_level.num_polygons];
+	/*b2PolygonShape *polygons = new b2PolygonShape[cur_level.num_polygons];
 	for(unsigned int i = 0; i < cur_level.num_polygons; i++){
 		b2Vec2 *vertices = new b2Vec2[cur_level.polygons[i].num_verts];
 		for(unsigned int j = 0; j < cur_level.polygons[i].num_verts; j++){
@@ -75,6 +82,14 @@ void load_world(unsigned int level)
 					cur_level.polygons[i].verts[j].y);
 		}
 		polygons[i].Set(vertices, cur_level.polygons[i].num_verts);
+	}*/
+	
+	// Static polygon's
+	spolylist_length = levels[level].num_polygons;
+	spolygons = new Polygon *[spolylist_length];
+	for(int i = 0; i < spolylist_length; i++){
+		// Static so immovable, set density to 0 for no gravity effect.
+		spolygons[i] = new Polygon(world, &levels[level].polygons[i], 0, 0.0f);
 	}
 }
 
@@ -108,8 +123,15 @@ void draw(void)
 	// Simulate the world
 	world->Step((frametime / 1000.0f), 8, 3);
 
+	// Draw ball
 	glColor3f(1.0f, 0.0f, 0.0f);
 	ball->render();
+	
+	// Draw static polygons
+	glColor3f(0.0f, 1.0f, 0.0f);
+	for(int i = 0; i < spolylist_length; i++){
+		spolygons[i]->render();
+	}
 	
     // Show rendered frame
     glutSwapBuffers();
