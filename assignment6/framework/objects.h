@@ -24,7 +24,4 @@ class Polygon {
 		Polygon(b2World *, poly_t *, int, float);
 		~Polygon(void);
 		void render(void);
-		b2PolygonShape *GetShape(void){
-			return shape;
-		};
 };
