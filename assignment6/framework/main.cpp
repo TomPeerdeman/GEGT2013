@@ -34,9 +34,12 @@ unsigned int current_level;
 
 b2World *world;
 Ball *ball;
+EndPoint *endPoint;
 // Static polygons
 int spolylist_length;
 Polygon **spolygons;
+
+WinObject winObject;
 
 /*
  * Load a given world, i.e. read the world from the `levels' data structure and
@@ -51,6 +54,8 @@ void load_world(unsigned int level)
         printf("Warning: level %d does not exist.\n", level);
         return;
     }
+	
+	winObject.reset();
 	
 	// Unload previous world
 	if(world != NULL){
@@ -71,6 +76,9 @@ void load_world(unsigned int level)
 	world = new b2World(gravity);
 	
 	ball = new Ball(world, &levels[level], 0.3f, 1.0f);
+	endPoint = new EndPoint(world, &levels[level], 0.05f);
+	
+	world->SetContactListener(&winObject);
 	
 	// Static polygon's
 	spolylist_length = levels[level].num_polygons;
@@ -115,11 +123,16 @@ void draw(void)
 	glColor3f(1.0f, 0.0f, 0.0f);
 	ball->render();
 	
+	glColor3f(1.0f, 1.0f, 1.0f);
+	endPoint->render();
+	
 	// Draw static polygons
 	glColor3f(0.0f, 1.0f, 0.0f);
 	for(int i = 0; i < spolylist_length; i++){
 		spolygons[i]->render();
 	}
+	
+	winObject.render();
 	
     // Show rendered frame
     glutSwapBuffers();
