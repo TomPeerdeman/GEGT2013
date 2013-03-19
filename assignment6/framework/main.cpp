@@ -249,10 +249,16 @@ void key_pressed(unsigned char key, int x, int y)
 /*
  * Called to check for concave points in the given polygon, if so return false
  */
-bool bary_check(int x, int y){
-	
+bool bary_check(){
+	float alpha, beta, gamma;
+	for(int i = 0; i < 4; i++){
+	  //alpha = alphacalc(world_x[(i+3)%4], world_x[(i+1)%4], world_x[(i+2)%4],
+	  //		world_y[(i+3)%4], world_y[(i+1)%4], world_y[(i+2)%4]);
+	 // beta = betacalc(world_x[(i+3)%4], world_x[(i)%4], world_x[(i+2)%4],
+	  //		world_y[(i+3)%4], world_y[(i+1)%4], world_y[(i+2)%4]);
+	}
 
-	return false;
+	return true;
 }
 
 /*
@@ -300,7 +306,7 @@ void mouse_clicked(int button, int state, int x, int y)
 	if(button == 0){
 		// only add point when the mouse is pressed
 		if(!state && !winObject.hasWon() && !winObject.hasLost()){
-			bool allowed = false;
+			bool allowed = true;
 			
 			// overwrite old values
 			mousecounter = mousecounter % 4;
@@ -314,9 +320,9 @@ void mouse_clicked(int button, int state, int x, int y)
 			worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
 		
 			// check for concave points
-			if(mousecounter == 3){
-				allowed = bary_check();
-			}
+			//if(mousecounter == 3){
+			//	allowed = bary_check();
+			//}
 			
 			if(allowed){			
 				mousecounter++;
@@ -348,7 +354,7 @@ void mouse_clicked(int button, int state, int x, int y)
 			
 			if(mousecounter == 4 && dpolylist_length < 10){
 				// fill a poly_t object
-				poly_t poly1, poly2;
+				poly_t poly1;
 				poly1.num_verts = 4;
 				poly1.verts = new point_t[4];
 				
@@ -432,10 +438,8 @@ void mouse_clicked(int button, int state, int x, int y)
 				}
         
 				dpolygons[dpolylist_length++] = new Polygon(world, &poly1, 1, 1.0f);
-				dpolygons[dpolylist_length++] = new Polygon(world, &poly2, 1, 1.0f);
 				
 				delete poly1.verts;
-				delete poly2.verts;
 				
 				mousecounter = 0;
 			}
