@@ -28,13 +28,11 @@ int frame_count;
 
 // information for user input
 int mousecounter = 0;
-int currentpolyidx = 0;
-int currentpoly = 0;
 int mousevert_x[4];
 int mousevert_y[4];
 float worldvert_x[4];
 float worldvert_y[4];
-bool drawbox = false;
+int dpolylist_length;
 Polygon **dpolygons = new Polygon *[10];
 
 // Information about the levels loaded from files will be available in these.
@@ -59,8 +57,7 @@ WinObject winObject;
  */
 void load_world(unsigned int level)
 {
-    if (level >= num_levels)
-    {
+    if (level >= num_levels) {
         // Note that level is unsigned but we still use %d so -1 is shown as
         // such.
         printf("Warning: level %d does not exist.\n", level);
@@ -68,14 +65,20 @@ void load_world(unsigned int level)
     }
 	
 	// Unload previous world
-	if(world != NULL){
+	if(world != NULL) {
 		delete world;
 		delete ball;
-		for(int i = 0; i < spolylist_length; i++){
+		delete ground;
+		
+		for(int i = 0; i < spolylist_length; i++) {
 			delete spolygons[i];
 		}
 		delete[] spolygons;
-		delete ground;
+		
+		for(int i = 0; i < dpolylist_length; i++) {
+			delete dpolygons[i];
+		}
+		delete[] dpolygons;
 	}
 	
 	current_level = level;
@@ -102,7 +105,6 @@ void load_world(unsigned int level)
 		// Static so immovable, set density to 0 for no gravity effect.
 		spolygons[i] = new Polygon(world, &levels[level].polygons[i], 0, 0.0f);
 	}
-	
 }
 
 
@@ -126,37 +128,31 @@ void draw(void)
     // Clear the buffer
     glColor3f(0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
-
-
-    //
-    // Do any logic and drawing here.
-    //
 	
 	if(world != NULL) {
-		if(!winObject.hasWon() && !winObject.hasLost()) {
+		if(!winObject.hasWon() && !winObject.hasLost() && 0) {
 			// Simulate the world
 			world->Step((frametime / 1000.0f), 8, 3);
 		}
 
-	// Draw ball
-	glColor3f(1.0f, 0.0f, 0.0f);
-	ball->render();
-	
-	glColor3f(1.0f, 1.0f, 1.0f);
-	endPoint->render();
-	
-	// Draw static polygons
-	glColor3f(0.0f, 1.0f, 0.0f);
-	for(int i = 0; i < spolylist_length; i++){
-		spolygons[i]->render();
-	}
-	
-	if(drawbox){
+		// Draw ball
+		glColor3f(1.0f, 0.0f, 0.0f);
+		ball->render();
+		
+		glColor3f(1.0f, 1.0f, 1.0f);
+		endPoint->render();
+		
+		// Draw static polygons
+		glColor3f(0.0f, 1.0f, 0.0f);
+		for(int i = 0; i < spolylist_length; i++) {
+			spolygons[i]->render();
+		}
+		
+		// Draw dynamic polygons
 		glColor3f(0.5f, 0.5f, 0.5f);
-		for(int i = 0; i < currentpoly; i++){
+		for(int i = 0; i < dpolylist_length; i++) {
 			dpolygons[i]->render();
 		}
-	}
 
 		winObject.render();
 	}
@@ -165,12 +161,12 @@ void draw(void)
     glutSwapBuffers();
 
     // Display fps in window title.
-    if (time - timebase >= 1000)
-    {
+    if (time - timebase >= 1000) {
         char window_title[128];
         snprintf(window_title, 128,
                 "Box2D: %3.2f fps, level %d/%d",
-                frame_count / ((time - timebase) / 1000.f), (current_level + 1), num_levels);
+                frame_count / ((time - timebase) / 1000.f), 
+				(current_level + 1), num_levels);
         glutSetWindowTitle(window_title);
         timebase = time;
         frame_count = 0;
@@ -260,31 +256,20 @@ void mouse_clicked(int button, int state, int x, int y)
 				load_world(current_level);
 				return;
 			}
-		
-			if(mousecounter == 3){
+			
+			if(mousecounter == 3 && dpolylist_length < 10){
 				// fill a poly_t object
-        poly_t poly;
-        poly.num_verts = 4;
-        poly.verts = new point_t[4];
-        for(int i = 0; i < 4; i++){
-		      poly.verts[i].x = worldvert_x[i];
-		      poly.verts[i].y = worldvert_y[i];
-        }
-        
-				currentpolyidx = currentpolyidx % 10;
-				dpolygons[currentpoly] = new Polygon(world, &poly, 0, 1.0f);
-				
-				currentpolyidx++;
-				if(currentpoly <= 10){
-					currentpoly++;
+				poly_t poly;
+				poly.num_verts = 4;
+				poly.verts = new point_t[4];
+				for(int i = 0; i < 4; i++){
+					poly.verts[i].x = worldvert_x[i];
+					poly.verts[i].y = worldvert_y[i];
 				}
-				drawbox = true;
-			}
-			else if(currentpoly > 0){
-				drawbox = true;
-			}
-			else{
-				drawbox = false;
+        
+				dpolygons[dpolylist_length++] = new Polygon(world, &poly, 1, 1.0f);
+				
+				delete poly.verts;
 			}
 		}
 	}
