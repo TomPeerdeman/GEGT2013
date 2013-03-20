@@ -74,6 +74,17 @@ class Ground : public BodyObject {
 		};
 };
 
+class Walls : public BodyObject {
+	b2Body *left;
+	b2Body *right;
+	b2Body *ceiling;
+	public:
+		Walls(b2World *);
+		int getType(void){
+			return 0;
+		};
+};
+
 class Timer {
 	b2Timer timer;
 	float stopTime;

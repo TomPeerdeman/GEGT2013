@@ -73,6 +73,30 @@ Ground::Ground(b2World *world) {
 	body->SetUserData(this);
 }
 
+Walls::Walls(b2World *world) {
+	b2BodyDef bodyDef;
+
+	bodyDef.position.Set(8.0f, 3.0f);
+	right = world->CreateBody(&bodyDef);
+	bodyDef.position.Set(0.0f, 3.0f);
+	left = world->CreateBody(&bodyDef);
+	bodyDef.position.Set(4.0f, 6.0f);
+	ceiling = world->CreateBody(&bodyDef);
+	
+	b2PolygonShape shape;
+	shape.SetAsBox(4.0f, 0.01f);
+
+	ceiling->CreateFixture(&shape, 0.0f);
+	ceiling->SetUserData(this);
+
+	shape.SetAsBox(0.01f, 3.0f);
+	left->CreateFixture(&shape, 0.0f);
+	right->CreateFixture(&shape, 0.0f);
+
+	left->SetUserData(this);
+	right->SetUserData(this);
+}
+
 void printMsg(char *msg, float x, float y) {
 	glColor3f(1.0f, 1.0f, 1.0f);
 

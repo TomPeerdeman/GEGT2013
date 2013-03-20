@@ -49,6 +49,7 @@ b2World *world;
 Ball *ball;
 EndPoint *endPoint;
 Ground *ground;
+Walls *walls;
 // Static polygons
 int spolylist_length;
 Polygon **spolygons;
@@ -77,9 +78,15 @@ void load_world(unsigned int level)
 			delete ball;
 			ball = NULL;
 		}
+
 		if(ground != NULL) {
 			delete ground;
 			ground = NULL;
+		}
+
+		if(walls != NULL) {
+			delete walls;
+			walls = NULL;
 		}
 
 		if(endPoint != NULL) {
@@ -126,6 +133,7 @@ void load_world(unsigned int level)
 	ball = new Ball(world, &levels[level], 0.3f, 1.0f);
 	endPoint = new EndPoint(world, &levels[level], 0.05f);
 	ground = new Ground(world);
+	walls = new Walls(world);
 	
 	world->SetContactListener(&winObject);
 	
