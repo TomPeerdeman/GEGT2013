@@ -152,7 +152,10 @@ void WinObject::EndContact(b2Contact* contact) {
 }
 
 void Timer::render(void){
-	glColor3f(1.0f, 0, 0);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glEnable( GL_BLEND );
+
+	glColor4f(1.0f, 0.0f, 0.0f, 0.7f);
 	glBegin(GL_QUADS);
 		glVertex2f(6.5f, 6.0f);
 		glVertex2f(6.5f, 5.7f);

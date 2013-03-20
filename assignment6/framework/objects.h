@@ -57,10 +57,9 @@ class EndPoint : public Circle {
 class Polygon : public BodyObject {
 	b2PolygonShape *shape;
 	b2Fixture *fixture;
-	int first;
-	GLuint tex_2d;
+	GLuint *tex_2d;
 	public:
-		Polygon(b2World *, poly_t *, int, float);
+		Polygon(b2World *, poly_t *, int, float, GLuint *);
 		~Polygon(void);
 		int intersects(float x, float y);
 		void render(void);

@@ -28,7 +28,7 @@ int last_time;
 int timebase;
 int frame_count;
 bool first = true;
-GLuint tex_2d;
+GLuint tex_bg, tex_brick;
 
 // information for user input
 int mousecounter = 0;
@@ -146,7 +146,7 @@ void load_world(unsigned int level)
 	spolygons = new Polygon *[spolylist_length];
 	for(int i = 0; i < spolylist_length; i++){
 		// Static so immovable, set density to 0 for no gravity effect.
-		spolygons[i] = new Polygon(world, &levels[level].polygons[i], 0, 0.0f);
+		spolygons[i] = new Polygon(world, &levels[level].polygons[i], 0, 0.0f, &tex_brick);
 	}
 
 	timer.Reset();
@@ -176,23 +176,32 @@ void draw(void)
     glColor3f(0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
 	
+	if(first){
+		tex_bg = SOIL_load_OGL_texture
+			(
+			"textures/background.jpg",
+			SOIL_LOAD_AUTO,
+			SOIL_CREATE_NEW_ID,
+			SOIL_FLAG_INVERT_Y
+		);
+		tex_brick = SOIL_load_OGL_texture
+		(
+			"textures/brick.jpg",
+			SOIL_LOAD_AUTO,
+			SOIL_CREATE_NEW_ID,
+			SOIL_FLAG_INVERT_Y
+		);
+
+		first = false;
+	}
+
 	if(world != NULL) {
 		if(!winObject.hasWon() && !winObject.hasLost() && 1) {
 			// Simulate the world
 			world->Step((frametime / 1000.0f), 8, 3);
 		}
-    if(first){
-			tex_2d = SOIL_load_OGL_texture
-				(
-				"textures/background.jpg",
-				SOIL_LOAD_AUTO,
-				SOIL_CREATE_NEW_ID,
-				SOIL_FLAG_INVERT_Y
-				);
-				first = false;
-		}
 
-		glBindTexture(GL_TEXTURE_2D, tex_2d);
+		glBindTexture(GL_TEXTURE_2D, tex_bg);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
@@ -556,7 +565,7 @@ void mouse_clicked(int button, int state, int x, int y)
 					}
 				}
         
-				dpolygons[dpolylist_length++] = new Polygon(world, &poly1, 1, 1.0f);
+				dpolygons[dpolylist_length++] = new Polygon(world, &poly1, 1, 1.0f, &tex_brick);
 				
 				delete poly1.verts;
 				

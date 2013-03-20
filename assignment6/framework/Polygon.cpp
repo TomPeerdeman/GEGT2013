@@ -1,11 +1,11 @@
 #include "objects.h"
 
-Polygon::Polygon(b2World *world, poly_t *polys, int b_dynamic, float d) {
+Polygon::Polygon(b2World *world, poly_t *polys, int b_dynamic, float d, GLuint *tex) {
+	tex_2d = tex;
 	b2BodyDef bodyDef;
 	if(b_dynamic) {
 		bodyDef.type = b2_dynamicBody;
 	}
-	first = 1;
 	
 	body = world->CreateBody(&bodyDef);
 
@@ -34,20 +34,8 @@ Polygon::~Polygon() {
 }
 
 void Polygon::render() {
-    if(first){
-		tex_2d = SOIL_load_OGL_texture
-			(
-			"textures/brick.jpg",
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_INVERT_Y
-			);
-			first = 0;
-	}
-
-	
 	glEnable(GL_TEXTURE_2D);
-	glBindTexture(GL_TEXTURE_2D, tex_2d);
+	glBindTexture(GL_TEXTURE_2D, *tex_2d);
 	glBegin(GL_POLYGON);
 	
 	for(int i = 0; i < shape->GetVertexCount(); i++){
