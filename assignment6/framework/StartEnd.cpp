@@ -73,7 +73,7 @@ Ground::Ground(b2World *world) {
 }
 
 void WinObject::render(void) {
-	char *msg;
+	char *msg = NULL;
 	
 	if(win) {
 		msg = (char *) "YOU WIN!";

@@ -286,16 +286,45 @@ float gammacalc(float x, float x0, float x1, float y, float y0, float y1) {
  * Called to check for concave points in the given polygon, if so return false
  */
 bool bary_check(){
+	b2Vec2 p;
+	b2Vec2 p1;
+	b2Vec2 p2;
+	b2Vec2 p3;
+
 	float alpha, beta, gamma;
 	for(int i = 0; i < 4; i++){
-	  alpha = alphacalc(worldvert_x[(i+3)%4], worldvert_x[(i+1)%4], worldvert_x[(i+2)%4],
+	  /*alpha = alphacalc(worldvert_x[(i+3)%4], worldvert_x[(i+1)%4], worldvert_x[(i+2)%4],
 	  		worldvert_y[(i+3)%4], worldvert_y[(i+1)%4], worldvert_y[(i+2)%4]);
 	  beta = betacalc(worldvert_x[(i+3)%4], worldvert_x[i], worldvert_x[(i+2)%4],
 	  		worldvert_y[(i+3)%4], worldvert_y[i], worldvert_y[(i+2)%4]);
 	  gamma = gammacalc(worldvert_x[(i+3)%4], worldvert_x[i], worldvert_x[(i+1)%4],
 	  		worldvert_y[(i+3)%4], worldvert_y[i], worldvert_y[(i+1)%4]);
 	  if(alpha+beta+gamma <= 1.0f && alpha+beta+gamma >= 0.0f)
-	  	return false;
+	  	return false;*/
+
+		p.Set(worldvert_x[i], worldvert_y[i]);
+		p1.Set(worldvert_x[(i + 1) % 4], worldvert_y[(i + 1) % 4]);
+		p2.Set(worldvert_x[(i + 2) % 4], worldvert_y[(i + 2) % 4]);
+		p3.Set(worldvert_x[(i + 3) % 4], worldvert_y[(i + 3) % 4]);		
+
+		/*beta = ((p3.y - p1.y) * (p.x - p3.x) + (p1.x - p3.x) * (p.y - p3.y)) /
+		       ((p2.y - p3.y) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.y - p3.y));
+		gamma = ((p2.y - p3.y) * (p.x - p3.x) + (p3.x - p2.x) * (p.y - p3.y)) /
+		        ((p2.y - p3.y) * (p1.x - p3.x) + (p3.x - p2.x) * (p1.y - p3.y));
+		alpha = 1.0f - beta - gamma;*/
+
+		float f12 = alphacalc(p1.x, p2.x, p3.x, p1.y, p2.y, p3.y);
+		float f20 = betacalc(p2.x, p1.x, p3.x, p2.y, p1.y, p3.y);
+		float f01 = gammacalc(p3.x, p1.x, p2.x, p3.y, p1.y, p2.y);
+
+		alpha = alphacalc(p.x, p2.x, p3.x ,p.y , p2.y, p3.y) / f12;
+		beta = betacalc(p.x ,p1.x ,p3.x ,p.y ,p1.y ,p3.y) / f20;
+		gamma = gammacalc(p.x, p1.x, p2.x, p.y, p1.y, p2.y) / f01;
+
+		if(alpha > 1.0f || alpha < 0.0f || beta > 1.0f || beta < 0.0f || gamma > 1.0f || gamma < 0.0f) {
+			printf("BAD POINT %d (%f, %f, %f)\n", i, alpha, beta, gamma);
+			return false;
+		}	
 	}
 
 	return true;
@@ -324,7 +353,7 @@ void mouse_clicked(int button, int state, int x, int y)
 			worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
 		
 			// check for concave points
-			if(mousecounter == 2){
+			if(mousecounter == 3){
 				allowed = bary_check();
 			}
 			
