@@ -16,6 +16,7 @@
 #include <GL/glut.h>
 #include <math.h>
 #include <Box2D/Box2D.h>
+#include <soil/src/SOIL.h>
 
 #include "levels.h"
 #include "objects.h"
@@ -26,6 +27,8 @@ const float world_x = 8.f, world_y = 6.f; // Level (world) size in meters
 int last_time;
 int timebase;
 int frame_count;
+bool first = true;
+GLuint tex_2d;
 
 // information for user input
 int mousecounter = 0;
@@ -73,6 +76,7 @@ void load_world(unsigned int level)
 	
 	// Unload previous world
 	if(world != NULL) {
+		first = true;
 		delete world;
 		if(ball != NULL) {
 			delete ball;
@@ -158,6 +162,7 @@ void draw(void)
     int time = glutGet(GLUT_ELAPSED_TIME);
 
     int frametime = time - last_time;
+
 	// Fix first frame to simulate no time
 	if(last_time == 0.0f) {
 		frametime = 0.0f;
@@ -176,6 +181,35 @@ void draw(void)
 			// Simulate the world
 			world->Step((frametime / 1000.0f), 8, 3);
 		}
+    if(first){
+			tex_2d = SOIL_load_OGL_texture
+				(
+				"textures/background.jpg",
+				SOIL_LOAD_AUTO,
+				SOIL_CREATE_NEW_ID,
+				SOIL_FLAG_INVERT_Y
+				);
+				first = false;
+		}
+
+		glBindTexture(GL_TEXTURE_2D, tex_2d);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glEnable(GL_TEXTURE_2D);
+
+		glBegin(GL_QUADS);
+		glColor4f(1.0f,1.0f,1.0f,1.0f); // <-- all white, no alpha for texture (unless you want it to tint)
+
+		glTexCoord2d(0.0f,0.0f); glVertex2f( 0.0f, 0.0);
+		glTexCoord2d(1.0f,0.0f); glVertex2f(8.0f, 0.0f);
+		glTexCoord2d(1.0f,1.0f); glVertex2f( 8.0f, 6.0f);
+		glTexCoord2d(0.0f,1.0f); glVertex2f( 0.0f, 6.0f);
+
+		glEnd();
+
+		// don't want texturing enabled for objects that aren't textured, so turn off now
+		glDisable(GL_TEXTURE_2D);
 
 		// Draw ball
 		glColor3f(1.0f, 0.0f, 0.0f);
