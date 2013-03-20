@@ -60,7 +60,7 @@ EndPoint::EndPoint(b2World *world, level_t *level, float r) {
 Ground::Ground(b2World *world) {
 	b2BodyDef bodyDef;
 
-	bodyDef.position.Set(0.0f, 0.0f);
+	bodyDef.position.Set(4.0f, 0.0f);
 	
 	body = world->CreateBody(&bodyDef);
 	
@@ -109,9 +109,9 @@ void WinObject::BeginContact(b2Contact* contact) {
 		
 		printf("Collision %d, %d\n", A->getType(), B->getType());
 		
-		if(A->getType() + B->getType() == 3){
+		if((A->getType() | B->getType()) == 3){
 			win = 1;
-		}else if(A->getType() + B->getType() == 6) {
+		}else if((A->getType() | B->getType()) == 6) {
 			lose = 1;
 		}
 	}
