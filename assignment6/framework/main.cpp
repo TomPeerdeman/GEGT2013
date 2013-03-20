@@ -37,7 +37,7 @@ float world_mouse_x;
 float world_mouse_y;
 int dpolylist_length;
 int possible_totalpoly = 10;
-Polygon **dpolygons = new Polygon *[10];
+Polygon **dpolygons = new Polygon *[possible_totalpoly];
 
 // Information about the levels loaded from files will be available in these.
 unsigned int num_levels;
@@ -117,7 +117,7 @@ void load_world(unsigned int level)
     // Create a Box2D world and populate it with all bodies for this level
     // (including the ball).
 	
-	b2Vec2 gravity(0.0f, -10.0f);
+	b2Vec2 gravity(0.0f, -9.81f);
 	
 	// Create the world
 	world = new b2World(gravity);
@@ -234,7 +234,7 @@ void draw(void)
                 "Box2D: %3.2f fps, level %d/%d, Polygons left: %d/%d",
                 frame_count / ((time - timebase) / 1000.f), 
 				(current_level + 1), num_levels,
-				10-dpolylist_length, possible_totalpoly);
+				possible_totalpoly-dpolylist_length, possible_totalpoly);
         glutSetWindowTitle(window_title);
         timebase = time;
         frame_count = 0;
@@ -419,7 +419,7 @@ void mouse_clicked(int button, int state, int x, int y)
 	// only work if left mousebutton pressed
 	if(button == 0){
 		// only add point when the mouse is pressed
-		if(!state && !winObject.hasWon() && !winObject.hasLost() && dpolylist_length < 10){
+		if(!state && !winObject.hasWon() && !winObject.hasLost() && dpolylist_length < possible_totalpoly){
 			bool allowed = true;
 			
 			// overwrite old values
@@ -466,7 +466,7 @@ void mouse_clicked(int button, int state, int x, int y)
 				return;
 			}
 			
-			if(mousecounter == 4 && dpolylist_length < 10){
+			if(mousecounter == 4 && dpolylist_length < possible_totalpoly){
 				// fill a poly_t object
 				poly_t poly1;
 				poly1.num_verts = 4;
