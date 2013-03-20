@@ -238,7 +238,7 @@ void draw(void)
 		
 		// Draw outline of object to build
 		if(mousecounter >= 1){
-			glColor3f(0.5f, 0.5f, 0.5f);
+			glColor3f(1.0f, 0.0f, 0.f);
 			
 			// Draw the lines between the already placed vertices
 			if(mousecounter >= 2){
