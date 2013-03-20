@@ -374,27 +374,27 @@ bool bary_check(){
  * This is a substracted version of the original
  */
 bool intersection(int p1x, int p1y, int p2x, int p2y, int p3x, int p3y, int p4x, int p4y) {
-// Store the values for fast access and easy
-// equations-to-code conversion
-int x1 = p1x, x2 = p2x, x3 = p3x, x4 = p4x;
-int y1 = p1y, y2 = p2y, y3 = p3y, y4 = p4y;
- 
-float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-// If d is zero, there is no intersection
-if (d == 0) return NULL;
- 
-// Get the x and y
-float pre = (x1*y2 - y1*x2), post = (x3*y4 - y3*x4);
-float x = ( pre * (x3 - x4) - (x1 - x2) * post ) / d;
-float y = ( pre * (y3 - y4) - (y1 - y2) * post ) / d;
- 
-// Check if the x and y coordinates are within both lines
-if ( x < std::min(x1, x2) || x > std::max(x1, x2) ||
-x < std::min(x3, x4) || x > std::max(x3, x4) ) return false;
-if ( y < std::min(y1, y2) || y > std::max(y1, y2) ||
-y < std::min(y3, y4) || y > std::max(y3, y4) ) return false;
+	// Store the values for fast access and easy
+	// equations-to-code conversion
+	int x1 = p1x, x2 = p2x, x3 = p3x, x4 = p4x;
+	int y1 = p1y, y2 = p2y, y3 = p3y, y4 = p4y;
+	 
+	float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+	// If d is zero, there is no intersection
+	if (d == 0) return NULL;
+	 
+	// Get the x and y
+	float pre = (x1*y2 - y1*x2), post = (x3*y4 - y3*x4);
+	float x = ( pre * (x3 - x4) - (x1 - x2) * post ) / d;
+	float y = ( pre * (y3 - y4) - (y1 - y2) * post ) / d;
+	 
+	// Check if the x and y coordinates are within both lines
+	if ( x < std::min(x1, x2) || x > std::max(x1, x2) ||
+	x < std::min(x3, x4) || x > std::max(x3, x4) ) return false;
+	if ( y < std::min(y1, y2) || y > std::max(y1, y2) ||
+	y < std::min(y3, y4) || y > std::max(y3, y4) ) return false;
 
-return true;
+	return true;
 }
 
 /*
