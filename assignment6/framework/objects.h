@@ -61,10 +61,6 @@ class Polygon : public BodyObject {
 		~Polygon(void);
 		int intersects(float x, float y);
 		void render(void);
-		void print(){
-			b2Vec2 pos = body->GetPosition();
-			printf("POS x %f; y %f; Mass %f \n", pos.x, pos.y, body->GetMass());
-		};
 		void destroy(b2World *world){
 			world->DestroyBody(body);
 		};

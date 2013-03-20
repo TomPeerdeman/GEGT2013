@@ -29,7 +29,7 @@ Ball::Ball(b2World *world, level_t *level, float r, float d) {
 
 	body = world->CreateBody(&bodyDef);
 	
-	// Test to not simulate the ball
+	// Freeze ball until started
 	body->SetAwake(0);
 	body->SetGravityScale(0.0f);
 
@@ -107,8 +107,6 @@ void WinObject::BeginContact(b2Contact* contact) {
 	if(userDataA != NULL && userDataB != NULL){
 		BodyObject *A = static_cast<BodyObject *> (userDataA);
 		BodyObject *B = static_cast<BodyObject *> (userDataB);
-		
-		printf("Collision %d, %d\n", A->getType(), B->getType());
 		
 		if((A->getType() | B->getType()) == 3){
 			win = 1;
