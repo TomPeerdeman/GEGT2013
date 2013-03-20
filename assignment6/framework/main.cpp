@@ -405,7 +405,7 @@ void mouse_clicked(int button, int state, int x, int y)
 	// only work if left mousebutton pressed
 	if(button == 0){
 		// only add point when the mouse is pressed
-		if(!state && !winObject.hasWon() && !winObject.hasLost()){
+		if(!state && !winObject.hasWon() && !winObject.hasLost() && dpolylist_length < 10){
 			bool allowed = true;
 			
 			// overwrite old values
@@ -509,6 +509,8 @@ void mouse_clicked(int button, int state, int x, int y)
 				
 				delete poly1.verts;
 				
+				mousecounter = 0;
+			} else if(dpolylist_length >= 10) {
 				mousecounter = 0;
 			}
 		}
