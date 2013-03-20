@@ -14,6 +14,7 @@
 
 #include <GL/gl.h>
 #include <GL/glut.h>
+#include <math.h>
 #include <Box2D/Box2D.h>
 
 #include "levels.h"
@@ -132,7 +133,7 @@ void draw(void)
     glClear(GL_COLOR_BUFFER_BIT);
 	
 	if(world != NULL) {
-		if(!winObject.hasWon() && !winObject.hasLost() && 0) {
+		if(!winObject.hasWon() && !winObject.hasLost() && 1) {
 			// Simulate the world
 			world->Step((frametime / 1000.0f), 8, 3);
 		}
@@ -331,6 +332,35 @@ bool bary_check(){
 }
 
 /*
+ * Check if two given lines intersect
+ * Original source-code: http://flassari.is/2008/11/line-line-intersection-in-cplusplus/
+ * This is a substracted version of the original
+ */
+bool intersection(int p1x, int p1y, int p2x, int p2y, int p3x, int p3y, int p4x, int p4y) {
+// Store the values for fast access and easy
+// equations-to-code conversion
+int x1 = p1x, x2 = p2x, x3 = p3x, x4 = p4x;
+int y1 = p1y, y2 = p2y, y3 = p3y, y4 = p4y;
+ 
+float d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+// If d is zero, there is no intersection
+if (d == 0) return NULL;
+ 
+// Get the x and y
+float pre = (x1*y2 - y1*x2), post = (x3*y4 - y3*x4);
+float x = ( pre * (x3 - x4) - (x1 - x2) * post ) / d;
+float y = ( pre * (y3 - y4) - (y1 - y2) * post ) / d;
+ 
+// Check if the x and y coordinates are within both lines
+if ( x < std::min(x1, x2) || x > std::max(x1, x2) ||
+x < std::min(x3, x4) || x > std::max(x3, x4) ) return false;
+if ( y < std::min(y1, y2) || y > std::max(y1, y2) ||
+y < std::min(y3, y4) || y > std::max(y3, y4) ) return false;
+
+return true;
+}
+
+/*
  * Called when the user clicked (or released) a mouse buttons inside the window.
  */
 void mouse_clicked(int button, int state, int x, int y)
@@ -353,9 +383,10 @@ void mouse_clicked(int button, int state, int x, int y)
 			worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
 		
 			// check for concave points
-			if(mousecounter == 3){
-				allowed = bary_check();
-			}
+
+			//if(mousecounter == 3){
+			//	allowed = bary_check();
+			//}
 			
 			if(allowed){			
 				mousecounter++;
@@ -390,66 +421,34 @@ void mouse_clicked(int button, int state, int x, int y)
 				poly_t poly1;
 				poly1.num_verts = 4;
 				poly1.verts = new point_t[4];
-				
-				/* possible intersection 1
-				 *    3
-				 *  2   1
-				 *    0
-				 */
-				if(worldvert_x[1] > worldvert_x[0] &&
-					 worldvert_x[1] > worldvert_x[2] &&
-					 worldvert_x[2] < worldvert_x[3]){
-					float buf_x = worldvert_x[3];
-					float buf_y = worldvert_y[3];
-					worldvert_x[3] = worldvert_x[2];
-					worldvert_y[3] = worldvert_y[2];
-					worldvert_x[2] = buf_x;
-					worldvert_y[2] = buf_y;
+
+				bool intersect = intersection(
+				mousevert_x[0], mousevert_y[0], 
+				mousevert_x[3], mousevert_y[3], 
+				mousevert_x[1], mousevert_y[1], 
+				mousevert_x[2], mousevert_y[2]);
+				if(intersect){
+					float buf_x = worldvert_x[2];
+					float buf_y = worldvert_y[2];
+					worldvert_x[2] = worldvert_x[3];
+					worldvert_y[2] = worldvert_y[3];
+					worldvert_x[3] = buf_x;
+					worldvert_y[3] = buf_y;
 				}
-				/* possible intersection 2
-				 *    2
-				 *  0   3
-				 *    1
-				 */
-				if(worldvert_y[1] < worldvert_y[0] &&
-					 worldvert_y[1] < worldvert_y[2] &&
-					 worldvert_y[2] > worldvert_y[3]){
-					float buf_x = worldvert_x[3];
-					float buf_y = worldvert_y[3];
-					worldvert_x[3] = worldvert_x[2];
-					worldvert_y[3] = worldvert_y[2];
-					worldvert_x[2] = buf_x;
-					worldvert_y[2] = buf_y;
-				}
-				/* possible intersection 3
-				 *    3
-				 *  1   2
-				 *    0
-				 */
-				if(worldvert_x[1] < worldvert_x[0] &&
-					 worldvert_x[1] < worldvert_x[2] &&
-					 worldvert_x[2] > worldvert_x[3]){
-					float buf_x = worldvert_x[3];
-					float buf_y = worldvert_y[3];
-					worldvert_x[3] = worldvert_x[2];
-					worldvert_y[3] = worldvert_y[2];
-					worldvert_x[2] = buf_x;
-					worldvert_y[2] = buf_y;
-				}
-				/* possible intersection 4
-				 *    1
-				 *  3   0
-				 *    2
-				 */
-				if(worldvert_y[1] > worldvert_y[0] &&
-					 worldvert_y[1] > worldvert_y[2] &&
-					 worldvert_y[2] < worldvert_y[3]){
-					float buf_x = worldvert_x[3];
-					float buf_y = worldvert_y[3];
-					worldvert_x[3] = worldvert_x[2];
-					worldvert_y[3] = worldvert_y[2];
-					worldvert_x[2] = buf_x;
-					worldvert_y[2] = buf_y;
+				else{
+					intersect = intersection(
+					mousevert_x[0], mousevert_y[0], 
+					mousevert_x[1], mousevert_y[1], 
+					mousevert_x[3], mousevert_y[3], 
+					mousevert_x[2], mousevert_y[2]);
+					if(intersect){
+						float buf_x = worldvert_x[1];
+						float buf_y = worldvert_y[1];
+						worldvert_x[1] = worldvert_x[2];
+						worldvert_y[1] = worldvert_y[2];
+						worldvert_x[2] = buf_x;
+						worldvert_y[2] = buf_y;
+					}
 				}
 				
 				int sum = 0;
