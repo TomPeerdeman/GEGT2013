@@ -108,7 +108,6 @@ void load_world(unsigned int level)
 		}
 
 		world = NULL;
-		printf("Deleted world %d\n", current_level);
 	}
 	
 	current_level = level;
@@ -135,8 +134,6 @@ void load_world(unsigned int level)
 		// Static so immovable, set density to 0 for no gravity effect.
 		spolygons[i] = new Polygon(world, &levels[level].polygons[i], 0, 0.0f);
 	}
-
-	printf("Build world %d\n", level);
 }
 
 
@@ -275,9 +272,18 @@ void key_pressed(unsigned char key, int x, int y)
 		case '9':
 			current_level = key - 49;
 			load_world(current_level);
-			printf("New level: %u\n", (current_level + 1));
 			break;
 		case 32:
+			if(winObject.hasWon()){
+				load_world(current_level + 1);
+				mousecounter = 0;
+				break;
+			}
+			if(winObject.hasLost()){
+				load_world(current_level);
+				mousecounter = 0;
+				break;
+			}
 			if(ball != NULL) {
 				ball->unlockMovement();
 			}
@@ -289,9 +295,12 @@ void key_pressed(unsigned char key, int x, int y)
 				dpolygons[dpolylist_length] = NULL;
 			}
 			break;
+		case 114:
+			load_world(current_level);
+			mousecounter = 0;
+			break;
         // Add any keys you want to use, either for debugging or gameplay.
         default:
-			printf("Pressed: %u\n", key);
             break;
     }
 }
@@ -372,9 +381,6 @@ bool bary_check(){
 		gamma = gammacalc(p.x, p1.x, p2.x, p.y, p1.y, p2.y) / f01;
 
 		if(!(alpha >= 1.0f || alpha <= 0.0f || beta >= 1.0f || beta <= 0.0f || gamma >= 1.0f || gamma <= 0.0f)) {
-			printf("BAD POINT %d (%f, %f, %f)\n", i, alpha, beta, gamma);
-			printf("locations (%f, %f) (%f, %f) (%f, %f) (%f, %f)\n",
-			 p.x, p.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 			return false;
 		}	
 	}
@@ -404,9 +410,9 @@ bool intersection(int p1x, int p1y, int p2x, int p2y, int p3x, int p3y, int p4x,
 	 
 	// Check if the x and y coordinates are within both lines
 	if ( x < std::min(x1, x2) || x > std::max(x1, x2) ||
-	x < std::min(x3, x4) || x > std::max(x3, x4) ) return false;
+		x < std::min(x3, x4) || x > std::max(x3, x4) ) return false;
 	if ( y < std::min(y1, y2) || y > std::max(y1, y2) ||
-	y < std::min(y3, y4) || y > std::max(y3, y4) ) return false;
+		y < std::min(y3, y4) || y > std::max(y3, y4) ) return false;
 
 	return true;
 }
@@ -420,11 +426,6 @@ void mouse_clicked(int button, int state, int x, int y)
 	if(button == 0){
 		// only add point when the mouse is pressed
 		if(!state && !winObject.hasWon() && !winObject.hasLost() && dpolylist_length < possible_totalpoly){
-			bool allowed = true;
-			
-			// overwrite old values
-			mousecounter = mousecounter % 4;
-			printf("mousecounter: %u\n", mousecounter);
 			// pixel values
 			mousevert_x[mousecounter] = x;
 			mousevert_y[mousecounter] = y;
@@ -433,23 +434,10 @@ void mouse_clicked(int button, int state, int x, int y)
 			worldvert_x[mousecounter] = (float)mousevert_x[mousecounter]/100.0f;
 			worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
 		
-			// check for concave points
-			if(mousecounter == 3){
-				allowed = bary_check();
-			}
-			
-			if(allowed){			
+			// check for concave points	
+			if((mousecounter == 3 && bary_check()) || mousecounter != 3){			
 				mousecounter++;
 			}
-			
-			// print new values
-			for(int i = 0; i < 4; i++){
-				printf("mouse\tx: %u, y: %u\n",mousevert_x[i],mousevert_y[i]);
-			}
-			for(int i = 0; i < 4; i++){
-				printf("world\tx: %g, y: %g\n",worldvert_x[i],worldvert_y[i]);
-			}
-
 		}
 	
 		// if mouse released draw if there are 4 vertices
@@ -575,7 +563,6 @@ int main(int argc, char **argv)
 
     // Read the levels into a bunch of structs.
     num_levels = load_levels(&levels);
-    printf("Loaded %d levels.\n", num_levels);
 
     // Load the first level (i.e. create all Box2D stuff).
     load_world(0);
