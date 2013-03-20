@@ -36,6 +36,7 @@ float worldvert_y[4];
 float world_mouse_x;
 float world_mouse_y;
 int dpolylist_length;
+int possible_totalpoly = 10;
 Polygon **dpolygons = new Polygon *[10];
 
 // Information about the levels loaded from files will be available in these.
@@ -230,9 +231,10 @@ void draw(void)
     if (time - timebase >= 1000) {
         char window_title[128];
         snprintf(window_title, 128,
-                "Box2D: %3.2f fps, level %d/%d",
+                "Box2D: %3.2f fps, level %d/%d, Polygons left: %d/%d",
                 frame_count / ((time - timebase) / 1000.f), 
-				(current_level + 1), num_levels);
+				(current_level + 1), num_levels,
+				10-dpolylist_length, possible_totalpoly);
         glutSetWindowTitle(window_title);
         timebase = time;
         frame_count = 0;
