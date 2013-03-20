@@ -12,6 +12,7 @@ void Circle::render(void) {
 	 */
 	for(int i = 0; i <= 100; i++){
 	    float const t = 2 * M_PI * (float) i / 100.0f;
+		glColor3f((sin(t + body->GetAngle()) + cos(t)) / 2.0f, (cos(t + body->GetAngle()) + tan(t)) / 2.0f, (tan(t + body->GetAngle()) + sin(t)) /2.0f );
 	    glVertex2f(position.x + sin(t) * radius, position.y + cos(t) * radius);
 	}
 
@@ -29,8 +30,8 @@ Ball::Ball(b2World *world, level_t *level, float r, float d) {
 	body = world->CreateBody(&bodyDef);
 	
 	// Test to not simulate the ball
-	body->SetAwake(0);
-	body->SetGravityScale(0.0f);
+	//body->SetAwake(0);
+	//body->SetGravityScale(0.0f);
 
 	b2CircleShape shape;
 	shape.m_radius = r;
