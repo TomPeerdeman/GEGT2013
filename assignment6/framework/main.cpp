@@ -278,14 +278,15 @@ void key_pressed(unsigned char key, int x, int y)
 		case 32:
 			if(ball != NULL) {
 				ball->unlockMovement();
-
 			}
+			break;
 		case 26:
 			if(dpolylist_length > 0 && dpolygons != NULL) {
 				dpolygons[--dpolylist_length]->destroy(world);
 				delete dpolygons[dpolylist_length];
 				dpolygons[dpolylist_length] = NULL;
 			}
+			break;
         // Add any keys you want to use, either for debugging or gameplay.
         default:
 			printf("Pressed: %u\n", key);
