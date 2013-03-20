@@ -74,13 +74,30 @@ class Ground : public BodyObject {
 		};
 };
 
+class Timer {
+	b2Timer timer;
+	float stopTime;
+	char msg[64];
+	public:
+		void Reset(){
+			timer.Reset();
+			stopTime = 0.0f;
+		};
+		void Stop(){
+			stopTime = (timer.GetMilliseconds() / 1000.0f);
+		};
+		void render(void);
+};
+
 class WinObject : public b2ContactListener {
 	int win;
 	int lose;
+	Timer *timer;
 	public:
-		WinObject(void){
+		WinObject(Timer *t){
 			win = 0;
 			lose = 0;
+			timer = t;
 		};
 		void reset(void){
 			win = 0;
@@ -96,3 +113,4 @@ class WinObject : public b2ContactListener {
 		void BeginContact(b2Contact* contact);
 		void EndContact(b2Contact* contact);
 };
+

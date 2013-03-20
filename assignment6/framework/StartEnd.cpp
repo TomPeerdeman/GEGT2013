@@ -73,6 +73,15 @@ Ground::Ground(b2World *world) {
 	body->SetUserData(this);
 }
 
+void printMsg(char *msg, float x, float y) {
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+	glRasterPos2f(x, y);
+	for(unsigned int i = 0; i < strlen(msg); i++){
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, msg[i]);
+	}
+}
+
 void WinObject::render(void) {
 	char *msg = NULL;
 	
@@ -91,12 +100,9 @@ void WinObject::render(void) {
 			glVertex2f(5.5, 2);
 		glEnd();
 		
-		glColor3f(1.0f, 1.0f, 1.0f);
-		
-		glRasterPos2f(3.5f, 3.0f);
-		for(unsigned int i = 0; i < strlen(msg); i++){
-			glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, msg[i]);
-		}
+		printMsg(msg, 3.5f, 3.0f);
+
+		printMsg(msg, 3.5f, 3.0f);
 	}
 }
 
@@ -110,11 +116,33 @@ void WinObject::BeginContact(b2Contact* contact) {
 		
 		if((A->getType() | B->getType()) == 3){
 			win = 1;
+			timer->Stop();
 		}else if((A->getType() | B->getType()) == 6) {
 			lose = 1;
+			timer->Stop();
 		}
 	}
 }
 
 void WinObject::EndContact(b2Contact* contact) {
 }
+
+void Timer::render(void){
+	glColor3f(1.0f, 0, 0);
+	glBegin(GL_QUADS);
+		glVertex2f(6.5f, 6.0f);
+		glVertex2f(6.5f, 5.7f);
+		glVertex2f(8.0f, 5.7f);
+		glVertex2f(8.0f, 6.0f);
+	glEnd();
+
+	if(stopTime > 0.0f){
+		sprintf(msg, "Time: %4.2f", stopTime);
+	}else{
+		sprintf(msg, "Time: %4.2f", (timer.GetMilliseconds() / 1000.0f));
+	}
+
+	printMsg(msg, 6.6f, 5.80f);
+}
+
+

@@ -53,7 +53,9 @@ Ground *ground;
 int spolylist_length;
 Polygon **spolygons;
 
-WinObject winObject;
+Timer timer;
+
+WinObject winObject(&timer);
 
 /*
  * Load a given world, i.e. read the world from the `levels' data structure and
@@ -134,6 +136,8 @@ void load_world(unsigned int level)
 		// Static so immovable, set density to 0 for no gravity effect.
 		spolygons[i] = new Polygon(world, &levels[level].polygons[i], 0, 0.0f);
 	}
+
+	timer.Reset();
 }
 
 
@@ -149,6 +153,7 @@ void draw(void)
 	// Fix first frame to simulate no time
 	if(last_time == 0.0f) {
 		frametime = 0.0f;
+		timer.Reset();
 	}
 	last_time = time;
 
@@ -220,6 +225,8 @@ void draw(void)
 		
 		winObject.render();
 	}
+
+	timer.render();
 	
     // Show rendered frame
     glutSwapBuffers();
