@@ -357,8 +357,10 @@ bool bary_check(){
 		beta = betacalc(p.x ,p1.x ,p3.x ,p.y ,p1.y ,p3.y) / f20;
 		gamma = gammacalc(p.x, p1.x, p2.x, p.y, p1.y, p2.y) / f01;
 
-		if(alpha > 1.0f || alpha < 0.0f || beta > 1.0f || beta < 0.0f || gamma > 1.0f || gamma < 0.0f) {
+		if(alpha < 1.0f || alpha > 0.0f || beta < 1.0f || beta > 0.0f || gamma < 1.0f || gamma > 0.0f) {
 			printf("BAD POINT %d (%f, %f, %f)\n", i, alpha, beta, gamma);
+			printf("locations (%f, %f) (%f, %f) (%f, %f) (%f, %f)\n",
+			 p.x, p.y, p1.x, p1.y, p2.x, p2.y, p3.x, p3.y);
 			return false;
 		}	
 	}
@@ -485,7 +487,7 @@ void mouse_clicked(int button, int state, int x, int y)
 					}
 				}
 				
-				float sum = 0;
+				float sum = 0.0;
 				for(int i = 0; i < 4; i++){
 					sum = sum + ((worldvert_x[(i+1)%4]-worldvert_x[i]) * (worldvert_y[(i+1)%4]+worldvert_y[i]));
 				}
