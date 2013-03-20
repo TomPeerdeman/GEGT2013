@@ -275,6 +275,17 @@ void key_pressed(unsigned char key, int x, int y)
 			load_world(current_level);
 			printf("New level: %u\n", (current_level + 1));
 			break;
+		case 32:
+			if(ball != NULL) {
+				ball->unlockMovement();
+
+			}
+		case 26:
+			if(dpolylist_length > 0 && dpolygons != NULL) {
+				dpolygons[--dpolylist_length]->destroy(world);
+				delete dpolygons[dpolylist_length];
+				dpolygons[dpolylist_length] = NULL;
+			}
         // Add any keys you want to use, either for debugging or gameplay.
         default:
 			printf("Pressed: %u\n", key);

@@ -39,6 +39,10 @@ class Ball : public Circle {
 		int getType(void){
 			return 2;
 		};
+		void unlockMovement(void){
+			body->SetAwake(true);
+			body->SetGravityScale(1.0f);
+		};
 };
 
 class EndPoint : public Circle {
@@ -60,6 +64,9 @@ class Polygon : public BodyObject {
 		void print(){
 			b2Vec2 pos = body->GetPosition();
 			printf("POS x %f; y %f; Mass %f \n", pos.x, pos.y, body->GetMass());
+		};
+		void destroy(b2World *world){
+			world->DestroyBody(body);
 		};
 };
 
