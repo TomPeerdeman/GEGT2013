@@ -70,18 +70,44 @@ void load_world(unsigned int level)
 	// Unload previous world
 	if(world != NULL) {
 		delete world;
-		delete ball;
-		delete ground;
-		
-		for(int i = 0; i < spolylist_length; i++) {
-			delete spolygons[i];
+		if(ball != NULL) {
+			delete ball;
+			ball = NULL;
 		}
-		delete[] spolygons;
-		
-		for(int i = 0; i < dpolylist_length; i++) {
-			delete dpolygons[i];
+		if(ground != NULL) {
+			delete ground;
+			ground = NULL;
 		}
-		delete[] dpolygons;
+
+		if(endPoint != NULL) {
+			delete endPoint;
+			endPoint = NULL;
+		}
+		
+		if(spolygons != NULL){
+			for(int i = 0; i < spolylist_length; i++) {
+				if(spolygons[i] != NULL) {
+					delete spolygons[i];
+					spolygons[i] = NULL;
+				}
+			}
+			spolylist_length = 0;
+			delete[] spolygons;
+			spolygons = NULL;
+		}
+		
+		if(dpolygons != NULL){
+			for(int i = 0; i < dpolylist_length; i++) {
+				if(dpolygons[i] != NULL) {
+					delete dpolygons[i];
+					dpolygons[i] = NULL;
+				}
+			}
+			dpolylist_length = 0;
+		}
+
+		world = NULL;
+		printf("Deleted world %d\n", current_level);
 	}
 	
 	current_level = level;
@@ -108,6 +134,8 @@ void load_world(unsigned int level)
 		// Static so immovable, set density to 0 for no gravity effect.
 		spolygons[i] = new Polygon(world, &levels[level].polygons[i], 0, 0.0f);
 	}
+
+	printf("Build world %d\n", level);
 }
 
 
@@ -140,20 +168,26 @@ void draw(void)
 
 		// Draw ball
 		glColor3f(1.0f, 0.0f, 0.0f);
-		ball->render();
+		if(ball != NULL)
+			ball->render();
 		
 		glColor3f(1.0f, 1.0f, 1.0f);
-		endPoint->render();
+		if(endPoint != NULL)
+			endPoint->render();
 		
 		// Draw static polygons
 		glColor3f(0.0f, 1.0f, 0.0f);
 		for(int i = 0; i < spolylist_length; i++) {
+			if(spolygons[i] == NULL)
+				break;
 			spolygons[i]->render();
 		}
 		
 		// Draw dynamic polygons
 		glColor3f(0.5f, 0.5f, 0.5f);
 		for(int i = 0; i < dpolylist_length; i++) {
+			if(dpolygons[i] == NULL)
+				break;
 			dpolygons[i]->render();
 		}
 		
@@ -223,7 +257,8 @@ void key_pressed(unsigned char key, int x, int y)
 {
     switch (key)
     {
-        case 27: // Esc
+		case 81:
+        case 27:
         case 'q':
             exit(0);
             break;
@@ -383,7 +418,6 @@ void mouse_clicked(int button, int state, int x, int y)
 			worldvert_y[mousecounter] = 6.0f-(float)mousevert_y[mousecounter]/100.0f;
 		
 			// check for concave points
-
 			//if(mousecounter == 3){
 			//	allowed = bary_check();
 			//}
@@ -451,7 +485,7 @@ void mouse_clicked(int button, int state, int x, int y)
 					}
 				}
 				
-				int sum = 0;
+				float sum = 0;
 				for(int i = 0; i < 4; i++){
 					sum = sum + ((worldvert_x[(i+1)%4]-worldvert_x[i]) * (worldvert_y[(i+1)%4]+worldvert_y[i]));
 				}
